@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/12 16:48:10 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/12 16:54:19 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,8 @@ ssize_t		io_fill(t_read *rd)
 	ssize_t	ret;
 
 	rd->index = 0;
-	if ((ret = read(rd->fd, rd->buffer, BUFFER_SIZE)) < 0)
-		return (ret);
-	return (rd->len = ret);
+	ret = read(rd->fd, rd->buffer, BUFFER_SIZE);
+	return (ret < 0 ? ret : (rd->len = ret));
 }
 
 t_read		init_read(size_t fd)
