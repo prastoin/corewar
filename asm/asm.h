@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/12 16:36:20 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/13 15:00:18 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#define BUFFER_SIZE 1
+#define BUFFER_SIZE 4096
+#define HEADER_SIZE 2192
 
 typedef struct	s_read
 {
@@ -29,8 +30,14 @@ typedef struct	s_read
 	size_t		index;
 	size_t		nbr_read;
 	size_t		fd;
+	size_t		fd2;
 }				t_read;
 
+ssize_t		io_moveto(t_read *rd, uint8_t c);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
+ssize_t		io_read(t_read *rd, uint8_t data[], size_t data_len);
+t_read		init_read(size_t fd, size_t fd2);
+ssize_t		io_fill(t_read *rd);
+void	ft_itoa_base(uintmax_t nb, char *str, uint8_t b, const char *base);
 
 #endif

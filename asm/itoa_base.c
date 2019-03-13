@@ -1,22 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   itoa_base.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/03/13 14:58:05 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/13 14:59:38 by prastoin         ###   ########.fr       */
+/*   Created: 2019/03/13 14:35:26 by prastoin          #+#    #+#             */
+/*   Updated: 2019/03/13 15:00:43 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "asm.h"
+#include "ft_string.h"
 
-int main(int argc, const char *argv[])
+void	ft_itoa_base(uintmax_t nb, char *str, uint8_t b, const char *base)
 {
-	char	str[sizeof(uintmax_t) * 2 + 2];
+	uintmax_t	tmp;
+	uint8_t		i;
 
-	ft_itoa_base(atoi(argv[1]), str, 16, "0123456789abcdef");
-	printf("%s\n", str);
-	return 0;
+	i = 1;
+	tmp = nb;
+	if (b < ft_strlen(base))
+		return ;
+	while (tmp /= b)
+		i++;
+	str[i] = '\0';
+	while (i--)
+	{
+		str[i] = base[nb % b];
+		nb /= b;
+	}
+	return ;
 }

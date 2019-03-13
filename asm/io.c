@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/12 16:54:19 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/13 14:22:54 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,24 @@ size_t		io_expect(t_read *rd, const char *wanted)
 		if ()
 }*/
 
+ssize_t		io_moveto(t_read *rd, uint8_t c)
+{
+	ssize_t	tmp;
+
+	while (rd->buffer[rd->index] != c)
+	{
+		if (rd->index == rd->len)
+		{
+			if ((tmp = io_fill(rd)) < 0)
+				return (-1);
+			else if (tmp == 0)
+				return (-42);
+		}
+		rd->index += 1;
+	}
+	return (0);
+}
+
 ssize_t		io_fill(t_read *rd)
 {
 	ssize_t	ret;
@@ -32,14 +50,15 @@ ssize_t		io_fill(t_read *rd)
 	return (ret < 0 ? ret : (rd->len = ret));
 }
 
-t_read		init_read(size_t fd)
+t_read		init_read(size_t fd, size_t fd2)
 {
 	t_read	rd;
-	
+
 	rd = (t_read){
 		.index = 0,
 		.len = 0,
 		.nbr_read = 0,
+		.fd2 = fd2,
 		.fd = fd
 	};
 	return (rd);
@@ -69,7 +88,7 @@ ssize_t		io_read(t_read *rd, uint8_t data[], size_t data_len)
 	return (data_len + i);
 }
 
-int		main(int argc, const char *argv[])
+/*int		main(int argc, const char *argv[])
 {
 	t_read		rd;
 	size_t		fd;
@@ -84,4 +103,4 @@ int		main(int argc, const char *argv[])
 		printf("%.*s", r, test);
 	}
 	return (0);
-}
+}*/
