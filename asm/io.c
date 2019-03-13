@@ -6,11 +6,12 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/13 14:22:54 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/13 18:23:45 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "asm.h"
+#include "ft_string.h"
 
 /*uint8_t		io_peek(t_read *rd)
 {
@@ -27,15 +28,19 @@ ssize_t		io_moveto(t_read *rd, uint8_t c)
 {
 	ssize_t	tmp;
 
-	while (rd->buffer[rd->index] != c)
+	while (1)
 	{
 		if (rd->index == rd->len)
 		{
-			if ((tmp = io_fill(rd)) < 0)
-				return (-1);
-			else if (tmp == 0)
-				return (-42);
+			if ((tmp = io_fill(rd)) <= 0)
+				ex_error("Parse Error.\n");
 		}
+		if (rd->buffer[rd->index] == c)
+			break ;
+		if (!(rd->buffer[rd->index] == ' '
+				|| (rd->buffer[rd->index] >= '\a'
+					&& rd->buffer[rd->index] <= '\r')))
+			ex_error("Bad character.\n");
 		rd->index += 1;
 	}
 	return (0);

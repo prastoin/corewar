@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 09:51:51 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/13 17:08:34 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/13 18:03:28 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,16 @@ ssize_t	check_arg(char *name, uint8_t cor[])
 	ssize_t fd;
 
 	if ((len = ft_strlen(name)) > 127)
-		return (error("Invalid name file : too long\n"));
+		ex_error("Invalid name file : too long\n");
 	if (!(search_for((uint8_t *)name, '.') == 1 && name[len - 2] == '.' && name[len - 1] == 's'))
-		return (error("Invalid name file : no .s\n"));
+		ex_error("Invalid name file : no .s\n");
 	ft_strcpy(cor, (uint8_t *)name);
 	cor[len - 1] = 'c';
 	cor[len] = 'o';
 	cor[len + 1] = 'r';
 	cor[len + 2] = '\0';
 	if ((fd = open((const char *)cor, O_RDWR | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR)) < 0)
-		return (error("Failed to create file .cor\n"));
+		ex_error("Failed to create file .cor\n");
 	return (fd);
 }
 
@@ -47,9 +47,8 @@ int		main(int argc, char **argv)
 	t_read	rd;
 
 	if ((fd = open(argv[1], O_RDWR)) < 0)
-		return (error("Failed to open .s file.\n"));
-	if ((fd2 = check_arg(argv[1], tmp)) < 0)
-		return (-1);
+		ex_error("Failed to open .s file.\n");
+	fd2 = check_arg(argv[1], tmp);
 	rd = init_read(fd, fd2);
 	header(&rd);
 	return (0);

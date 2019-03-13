@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/13 17:14:56 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/13 18:27:19 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ typedef struct	s_read
 	size_t		fd;
 	size_t		fd2;
 }				t_read;
+
+#include <stdio.h>
 
 ssize_t		io_moveto(t_read *rd, uint8_t c);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
