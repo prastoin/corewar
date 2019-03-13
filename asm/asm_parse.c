@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 09:51:51 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/13 12:30:01 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/13 17:08:34 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,6 @@ int		main(int argc, char **argv)
 	if ((fd2 = check_arg(argv[1], tmp)) < 0)
 		return (-1);
 	rd = init_read(fd, fd2);
+	header(&rd);
 	return (0);
 }

@@ -6,11 +6,17 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 10:05:53 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/13 14:10:11 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/13 17:03:16 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_string.h"
+
+
+void	ft_puthar_fd(size_t fd, size_t c)
+{
+	write (fd, &c, 1);
+}
 
 ssize_t		ft_strncmp(uint8_t *s1, char *str, size_t n)
 {

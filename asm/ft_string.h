@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 10:07:00 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/13 14:13:25 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/13 17:03:31 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,6 @@ size_t	ft_strlen(const char *str);
 uint8_t		*ft_strcpy(uint8_t *dst, const uint8_t *src);
 size_t		search_for(uint8_t *str, uint8_t c);
 ssize_t		ft_strncmp(uint8_t *s1, char *str, size_t n);
+void	ft_puthar_fd(size_t fd, size_t c);
 
 #endif
