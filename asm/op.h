@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 16:49:30 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/14 11:57:20 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/14 13:36:33 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,10 @@
 
 typedef char t_arg_type;
 
-# define T_REG1
-# define T_DIR2
-# define T_IND4
-# define T_LAB8
+# define T_REG 1
+# define T_DIR 2
+# define T_IND 4
+# define T_LAB 8
 
 # define PROG_NAME_LENGTH (128)
 # define COMMENT_LENGTH (2048)

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/14 12:28:51 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/14 14:19:42 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,26 @@
 
 #include "op.h"
 
-#define BUFFER_SIZE 4096
-#define HEADER_SIZE 2192
+#define BUFFER_SIZE  4096
+#define HEADER_SIZE  2192
+
+#define MAX_PARAM 4
+
+typedef enum e_core_param {
+	PARAM_NONE = 0b0,
+	PARAM_DIRECT = 0b1,
+	PARAM_INDIRECT = 0b10,
+	PARAM_REGISTER = 0b100,
+	PARAM_ALL = 0b111,
+}	t_core_param;
+
+typedef struct	s_core_tab
+{
+	size_t			opcode;
+	char			*name;
+	t_core_param	params[MAX_PARAM];
+}				t_core_tab;
+
 
 typedef struct	s_header
 {

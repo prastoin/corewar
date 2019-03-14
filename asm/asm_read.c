@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/14 12:31:26 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/14 13:28:24 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,21 @@ bool		asm_read_quoted(t_read *rd, char data[], size_t len)
 	return (c != -1);
 }
 
+/*bool		asm_fill_header(t_write *out, t_header *head)
+{
+	size_t i;
+
+	i = 0;
+	asm_fill_magic();
+	while (head->name[i] || i < PROG_NAME_LENGTH)
+	{
+		out->buffer[out->index] = head->name[i];
+		out->index++;
+		i++;
+	}
+	return (true);
+}*/
+
 bool		asm_parse_header(t_read *rd, t_header *header)
 {
 	header->size = 0;
@@ -80,7 +95,5 @@ int main(int argc, const char *argv[])
 	t_write		out;
 
 	in = init_read(open(argv[1], O_RDONLY));
-	asm_parse_header(&in, &head);
-	asm_write_header(&out, &head);
 	return (0);
 }
