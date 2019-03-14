@@ -6,13 +6,13 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 14:32:56 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/14 15:48:19 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/14 17:28:06 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "asm.h"
 
-t_core_tab g_ops[] = {
+t_core_tab g_ops[17] = {
 	[0x01] = {
 		0x01, "live", {
 			PARAM_DIRECT, 0, 0, 0
@@ -58,39 +58,39 @@ t_core_tab g_ops[] = {
 			PARAM_DIRECT, 0, 0, 0
 		}
 	},
-	[0x10] = {
-		0x10, "ldi", {
+	[0x0a] = {
+		0x0a, "ldi", {
 			PARAM_ALL, PARAM_DIRECT | PARAM_REGISTER, PARAM_REGISTER, 0
 		}
 	},
-	[0x11] = {
-		0x11, "sti", {
+	[0x0b] = {
+		0x0b, "sti", {
 			PARAM_REGISTER, PARAM_ALL, PARAM_REGISTER | PARAM_DIRECT, 0
 		}
 	},
-	[0x12] = {
-		0x12, "fork", {
+	[0x0c] = {
+		0x0c, "fork", {
 			PARAM_DIRECT, 0, 0, 0
 		}
 	},
-	[0x13] = {
-		0x13, "lld", {
+	[0x0d] = {
+		0x0d, "lld", {
 			PARAM_DIRECT | PARAM_INDIRECT, PARAM_REGISTER, 0, 0
 		}
 	},
-	[0x14] = {
-		0x14, "lldi", {
+	[0x0e] = {
+		0x0e, "lldi", {
 			PARAM_ALL, PARAM_DIRECT | PARAM_REGISTER, PARAM_REGISTER, 0
 		}
 	},
-	[0x15] = {
-		0x15, "lfork", {
+	[0x0f] = {
+		0x0f, "lfork", {
 			PARAM_DIRECT, 0, 0, 0
 		}
 	},
-	[0x16] = {
-		0x16, "aff", {
+	[0x10] = {
+		0x10, "aff", {
 			PARAM_REGISTER, 0, 0, 0
 		}
-	},
+	}
 };

@@ -6,12 +6,32 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/14 11:48:49 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/14 18:03:22 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "asm.h"
 #include "ft_string.h"
+
+uint32_t	io_readnum(t_read *rd)
+{
+	int16_t		c;
+	uint32_t	res;
+	bool		sign;
+
+	res = 0;
+	if ((c = io_peek(rd)) == '-' || c == '+')
+	{
+		sign = c == '-';
+		rd->index++;
+	}
+	while ((c = io_peek(rd)) >= '0' && c <= '9')
+	{
+		res = res * 10 + (c - '0');
+		rd->index++;
+	}
+	return (sign ? -res : res);
+}
 
 bool		io_skip(t_read *rd, char e)
 {

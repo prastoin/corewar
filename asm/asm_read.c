@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/14 15:50:43 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/14 18:24:52 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,10 @@ size_t		asm_opcode_for(char *name)
 {
 	size_t i;
 
-	i = 0;
-	while (ft_strcmp(name, g_ops[i].name) != 0 && i < REG_NUMBER)
+	i = 1;
+	while (i < 17 && ft_strcmp(name, g_ops[i].name) != 0)
 		i++;
-	return (i < REG_NUMBER ? i : -1);
+	return (i < 17 ? i : -1);
 }
 
 bool		asm_parse_header(t_read *rd, t_header *header)
@@ -98,6 +98,90 @@ bool		asm_parse_header(t_read *rd, t_header *header)
 	return (true);
 }
 
+#include <string.h>
+
+/*bool		asm_parse_op(t_read *in, size_t opcode)
+{
+	bool	matched[17];
+	int16_t	c;
+	size_t	i;
+	size_t	j;
+
+	memset(matched, true, 17);
+	j = 0;
+	while ((c = io_peek(in)))
+	{
+		i = 0;
+		while (i < sizeof(matched))
+		{
+			if (matched[i])
+			{
+				if (g_ops[i].name[j] == '\0')
+				{
+
+				}
+				if (g_ops[i].name[j] != c)
+					matched[i] = false;
+			}
+			i++;
+		}
+		j++;
+	}
+}*/
+
+bool		asm_parse_params(t_read *in, t_instruction *inst)
+{
+	size_t		i;
+	uint16_t	c;
+
+	i = 0;
+	while (g_ops[inst->opcode].params[i])
+	{
+		asm_skip_ws(in);
+		c = io_peek(in);
+		in->index++;
+		if (c == '%')
+		{
+			inst->params[i].type = PARAM_DIRECT;
+			c = io_peek(in);
+			if (c == ':')
+			{
+				in->index++;
+				inst->params[i].direct.label = 0;
+			}
+			else
+				inst->params[i].direct.offset = io_readnum(in);
+		}
+		else if (c == 'r')
+		{
+			inst->params[i].type = PARAM_REGISTER;
+			inst->params[i].reg.reg = io_readnum(in);
+		}
+		else if (c == ':' || (c >= '0' && c <= '9'))
+		{
+			inst->params[i].type = PARAM_INDIRECT;
+			if (c == ':')
+			{
+				inst->params[i].indirect.label = 0;
+			}
+			else
+				inst->params[i].indirect.offset = io_readnum(in);
+		}
+		
+		if (!(g_ops[inst->opcode].params[i] & inst->params[i].type))
+		{
+			// Echo pabon
+		}
+		i++;
+		if (g_ops[inst->opcode].params[i])
+		{
+			asm_skip_ws(in);
+			io_expect(in, ",");
+		}
+	}
+	return (true);
+}
+
 bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 {
 	char	*tmp;
@@ -105,23 +189,30 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 	size_t	i;
 
 	i = 0;
-	if (!(tmp = (char *)malloc(sizeof(char) * 1)))
+	asm_skip_ws(in);
+	if (!(tmp = (char *)malloc(1)))
 		return (false);
 	while ((c = io_peek(in)) != -1 && c != ' ' && c != '\t'
 			&& c != '\n' && c != ':')
 	{
 		tmp[i] = c;
 		i++;
+		in->index++;
 		if (!(tmp = realloc(tmp, i + 1)))
 			return (false);
 	}
 	tmp[i] = '\0';
 	if (c == ':')
+	{
 		inst->label = tmp;
+	}
 	else
-		
-	asm_skip_ws(in);
-
+	{
+		inst->label = NULL;
+		if ((inst->opcode = asm_opcode_for(tmp)) != -1)
+			asm_parse_params(in, inst);
+	}
+	return (true);
 }
 
 
@@ -134,9 +225,34 @@ int main(int argc, const char *argv[])
 
 	in = init_read(open(argv[1], O_RDONLY));
 	asm_parse_header(&in, &head);
-	while (asm_parse_instruction(&in, &inst))
+	while (io_peek(&in) != -1)
 	{
-		asm_write_inst(&out, &inst);
+		asm_parse_instruction(&in, &inst);
+		if (inst.label)
+		{
+			printf("Label: %s\n", inst.label);
+		}
+		else if (inst.opcode != -1)
+		{
+			printf("Inst: %s\n", g_ops[inst.opcode].name);
+			for (uint16_t i = 0; g_ops[inst.opcode].params[i]; i++)
+			{
+				switch (inst.params[i].type)
+				{
+					case PARAM_DIRECT:
+						printf("Direct %d\n", inst.params[i].direct.offset);
+						break ;
+					case PARAM_INDIRECT:
+						printf("Indirect %d\n", inst.params[i].indirect.offset);
+						break ;
+					case PARAM_REGISTER:
+						printf("reg %d\n", inst.params[i].reg.reg);
+						break ;
+					default: break;
+				}
+			}
+		}
+		//asm_write_inst(&out, &inst);
 	}
 	return (0);
 }
