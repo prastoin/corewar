@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/14 14:19:42 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/14 15:49:43 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,37 @@ typedef struct	s_header
 	size_t	size;
 }				t_header;
 
+typedef struct	s_param_direct {
+	t_core_param	id;
+	char			*label;
+	int32_t			offset;
+}				t_param_direct;
+
+typedef struct	s_param_indirect {
+	t_core_param	id;
+	char			*label;
+	int32_t			offset;
+}				t_param_indirect;
+
+typedef struct	s_param_register {
+	t_core_param	id;
+	uint8_t			reg;
+}				t_param_register;
+
+typedef union	s_param {
+	t_core_param		id;
+	s_param_direct		direct;
+	s_param_indirect	indirect;
+	s_param_register	reg;
+}				t_param;
+
+typedef struct	s_instruction
+{
+	char	*label;
+	size_t	opcode;
+	s_param	params[MAX_PARAM];
+}				t_instruction;
+
 typedef struct	s_write
 {
 	uint8_t		buffer[BUFFER_SIZE];
@@ -68,6 +99,8 @@ typedef struct	s_read
 }				t_read;
 
 #include <stdio.h>
+
+t_core_tab g_ops[REG_NUMBER]; //IIIJOICIIIICIIIIC
 
 void	*ft_memcpy(void *dst, const void *src, size_t n);
 ssize_t		io_read(t_read *rd, uint8_t data[], size_t data_len);

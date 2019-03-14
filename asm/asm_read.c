@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/14 13:28:24 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/14 15:50:43 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,16 @@ bool		asm_read_quoted(t_read *rd, char data[], size_t len)
 	return (true);
 }*/
 
+size_t		asm_opcode_for(char *name)
+{
+	size_t i;
+
+	i = 0;
+	while (ft_strcmp(name, g_ops[i].name) != 0 && i < REG_NUMBER)
+		i++;
+	return (i < REG_NUMBER ? i : -1);
+}
+
 bool		asm_parse_header(t_read *rd, t_header *header)
 {
 	header->size = 0;
@@ -88,12 +98,45 @@ bool		asm_parse_header(t_read *rd, t_header *header)
 	return (true);
 }
 
+bool		asm_parse_instruction(t_read *in, t_instruction *inst)
+{
+	char	*tmp;
+	char	c;
+	size_t	i;
+
+	i = 0;
+	if (!(tmp = (char *)malloc(sizeof(char) * 1)))
+		return (false);
+	while ((c = io_peek(in)) != -1 && c != ' ' && c != '\t'
+			&& c != '\n' && c != ':')
+	{
+		tmp[i] = c;
+		i++;
+		if (!(tmp = realloc(tmp, i + 1)))
+			return (false);
+	}
+	tmp[i] = '\0';
+	if (c == ':')
+		inst->label = tmp;
+	else
+		
+	asm_skip_ws(in);
+
+}
+
+
 int main(int argc, const char *argv[])
 {
-	t_read		in;
-	t_header	head;
-	t_write		out;
+	t_read			in;
+	t_header		head;
+	t_write			out;
+	t_instruction	inst;
 
 	in = init_read(open(argv[1], O_RDONLY));
+	asm_parse_header(&in, &head);
+	while (asm_parse_instruction(&in, &inst))
+	{
+		asm_write_inst(&out, &inst);
+	}
 	return (0);
 }
