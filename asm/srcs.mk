@@ -1,7 +1,6 @@
-SRC += asm_parse.c
+SRC += asm_read.c
+SRC += error.c
 SRC += ft_memcpy.c
 SRC += io.c
-SRC += string.c
-SRC += asm_write.c
 SRC += itoa_base.c
-SRC += error.c
+SRC += string.c

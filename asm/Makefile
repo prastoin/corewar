@@ -6,7 +6,7 @@
 #    By: prastoin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/07 11:13:09 by prastoin          #+#    #+#              #
-#    Updated: 2019/03/13 17:28:24 by prastoin         ###   ########.fr        #
+#    Updated: 2019/03/14 12:13:43 by prastoin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ all: $(NAME)
 $(OBJ) : Makefile srcs.mk
 
 $(NAME): $(OBJ)
-		rm *.cor
+		rm -f *.cor
 		gcc -g -fsanitize=address $(INC) -o $(NAME) $(OBJ)
 
 $(NAMES): re $(OBJ)

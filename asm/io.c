@@ -6,44 +6,26 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/13 18:23:45 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/14 11:48:49 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "asm.h"
 #include "ft_string.h"
 
-/*uint8_t		io_peek(t_read *rd)
+bool		io_skip(t_read *rd, char e)
 {
-	if (rd->index == r->len)
-}
+	int16_t c;
 
-size_t		io_expect(t_read *rd, const char *wanted)
-{
-	while (*expected)
-		if ()
-}*/
-
-ssize_t		io_moveto(t_read *rd, uint8_t c)
-{
-	ssize_t	tmp;
-
-	while (1)
+	while ((c = io_peek(rd)) != -1 && c != e )
+		rd->index++;
+	if (c == -1)
+		return (false);
+	else
 	{
-		if (rd->index == rd->len)
-		{
-			if ((tmp = io_fill(rd)) <= 0)
-				ex_error("Parse Error.\n");
-		}
-		if (rd->buffer[rd->index] == c)
-			break ;
-		if (!(rd->buffer[rd->index] == ' '
-				|| (rd->buffer[rd->index] >= '\a'
-					&& rd->buffer[rd->index] <= '\r')))
-			ex_error("Bad character.\n");
-		rd->index += 1;
+		rd->index++;
+		return (true);
 	}
-	return (0);
 }
 
 ssize_t		io_fill(t_read *rd)
@@ -55,7 +37,7 @@ ssize_t		io_fill(t_read *rd)
 	return (ret < 0 ? ret : (rd->len = ret));
 }
 
-t_read		init_read(size_t fd, size_t fd2)
+t_read		init_read(int fd)
 {
 	t_read	rd;
 
@@ -63,10 +45,30 @@ t_read		init_read(size_t fd, size_t fd2)
 		.index = 0,
 		.len = 0,
 		.nbr_read = 0,
-		.fd2 = fd2,
 		.fd = fd
 	};
 	return (rd);
+}
+
+int16_t		io_peek(t_read *rd)
+{
+	if (rd->index == rd->len)
+		if (io_fill(rd) <= 0)
+			return (-1);
+	return (rd->buffer[rd->index]);
+}
+
+bool		io_expect(t_read *rd, const char *str)
+{
+	while (*str)
+		if (io_peek(rd) == *str)
+		{
+			rd->index++;
+			str++;
+		}
+		else
+			return (false);
+	return (true);
 }
 
 ssize_t		io_read(t_read *rd, uint8_t data[], size_t data_len)
