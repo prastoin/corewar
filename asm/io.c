@@ -6,14 +6,14 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/14 18:03:22 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/19 17:41:41 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "asm.h"
 #include "ft_string.h"
 
-uint32_t	io_readnum(t_read *rd)
+int32_t	io_readnum(t_read *rd)
 {
 	int16_t		c;
 	uint32_t	res;
@@ -68,6 +68,26 @@ t_read		init_read(int fd)
 		.fd = fd
 	};
 	return (rd);
+}
+
+t_write		init_write(int fd)
+{
+	t_write		out;
+	header_t	tmp;
+
+//	len = (sizeof(tmp.prog_name));
+//	len += ((4 - (sizeof(tmp.prog_name)) % 4) % 4);
+//	len += (sizeof(tmp.comment));
+//	len += ((4 - (sizeof(tmp.comment)) % 4) % 4);
+//	len += sizeof(unsigned int) * 2;
+//	printf("%lu\n", len);
+	out = (t_write){
+		.index = 0,
+		.len = BUFFER_SIZE,
+		.fd = fd,
+		.nbr_write = 0
+	};
+	return (out);
 }
 
 int16_t		io_peek(t_read *rd)

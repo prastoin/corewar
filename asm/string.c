@@ -6,14 +6,14 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 10:05:53 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/14 15:57:06 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/19 11:29:41 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_string.h"
 
 
-void	ft_puthar_fd(size_t fd, size_t c)
+void	ft_putchar_fd(size_t fd, size_t c)
 {
 	write (fd, &c, 1);
 }

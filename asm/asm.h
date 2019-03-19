@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/14 18:11:47 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/19 17:55:10 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef enum e_core_param {
 	PARAM_INDIRECT = 0b10,
 	PARAM_REGISTER = 0b100,
 	PARAM_ALL = 0b111,
+	PARAM_INDEX = 0b1000
 }	t_core_param;
 
 typedef struct	s_core_tab
@@ -82,11 +83,19 @@ typedef struct	s_instruction
 	t_param	params[MAX_PARAM];
 }				t_instruction;
 
+typedef struct	s_label
+{
+	uint8_t *name;
+	size_t	offset;
+}				t_label;
+
 typedef struct	s_write
 {
 	uint8_t		buffer[BUFFER_SIZE];
 	size_t		index;
 	size_t		len;
+	size_t		nbr_write;
+	size_t		fd;
 }				t_write;
 
 typedef struct	s_read
@@ -100,8 +109,9 @@ typedef struct	s_read
 
 #include <stdio.h>
 
-extern t_core_tab g_ops[17]; //IIIJOICIIIICIIIIC
+extern t_core_tab g_ops[17];
 
+t_write		init_write(int fd);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
 ssize_t		io_read(t_read *rd, uint8_t data[], size_t data_len);
 t_read		init_read(int fd);
@@ -111,6 +121,10 @@ ssize_t		header(t_read *rd);
 bool		io_expect(t_read *rd, const char *str);
 int16_t		io_peek(t_read *rd);
 bool		io_skip(t_read *rd, char e);
-uint32_t	io_readnum(t_read *rd);
+int32_t	io_readnum(t_read *rd);
+bool	write_header(t_header *head, t_write *out);
+void		bin_write_inst(t_write *out, t_instruction *inst, t_label *lab, bool label);
+void	write_int(t_write *out, uintmax_t nb, size_t nb_bytes);
+void	bin_write_end(t_write *out, t_header *head);
 
 #endif

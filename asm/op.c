@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 14:32:56 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/14 17:28:06 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/19 16:31:08 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,22 +55,22 @@ t_core_tab g_ops[17] = {
 	},
 	[0x09] = {
 		0x09, "zjmp", {
-			PARAM_DIRECT, 0, 0, 0
+			PARAM_DIRECT | PARAM_INDEX, 0, 0, 0
 		}
 	},
 	[0x0a] = {
 		0x0a, "ldi", {
-			PARAM_ALL, PARAM_DIRECT | PARAM_REGISTER, PARAM_REGISTER, 0
+			PARAM_ALL | PARAM_INDEX, PARAM_INDEX | PARAM_DIRECT | PARAM_REGISTER, PARAM_REGISTER, 0
 		}
 	},
 	[0x0b] = {
 		0x0b, "sti", {
-			PARAM_REGISTER, PARAM_ALL, PARAM_REGISTER | PARAM_DIRECT, 0
+			PARAM_REGISTER, PARAM_ALL | PARAM_INDEX, PARAM_REGISTER | PARAM_DIRECT | PARAM_INDEX, 0
 		}
 	},
 	[0x0c] = {
 		0x0c, "fork", {
-			PARAM_DIRECT, 0, 0, 0
+			PARAM_DIRECT | PARAM_INDEX, 0, 0, 0
 		}
 	},
 	[0x0d] = {

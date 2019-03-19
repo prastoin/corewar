@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/14 18:24:52 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/19 17:56:11 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,18 +133,21 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 {
 	size_t		i;
 	uint16_t	c;
+	char		tmp[2];
 
 	i = 0;
+	tmp[0] = SEPARATOR_CHAR;
+	tmp[1] = '\0';
 	while (g_ops[inst->opcode].params[i])
 	{
 		asm_skip_ws(in);
 		c = io_peek(in);
 		in->index++;
-		if (c == '%')
+		if (c == DIRECT_CHAR)
 		{
 			inst->params[i].type = PARAM_DIRECT;
 			c = io_peek(in);
-			if (c == ':')
+			if (c == LABEL_CHAR)
 			{
 				in->index++;
 				inst->params[i].direct.label = 0;
@@ -157,10 +160,13 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 			inst->params[i].type = PARAM_REGISTER;
 			inst->params[i].reg.reg = io_readnum(in);
 		}
-		else if (c == ':' || (c >= '0' && c <= '9'))
+		else if (c == LABEL_CHAR || (c >= '0' && c <= '9')
+				|| (c == '+' || c == '-'))
 		{
+			if (c != LABEL_CHAR)
+				in->index--;
 			inst->params[i].type = PARAM_INDIRECT;
-			if (c == ':')
+			if (c == LABEL_CHAR)
 			{
 				inst->params[i].indirect.label = 0;
 			}
@@ -176,7 +182,7 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 		if (g_ops[inst->opcode].params[i])
 		{
 			asm_skip_ws(in);
-			io_expect(in, ",");
+			io_expect(in, tmp);
 		}
 	}
 	return (true);
@@ -201,10 +207,13 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 		if (!(tmp = realloc(tmp, i + 1)))
 			return (false);
 	}
+	if (c == -1)
+		return (false);
 	tmp[i] = '\0';
 	if (c == ':')
 	{
 		inst->label = tmp;
+		in->index++;
 	}
 	else
 	{
@@ -215,19 +224,24 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 	return (true);
 }
 
-
 int main(int argc, const char *argv[])
 {
 	t_read			in;
 	t_header		head;
 	t_write			out;
 	t_instruction	inst;
+	t_label			*lab;
 
+	if (!((t_label*)malloc(sizeof(t_label) * 1)))
+		return (0);
 	in = init_read(open(argv[1], O_RDONLY));
+	out = init_write(open("yolo.cor", O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR));
 	asm_parse_header(&in, &head);
+	write_header(&head, &out);
 	while (io_peek(&in) != -1)
 	{
-		asm_parse_instruction(&in, &inst);
+		if (!asm_parse_instruction(&in, &inst))
+			break ;
 		if (inst.label)
 		{
 			printf("Label: %s\n", inst.label);
@@ -252,7 +266,8 @@ int main(int argc, const char *argv[])
 				}
 			}
 		}
-		//asm_write_inst(&out, &inst);
+		bin_write_inst(&out, &inst, lab, inst.label != NULL);
 	}
+	bin_write_end(&out, &head);
 	return (0);
 }
