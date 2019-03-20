@@ -1,4 +1,0 @@
-.name "42"
-.comment "Just a basic Winner Program"
-
-	ld	42,r11
