@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/19 17:55:10 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/20 12:01:36 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ typedef struct	s_write
 {
 	uint8_t		buffer[BUFFER_SIZE];
 	size_t		index;
-	size_t		len;
 	size_t		nbr_write;
 	size_t		fd;
 }				t_write;
@@ -124,7 +123,8 @@ bool		io_skip(t_read *rd, char e);
 int32_t	io_readnum(t_read *rd);
 bool	write_header(t_header *head, t_write *out);
 void		bin_write_inst(t_write *out, t_instruction *inst, t_label *lab, bool label);
-void	write_int(t_write *out, uintmax_t nb, size_t nb_bytes);
+void	io_write_int(t_write *out, uintmax_t nb, size_t nb_bytes);
 void	bin_write_end(t_write *out, t_header *head);
+void	io_flush(t_write *out);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/19 17:56:11 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/20 11:29:25 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,7 +232,7 @@ int main(int argc, const char *argv[])
 	t_instruction	inst;
 	t_label			*lab;
 
-	if (!((t_label*)malloc(sizeof(t_label) * 1)))
+	if (!(lab = (t_label*)malloc(sizeof(t_label) * 1)))
 		return (0);
 	in = init_read(open(argv[1], O_RDONLY));
 	out = init_write(open("yolo.cor", O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR));

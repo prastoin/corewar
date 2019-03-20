@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/19 17:41:41 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/20 12:01:24 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,15 +75,8 @@ t_write		init_write(int fd)
 	t_write		out;
 	header_t	tmp;
 
-//	len = (sizeof(tmp.prog_name));
-//	len += ((4 - (sizeof(tmp.prog_name)) % 4) % 4);
-//	len += (sizeof(tmp.comment));
-//	len += ((4 - (sizeof(tmp.comment)) % 4) % 4);
-//	len += sizeof(unsigned int) * 2;
-//	printf("%lu\n", len);
 	out = (t_write){
 		.index = 0,
-		.len = BUFFER_SIZE,
 		.fd = fd,
 		.nbr_write = 0
 	};
