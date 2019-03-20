@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/20 11:29:25 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/20 17:47:34 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,28 @@ bool		asm_parse_header(t_read *rd, t_header *header)
 	}
 }*/
 
+char		*parse_label(t_read *in)
+{
+	size_t		i;
+	size_t		len;
+	int16_t		c;
+	char		*str;
+
+	len = 0;
+	if (!(str = (char*)malloc(sizeof(char) * 1)))
+		return (NULL);
+	while ((c = io_peek(in)) != -1 && ((c >= 'a' && c <= 'b') || (c >= '0' && c <= '9') || c == '_'))
+	{
+		str[len] = c;
+		in->index++;
+		len++;
+		if (!(str = realloc(str, sizeof(char) * (len + 1))))
+			return (NULL);
+	}
+	str[len] = '\0';
+	return (str);
+}
+
 bool		asm_parse_params(t_read *in, t_instruction *inst)
 {
 	size_t		i;
@@ -150,7 +172,7 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 			if (c == LABEL_CHAR)
 			{
 				in->index++;
-				inst->params[i].direct.label = 0;
+				inst->params[i].direct.label = parse_label(in);
 			}
 			else
 				inst->params[i].direct.offset = io_readnum(in);
@@ -168,12 +190,12 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 			inst->params[i].type = PARAM_INDIRECT;
 			if (c == LABEL_CHAR)
 			{
-				inst->params[i].indirect.label = 0;
+				in->index++;
+				inst->params[i].indirect.label = parse_label(in);
 			}
 			else
 				inst->params[i].indirect.offset = io_readnum(in);
 		}
-		
 		if (!(g_ops[inst->opcode].params[i] & inst->params[i].type))
 		{
 			// Echo pabon
@@ -220,6 +242,7 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 		inst->label = NULL;
 		if ((inst->opcode = asm_opcode_for(tmp)) != -1)
 			asm_parse_params(in, inst);
+		free(tmp);
 	}
 	return (true);
 }
@@ -230,10 +253,10 @@ int main(int argc, const char *argv[])
 	t_header		head;
 	t_write			out;
 	t_instruction	inst;
-	t_label			*lab;
+	t_hashtable		*table;
+	t_entry			*entry;
 
-	if (!(lab = (t_label*)malloc(sizeof(t_label) * 1)))
-		return (0);
+	table = create_hashtable(8);
 	in = init_read(open(argv[1], O_RDONLY));
 	out = init_write(open("yolo.cor", O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR));
 	asm_parse_header(&in, &head);
@@ -243,31 +266,21 @@ int main(int argc, const char *argv[])
 		if (!asm_parse_instruction(&in, &inst))
 			break ;
 		if (inst.label)
-		{
-			printf("Label: %s\n", inst.label);
-		}
-		else if (inst.opcode != -1)
-		{
-			printf("Inst: %s\n", g_ops[inst.opcode].name);
-			for (uint16_t i = 0; g_ops[inst.opcode].params[i]; i++)
+			if ((entry = insert_hashtable(&table, create_entry(inst.label))))
 			{
-				switch (inst.params[i].type)
-				{
-					case PARAM_DIRECT:
-						printf("Direct %d\n", inst.params[i].direct.offset);
-						break ;
-					case PARAM_INDIRECT:
-						printf("Indirect %d\n", inst.params[i].indirect.offset);
-						break ;
-					case PARAM_REGISTER:
-						printf("reg %d\n", inst.params[i].reg.reg);
-						break ;
-					default: break;
-				}
+				// TODO resolve labels
+				entry->value = out.nbr_write;
+				printf("Label %s value %llu\n", entry->key, entry->value);
 			}
-		}
-		bin_write_inst(&out, &inst, lab, inst.label != NULL);
+			else
+			{
+				printf("Label alredy exist: %s\n", inst.label);
+			}
+		else if (inst.opcode != -1)
+			bin_write_inst(&out, &inst);
 	}
 	bin_write_end(&out, &head);
+	printf("lol: %llu\n", hashtable_get(table, "lol")->value);
+	printf("lal: %llu\n", hashtable_get(table, "lal")->value);
 	return (0);
 }

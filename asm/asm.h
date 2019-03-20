@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/20 12:01:36 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/20 16:16:34 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,17 @@ typedef struct	s_write
 	size_t		fd;
 }				t_write;
 
+typedef struct		s_entry{
+	char		*key;
+	uint64_t	hash;
+	uint64_t	value;
+}					t_entry;
+
+typedef struct	s_hashtable{
+	size_t		size;
+	t_entry		bucket[];
+}				t_hashtable;
+
 typedef struct	s_read
 {
 	uint8_t		buffer[BUFFER_SIZE];
@@ -122,9 +133,17 @@ int16_t		io_peek(t_read *rd);
 bool		io_skip(t_read *rd, char e);
 int32_t	io_readnum(t_read *rd);
 bool	write_header(t_header *head, t_write *out);
-void		bin_write_inst(t_write *out, t_instruction *inst, t_label *lab, bool label);
+void		bin_write_inst(t_write *out, t_instruction *inst);
 void	io_write_int(t_write *out, uintmax_t nb, size_t nb_bytes);
 void	bin_write_end(t_write *out, t_header *head);
 void	io_flush(t_write *out);
+
+/*
+** Hashtable.c
+*/
+t_entry			create_entry(char *key);
+t_hashtable		*create_hashtable(size_t size);
+t_entry			*insert_hashtable(t_hashtable **table, t_entry entry);
+t_entry	*hashtable_get(t_hashtable *table, char *name);
 
 #endif

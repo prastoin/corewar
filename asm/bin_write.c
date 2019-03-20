@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/20 12:00:55 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/20 16:17:32 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,44 +37,38 @@ void	io_write_int(t_write *out, uintmax_t nb, size_t nb_bytes)
 	}
 }
 
-void		bin_write_inst(t_write *out, t_instruction *inst, t_label *lab, bool label)
+void		bin_write_inst(t_write *out, t_instruction *inst)
 {
 	size_t			i;
 	static	int		lb;
 	uint8_t			ocp;
 
-	if (label)
+	ocp = 0;
+	i = 0;
+	io_write_int(out, inst->opcode, 1);
+	while (g_ops[inst->opcode].params[i])
 	{
+		if (inst->params[i].type == PARAM_DIRECT)
+			ocp |= 0b10 << ((3 - i) * 2);
+		else if (inst->params[i].type == PARAM_INDIRECT)
+			ocp |= 0b11 << ((3 - i) * 2);
+		else if (inst->params[i].type == PARAM_REGISTER)
+			ocp |= 0b01 << ((3 - i) * 2);
+		i++;
 	}
-	else
+	if (i > 1)
+		io_write_int(out, ocp, 1);
+	i = 0;
+	while (g_ops[inst->opcode].params[i])
 	{
-		ocp = 0;
-		i = 0;
-		io_write_int(out, inst->opcode, 1);
-		while (g_ops[inst->opcode].params[i])
-		{
-			if (inst->params[i].type == PARAM_DIRECT)
-				ocp |= 0b10 << ((3 - i) * 2);
-			else if (inst->params[i].type == PARAM_INDIRECT)
-				ocp |= 0b11 << ((3 - i) * 2);
-			else if (inst->params[i].type == PARAM_REGISTER)
-				ocp |= 0b01 << ((3 - i) * 2);
-			i++;
-		}
-		if (i > 1)
-			io_write_int(out, ocp, 1);
-		i = 0;
-		while (g_ops[inst->opcode].params[i])
-		{
-			
-			if (inst->params[i].type == PARAM_DIRECT)
-				io_write_int(out, inst->params[i].direct.offset, g_ops[inst->opcode].params[i] & PARAM_INDEX ? 2 : 4);
-			else if (inst->params[i].type == PARAM_INDIRECT)
-				io_write_int(out, inst->params[i].indirect.offset, 2);
-			else if (inst->params[i].type == PARAM_REGISTER)
-				io_write_int(out, inst->params[i].reg.reg, 1);
-			i++;
-		}
+
+		if (inst->params[i].type == PARAM_DIRECT)
+			io_write_int(out, inst->params[i].direct.offset, g_ops[inst->opcode].params[i] & PARAM_INDEX ? 2 : 4);
+		else if (inst->params[i].type == PARAM_INDIRECT)
+			io_write_int(out, inst->params[i].indirect.offset, 2);
+		else if (inst->params[i].type == PARAM_REGISTER)
+			io_write_int(out, inst->params[i].reg.reg, 1);
+		i++;
 	}
 }
 
