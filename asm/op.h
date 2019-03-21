@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 16:49:30 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/20 17:47:36 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/21 10:05:25 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 # define COMMENT_CHAR '#'
 # define LABEL_CHAR ':'
 # define DIRECT_CHAR '%'
-# define SEPARATOR_CHAR ','
+# define SEPARATOR_CHAR ","
 
 # define LABEL_CHARS "abcdefghijklmnopqrstuvwxyz_0123456789"
 

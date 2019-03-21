@@ -6,7 +6,7 @@
 #    By: prastoin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/07 11:13:09 by prastoin          #+#    #+#              #
-#    Updated: 2019/03/19 10:28:46 by prastoin         ###   ########.fr        #
+#    Updated: 2019/03/21 10:45:50 by prastoin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ include srcs.mk
 
 OBJ = $(SRC:.c=.o)
 
-FLAG = -Wall -Wextra -Werror -g -fsanitize=address
+FLAG = -Wall -Wextra -g -fsanitize=address
 
 INC = -Iincludes
 
@@ -28,13 +28,13 @@ $(OBJ) : Makefile srcs.mk
 
 $(NAME): $(OBJ)
 		rm -f *.cor
-		gcc $(INC) -o $(NAME) $(OBJ)
+		gcc $(FLAG) $(INC) -o $(NAME) $(OBJ)
 
 $(NAMES): re $(OBJ)
 		gcc $(FLAG) $(INC) -o $(NAME) $(OBJ)
 
 %.o: %.c
-		gcc $(INC) -o $@ -c $<
+		gcc $(FLAG) $(INC) -o $@ -c $<
 
 clean:
 			rm -rf $(OBJ)

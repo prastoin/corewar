@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/20 13:58:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/20 16:13:57 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/21 10:44:51 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ void			grow_hashtable(t_hashtable **old)
 		entry = (*old)->bucket + i;
 		if (entry->key)
 			insert_hashtable(&table, *entry);
+		i++;
 	}
 	free(*old);
 	*old = table;

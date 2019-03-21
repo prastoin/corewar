@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/20 16:16:34 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/21 10:11:36 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,8 @@ typedef struct	s_write
 typedef struct		s_entry{
 	char		*key;
 	uint64_t	hash;
-	uint64_t	value;
+	uint64_t	offset;
+	bool		resolve;
 }					t_entry;
 
 typedef struct	s_hashtable{

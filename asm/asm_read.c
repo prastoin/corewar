@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/20 17:47:34 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/21 10:40:00 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ bool		asm_read_quoted(t_read *rd, char data[], size_t len)
 {
 	size_t		i;
 	int16_t		c;
-	
+
 	i = 0;
 	if (!(io_expect(rd, "\"")))
 		return (false);
@@ -60,19 +60,19 @@ bool		asm_read_quoted(t_read *rd, char data[], size_t len)
 }
 
 /*bool		asm_fill_header(t_write *out, t_header *head)
-{
-	size_t i;
+  {
+  size_t i;
 
-	i = 0;
-	asm_fill_magic();
-	while (head->name[i] || i < PROG_NAME_LENGTH)
-	{
-		out->buffer[out->index] = head->name[i];
-		out->index++;
-		i++;
-	}
-	return (true);
-}*/
+  i = 0;
+  asm_fill_magic();
+  while (head->name[i] || i < PROG_NAME_LENGTH)
+  {
+  out->buffer[out->index] = head->name[i];
+  out->index++;
+  i++;
+  }
+  return (true);
+  }*/
 
 size_t		asm_opcode_for(char *name)
 {
@@ -101,35 +101,35 @@ bool		asm_parse_header(t_read *rd, t_header *header)
 #include <string.h>
 
 /*bool		asm_parse_op(t_read *in, size_t opcode)
-{
-	bool	matched[17];
-	int16_t	c;
-	size_t	i;
-	size_t	j;
+  {
+  bool	matched[17];
+  int16_t	c;
+  size_t	i;
+  size_t	j;
 
-	memset(matched, true, 17);
-	j = 0;
-	while ((c = io_peek(in)))
-	{
-		i = 0;
-		while (i < sizeof(matched))
-		{
-			if (matched[i])
-			{
-				if (g_ops[i].name[j] == '\0')
-				{
+  memset(matched, true, 17);
+  j = 0;
+  while ((c = io_peek(in)))
+  {
+  i = 0;
+  while (i < sizeof(matched))
+  {
+  if (matched[i])
+  {
+  if (g_ops[i].name[j] == '\0')
+  {
 
-				}
-				if (g_ops[i].name[j] != c)
-					matched[i] = false;
-			}
-			i++;
-		}
-		j++;
-	}
-}*/
+  }
+  if (g_ops[i].name[j] != c)
+  matched[i] = false;
+  }
+  i++;
+  }
+  j++;
+  }
+  }*/
 
-char		*parse_label(t_read *in)
+char		*asm_parse_name(t_read *in)
 {
 	size_t		i;
 	size_t		len;
@@ -139,7 +139,7 @@ char		*parse_label(t_read *in)
 	len = 0;
 	if (!(str = (char*)malloc(sizeof(char) * 1)))
 		return (NULL);
-	while ((c = io_peek(in)) != -1 && ((c >= 'a' && c <= 'b') || (c >= '0' && c <= '9') || c == '_'))
+	while ((c = io_peek(in)) != -1 && ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_'))
 	{
 		str[len] = c;
 		in->index++;
@@ -148,6 +148,8 @@ char		*parse_label(t_read *in)
 			return (NULL);
 	}
 	str[len] = '\0';
+	if (c == -1)
+		return (NULL);
 	return (str);
 }
 
@@ -155,11 +157,8 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 {
 	size_t		i;
 	uint16_t	c;
-	char		tmp[2];
 
 	i = 0;
-	tmp[0] = SEPARATOR_CHAR;
-	tmp[1] = '\0';
 	while (g_ops[inst->opcode].params[i])
 	{
 		asm_skip_ws(in);
@@ -172,10 +171,13 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 			if (c == LABEL_CHAR)
 			{
 				in->index++;
-				inst->params[i].direct.label = parse_label(in);
+				inst->params[i].direct.label = asm_parse_name(in);
 			}
 			else
+			{
 				inst->params[i].direct.offset = io_readnum(in);
+				inst->params[i].direct.label = NULL;
+			}
 		}
 		else if (c == 'r')
 		{
@@ -190,11 +192,13 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 			inst->params[i].type = PARAM_INDIRECT;
 			if (c == LABEL_CHAR)
 			{
-				in->index++;
-				inst->params[i].indirect.label = parse_label(in);
+				inst->params[i].indirect.label = asm_parse_name(in);
 			}
 			else
+			{
 				inst->params[i].indirect.offset = io_readnum(in);
+				inst->params[i].direct.label = NULL;
+			}
 		}
 		if (!(g_ops[inst->opcode].params[i] & inst->params[i].type))
 		{
@@ -204,7 +208,7 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 		if (g_ops[inst->opcode].params[i])
 		{
 			asm_skip_ws(in);
-			io_expect(in, tmp);
+			io_expect(in, SEPARATOR_CHAR);
 		}
 	}
 	return (true);
@@ -218,20 +222,9 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 
 	i = 0;
 	asm_skip_ws(in);
-	if (!(tmp = (char *)malloc(1)))
+	if (!(tmp = asm_parse_name(in)))
 		return (false);
-	while ((c = io_peek(in)) != -1 && c != ' ' && c != '\t'
-			&& c != '\n' && c != ':')
-	{
-		tmp[i] = c;
-		i++;
-		in->index++;
-		if (!(tmp = realloc(tmp, i + 1)))
-			return (false);
-	}
-	if (c == -1)
-		return (false);
-	tmp[i] = '\0';
+	c = io_peek(in); //TODO protect return
 	if (c == ':')
 	{
 		inst->label = tmp;
@@ -255,6 +248,7 @@ int main(int argc, const char *argv[])
 	t_instruction	inst;
 	t_hashtable		*table;
 	t_entry			*entry;
+	size_t			i;
 
 	table = create_hashtable(8);
 	in = init_read(open(argv[1], O_RDONLY));
@@ -268,19 +262,65 @@ int main(int argc, const char *argv[])
 		if (inst.label)
 			if ((entry = insert_hashtable(&table, create_entry(inst.label))))
 			{
-				// TODO resolve labels
-				entry->value = out.nbr_write;
-				printf("Label %s value %llu\n", entry->key, entry->value);
+				entry->offset = out.nbr_write;
+				entry->resolve = true;
+				printf("Label %s offset %llu\n", entry->key, entry->offset);
 			}
 			else
 			{
-				printf("Label alredy exist: %s\n", inst.label);
+				// TODO resolve labels
+				entry = hashtable_get(table, inst.label);
+				if (entry->resolve)
+					printf("Label alredy exist: %s\n", inst.label);
+	//			else
+	//				bin_resolve_label(out, entry->offset);
 			}
 		else if (inst.opcode != -1)
+		{
+			i = 0;
+			while (g_ops[inst.opcode].params[i])
+			{
+				if (inst.params[i].type == PARAM_DIRECT
+						&& inst.params[i].direct.label)
+				{
+					printf("resolving direct %s\n", inst.params[i].direct.label);
+					if ((entry = hashtable_get(table, inst.params[i].direct.label)))
+					{
+						inst.params[i].direct.offset = entry->offset;
+						if (!entry->resolve)
+							entry->offset = out.nbr_write;
+					}
+					else
+					{
+						entry = insert_hashtable(&table, create_entry(inst.params[i].direct.label));
+						entry->resolve = false;
+						entry->offset = out.nbr_write;
+						inst.params[i].direct.offset = 0;
+					}
+				}
+				if (inst.params[i].type == PARAM_INDIRECT
+						&& inst.params[i].indirect.label)
+				{
+					printf("resolving indirect %s\n", inst.params[i].indirect.label);
+					if ((entry = hashtable_get(table, inst.params[i].indirect.label)))
+					{
+						inst.params[i].indirect.offset = entry->offset;
+						if (!entry->resolve)
+							entry->offset = out.nbr_write;
+					}
+					else
+					{
+						entry = insert_hashtable(&table, create_entry(inst.params[i].indirect.label));
+						entry->resolve = false;
+						entry->offset = out.nbr_write;
+						inst.params[i].indirect.offset = 0;
+					}
+				}
+				i++;
+			}
 			bin_write_inst(&out, &inst);
+		}
 	}
 	bin_write_end(&out, &head);
-	printf("lol: %llu\n", hashtable_get(table, "lol")->value);
-	printf("lal: %llu\n", hashtable_get(table, "lal")->value);
 	return (0);
 }
