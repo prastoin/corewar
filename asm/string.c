@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 10:05:53 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/20 12:01:59 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/21 12:43:52 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,3 +81,26 @@ uint8_t		*ft_strcpy(uint8_t *dst, const uint8_t *src)
 	dst[i] = '\0';
 	return (dst);
 }
+/*
+size_t		atoi_hexa(char nb[], size_t size)
+{
+	size_t	res;
+	const char	*base = "0123456789abcdef";
+	size_t	i;
+	size_t	tmp;
+
+	res = 0;
+	i = 0;
+	
+	while (i < size)
+	{
+		tmp = 0;
+		while (base[tmp] != nb[i] && tmp < 16)
+			tmp++;
+		if (tmp == 16)
+			break;
+		res = res * 16 + tmp;
+		i++;
+	}
+	return (res);
+}*/

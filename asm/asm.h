@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/21 10:11:36 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/21 16:07:40 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,12 @@ typedef struct	s_hashtable{
 	t_entry		bucket[];
 }				t_hashtable;
 
+typedef struct	s_span{
+	size_t		offset;
+	uintmax_t		lines;
+	uintmax_t		col;
+}				t_span;
+
 typedef struct	s_read
 {
 	uint8_t		buffer[BUFFER_SIZE];
@@ -116,12 +122,14 @@ typedef struct	s_read
 	size_t		index;
 	size_t		nbr_read;
 	int			fd;
+	t_span		span;
 }				t_read;
 
 #include <stdio.h>
 
 extern t_core_tab g_ops[17];
 
+void		io_next(t_read *rd);
 t_write		init_write(int fd);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
 ssize_t		io_read(t_read *rd, uint8_t data[], size_t data_len);
@@ -134,10 +142,11 @@ int16_t		io_peek(t_read *rd);
 bool		io_skip(t_read *rd, char e);
 int32_t	io_readnum(t_read *rd);
 bool	write_header(t_header *head, t_write *out);
-void		bin_write_inst(t_write *out, t_instruction *inst);
+void		bin_write_inst(t_write *out, t_instruction *inst, uint8_t last_label);
 void	io_write_int(t_write *out, uintmax_t nb, size_t nb_bytes);
 void	bin_write_end(t_write *out, t_header *head);
 void	io_flush(t_write *out);
+void		bin_resolve_label(t_write *out, size_t offset);
 
 /*
 ** Hashtable.c

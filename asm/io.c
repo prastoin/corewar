@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/20 12:01:24 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/21 16:16:58 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ int32_t	io_readnum(t_read *rd)
 	if ((c = io_peek(rd)) == '-' || c == '+')
 	{
 		sign = c == '-';
-		rd->index++;
+		io_next(rd);
 	}
 	while ((c = io_peek(rd)) >= '0' && c <= '9')
 	{
 		res = res * 10 + (c - '0');
-		rd->index++;
+		io_next(rd);
 	}
 	return (sign ? -res : res);
 }
@@ -38,12 +38,12 @@ bool		io_skip(t_read *rd, char e)
 	int16_t c;
 
 	while ((c = io_peek(rd)) != -1 && c != e )
-		rd->index++;
+		io_next(rd);
 	if (c == -1)
 		return (false);
 	else
 	{
-		rd->index++;
+		io_next(rd);
 		return (true);
 	}
 }
@@ -64,6 +64,11 @@ t_read		init_read(int fd)
 	rd = (t_read){
 		.index = 0,
 		.len = 0,
+		.span = (t_span){
+				.lines = 0,
+				.col = 0,
+				.offset = 0
+		},
 		.nbr_read = 0,
 		.fd = fd
 	};
@@ -91,12 +96,24 @@ int16_t		io_peek(t_read *rd)
 	return (rd->buffer[rd->index]);
 }
 
+void		io_next(t_read *rd)
+{
+	rd->span.col++;
+	rd->span.offset++;
+	if (io_peek(rd) == '\n')
+	{
+		rd->span.col = 0;
+		rd->span.lines++;
+	}
+	rd->index++;
+}
+
 bool		io_expect(t_read *rd, const char *str)
 {
 	while (*str)
 		if (io_peek(rd) == *str)
 		{
-			rd->index++;
+			io_next(rd);
 			str++;
 		}
 		else
@@ -109,6 +126,7 @@ ssize_t		io_read(t_read *rd, uint8_t data[], size_t data_len)
 	size_t	remaining;
 	size_t	i;
 	ssize_t	ret;
+	size_t save_data_len;
 
 	remaining = rd->len - rd->index;
 	i = 0;
@@ -125,6 +143,19 @@ ssize_t		io_read(t_read *rd, uint8_t data[], size_t data_len)
 	}
 	ft_memcpy(data, rd->buffer + rd->index, data_len);
 	rd->index += data_len;
+	data -= save_data_len - data_len;
+	i = 0;
+	while (i < save_data_len)
+	{
+		rd->span.col++;
+		rd->span.offset++;
+		if (data[i] == '\n')
+		{
+			rd->span.col = 0;
+			rd->span.lines++;
+		}
+			data++;
+	}
 	return (data_len + i);
 }
 

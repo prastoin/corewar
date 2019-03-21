@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/21 10:40:00 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/21 16:24:19 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ char		*asm_parse_name(t_read *in)
 	while ((c = io_peek(in)) != -1 && ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_'))
 	{
 		str[len] = c;
-		in->index++;
+		io_next(in);
 		len++;
 		if (!(str = realloc(str, sizeof(char) * (len + 1))))
 			return (NULL);
@@ -163,14 +163,14 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 	{
 		asm_skip_ws(in);
 		c = io_peek(in);
-		in->index++;
 		if (c == DIRECT_CHAR)
 		{
+			io_next(in);
 			inst->params[i].type = PARAM_DIRECT;
 			c = io_peek(in);
 			if (c == LABEL_CHAR)
 			{
-				in->index++;
+				io_next(in);
 				inst->params[i].direct.label = asm_parse_name(in);
 			}
 			else
@@ -181,17 +181,17 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 		}
 		else if (c == 'r')
 		{
+			io_next(in);
 			inst->params[i].type = PARAM_REGISTER;
 			inst->params[i].reg.reg = io_readnum(in);
 		}
 		else if (c == LABEL_CHAR || (c >= '0' && c <= '9')
 				|| (c == '+' || c == '-'))
 		{
-			if (c != LABEL_CHAR)
-				in->index--;
 			inst->params[i].type = PARAM_INDIRECT;
 			if (c == LABEL_CHAR)
 			{
+				io_next(in);
 				inst->params[i].indirect.label = asm_parse_name(in);
 			}
 			else
@@ -228,7 +228,7 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 	if (c == ':')
 	{
 		inst->label = tmp;
-		in->index++;
+		io_next(in);
 	}
 	else
 	{
@@ -249,6 +249,7 @@ int main(int argc, const char *argv[])
 	t_hashtable		*table;
 	t_entry			*entry;
 	size_t			i;
+	uint8_t			last_label;
 
 	table = create_hashtable(8);
 	in = init_read(open(argv[1], O_RDONLY));
@@ -272,12 +273,13 @@ int main(int argc, const char *argv[])
 				entry = hashtable_get(table, inst.label);
 				if (entry->resolve)
 					printf("Label alredy exist: %s\n", inst.label);
-	//			else
-	//				bin_resolve_label(out, entry->offset);
+				else
+					bin_resolve_label(&out, entry->offset);
 			}
 		else if (inst.opcode != -1)
 		{
 			i = 0;
+			last_label = 0;
 			while (g_ops[inst.opcode].params[i])
 			{
 				if (inst.params[i].type == PARAM_DIRECT
@@ -286,6 +288,7 @@ int main(int argc, const char *argv[])
 					printf("resolving direct %s\n", inst.params[i].direct.label);
 					if ((entry = hashtable_get(table, inst.params[i].direct.label)))
 					{
+//						printf("Offset %zu\n", entry->offset);
 						inst.params[i].direct.offset = entry->offset;
 						if (!entry->resolve)
 							entry->offset = out.nbr_write;
@@ -297,6 +300,8 @@ int main(int argc, const char *argv[])
 						entry->offset = out.nbr_write;
 						inst.params[i].direct.offset = 0;
 					}
+					if (!entry->resolve)
+						last_label = i;
 				}
 				if (inst.params[i].type == PARAM_INDIRECT
 						&& inst.params[i].indirect.label)
@@ -315,10 +320,12 @@ int main(int argc, const char *argv[])
 						entry->offset = out.nbr_write;
 						inst.params[i].indirect.offset = 0;
 					}
+					if (!entry->resolve)
+						last_label = i;
 				}
 				i++;
 			}
-			bin_write_inst(&out, &inst);
+			bin_write_inst(&out, &inst, last_label);
 		}
 	}
 	bin_write_end(&out, &head);

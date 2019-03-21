@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/20 16:17:32 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/21 16:17:06 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,13 @@ void	io_write_int(t_write *out, uintmax_t nb, size_t nb_bytes)
 	}
 }
 
-void		bin_write_inst(t_write *out, t_instruction *inst)
+void		bin_write_inst(t_write *out, t_instruction *inst, uint8_t last_label)
 {
 	size_t			i;
 	static	int		lb;
 	uint8_t			ocp;
 
-	ocp = 0;
+	ocp = last_label & 0b11;
 	i = 0;
 	io_write_int(out, inst->opcode, 1);
 	while (g_ops[inst->opcode].params[i])
@@ -120,4 +120,61 @@ bool	write_header(t_header *head, t_write *out)
 	}
 	printf("%lu\n", out->index);
 	return (true);
+}
+
+void		bin_resolve_label(t_write *out, size_t offset)
+{
+	size_t	src;
+	uint8_t	opcode;
+	uint8_t	ocp;
+	uint8_t	tmp[2];
+	int8_t	size;
+	size_t	i;
+
+	io_flush(out);
+	src = out->nbr_write;
+	while (offset != 0x0000)
+	{
+		lseek(out->fd, offset, SEEK_SET);
+		read(out->fd, &opcode, 1);
+		printf("OP: %s\n", g_ops[opcode].name);
+		if (g_ops[opcode].params[1])
+		{
+			// OCP
+			read(out->fd, &ocp, 1);
+			i = 0;
+			while (i < (ocp & 0b11))
+			{
+				if (ocp & 0b11 << ((3 - i) * 2))
+					size += 2;
+				else if (ocp & 0b10 << ((3 - i) * 2))
+					size += g_ops[opcode].params[i] & PARAM_INDEX ? 2 : 4;
+				else if (ocp & 0b01 << ((3 - i) * 2))
+					size += 1;
+				i++;
+			}
+			printf("OCP: %x\n", ocp);
+			ocp &= 0b11111100;
+			printf("OCP: %x\n", ocp);
+			lseek(out->fd, -1, SEEK_CUR);
+			write(out->fd, &ocp, 1);
+			lseek(out->fd, size, SEEK_CUR);
+			// TODO Calc it
+			size = 2;
+		}
+		else
+		{
+			// TODO Calc it
+			size = 2;
+			printf("No OCP\n");
+		}
+		read(out->fd, tmp, size);
+		lseek(out->fd, -size, SEEK_CUR);
+		io_write_int(out, src - offset, size);
+		io_flush(out);
+		offset = tmp[0] * 256 + tmp[1];
+		printf("Offset %zu\n", offset);
+	}
+	lseek (out->fd, 0, SEEK_END);
+	out->nbr_write = src;
 }

@@ -6,7 +6,7 @@
 #    By: prastoin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/07 11:13:09 by prastoin          #+#    #+#              #
-#    Updated: 2019/03/21 10:45:50 by prastoin         ###   ########.fr        #
+#    Updated: 2019/03/21 11:36:47 by prastoin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,6 @@ all: $(NAME)
 $(OBJ) : Makefile srcs.mk
 
 $(NAME): $(OBJ)
-		rm -f *.cor
 		gcc $(FLAG) $(INC) -o $(NAME) $(OBJ)
 
 $(NAMES): re $(OBJ)
