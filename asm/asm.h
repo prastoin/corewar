@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/22 15:03:08 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/22 17:36:51 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,7 @@ ssize_t		header(t_read *rd);
 bool		io_expect(t_read *rd, const char *str);
 int16_t		io_peek(t_read *rd);
 bool		io_skip(t_read *rd, char e);
+bool		io_skip_until(t_read *rd, char *chars);
 int32_t	io_readnum(t_read *rd);
 bool	write_header(t_header *head, t_write *out);
 void		bin_write_inst(t_write *out, t_instruction *inst, uint8_t last_label);

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/22 15:16:05 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/22 18:15:25 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ bool		asm_read_quoted(t_read *rd, char data[], size_t len)
 	i = 0;
 	if (!(io_expect(rd, "\"")))
 		return (false);
-	while ((c = io_peek(rd)) != '"' && c != -1)
+	while ((c = io_peek(rd)) != '"' && c != '\n' && c != -1)
 	{
 		if (c == '\\')
 		{
@@ -56,7 +56,7 @@ bool		asm_read_quoted(t_read *rd, char data[], size_t len)
 		data[i] = '\0';
 	if (c == '"')
 		io_next(rd);
-	return (c != -1);
+	return (c == '"');
 }
 
 /*bool		asm_fill_header(t_write *out, t_header *head)
@@ -91,25 +91,53 @@ bool		asm_parse_header(t_read *rd, t_header *header)
 	header->size = 0;
 	asm_skip_ws(rd);
 	begin = rd->span;
-	if (!io_expect(rd, ".name"))
-		print_error(1, begin, rd->span, "Expected \".name\"", "Replace by .name");
+	if (io_expect(rd, "."))
+	{
+		if (!io_expect(rd, "name"))
+		{
+			io_skip_until(rd, " #\t\n\"");
+			print_error(1, begin, rd->span, "Expected \".name\"", "Replace by .name");
+		}
+		else
+		{
+			asm_skip_ws(rd);
+			begin = rd->span;
+			if (!asm_read_quoted(rd, header->name, sizeof(header->name)))
+				print_error(1, begin, rd->span, "Unclosed \" for .name", NULL);
+		}
+	}
+	else
+	{
+		print_error(1, begin, rd->span, ".name not found", NULL);
+	}
 	asm_skip_ws(rd);
 	begin = rd->span;
-	asm_read_quoted(rd, header->name, sizeof(header->name));
-	asm_skip_ws(rd);
-	begin = rd->span;
-	if (!io_expect(rd, ".comment"))
-		print_error(1, begin, rd->span, "Expected \".comment\"", "Replace by .comment");
-	asm_skip_ws(rd);
-	begin = rd->span;
-	asm_read_quoted(rd, header->comment, sizeof(header->comment));
+	if (io_expect(rd, "."))
+	{
+		if (!io_expect(rd, "comment"))
+		{
+			io_skip_until(rd, " #\t\n\"");
+			print_error(1, begin, rd->span, "Expected \".comment\"", "Replace by .comment");
+		}
+		else
+		{
+			asm_skip_ws(rd);
+			begin = rd->span;
+			if (!asm_read_quoted(rd, header->comment, sizeof(header->comment)))
+				print_error(1, begin, rd->span, "Unclosed \" for .comment", NULL);
+		}
+	}
+	else
+	{
+		print_error(1, begin, rd->span, ".comment not found", NULL);
+	}
 	return (true);
 }
 
 #include <string.h>
 
 /*bool		asm_parse_op(t_read *in, size_t opcode)
-  {
+  {4444444444
   bool	matched[17];
   int16_t	c;
   size_t	i;
@@ -212,10 +240,7 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 		}
 		else
 		{
-			io_skip(in, ',');
-			in->index--;
-			in->span.offset--;
-			in->span.col--;
+			io_skip_until(in, SEPARATOR_CHAR);
 
 			print_error(1, begin, in->span, "Invalid param", from_int_to_type(g_ops[inst->opcode].params[i]));
 		}
@@ -223,12 +248,15 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 		{
 			print_error(2, begin, in->span, "Type for param is invalid", from_int_to_type(g_ops[inst->opcode].params[i]));
 		}
-		begin = in->span;
 		i++;
 		if (g_ops[inst->opcode].params[i])
 		{
+			begin = in->span;
 			asm_skip_ws(in);
-			io_expect(in, SEPARATOR_CHAR);
+			if (!io_expect(in, SEPARATOR_CHAR))
+			{
+				print_error(1, begin, in->span, "Expected " SEPARATOR_CHAR, NULL);
+			}
 		}
 	}
 	return (true);
@@ -242,7 +270,6 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 	size_t	i;
 
 	i = 0;
-	asm_skip_ws(in);
 	const t_span begin = in->span;
 	if (!(tmp = asm_parse_name(in)))
 		return (false);
@@ -261,6 +288,7 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 			asm_parse_params(in, inst);
 		else
 		{
+			io_skip_until(in, " \t\n#");
 			print_error(1, begin, in->span, "Unknown Instructions", NULL);
 		}
 		free(tmp);
@@ -278,15 +306,23 @@ int main(int argc, const char *argv[])
 	t_entry			*entry;
 	size_t			i;
 	uint8_t			last_label;
+	t_span			begin;
 
 	table = create_hashtable(8);
 	in = init_read(open(argv[1], O_RDONLY), (char *)argv[1]);
 	out = init_write(open("yolo.cor", O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR));
-	asm_parse_header(&in, &head);
+	head = (t_header) {
+		.size = 0
+	};
+	if (!asm_parse_header(&in, &head))
+		return (0);
 	write_header(&head, &out);
+	begin = in.span;
 //	printf("AFTER HEader %d:%d\n", in.span.lines, in.span.col);
 	while (io_peek(&in) != -1)
 	{
+		asm_skip_ws(&in);
+		begin = in.span;
 		if (!asm_parse_instruction(&in, &inst))
 			break ;
 		if (inst.label)
@@ -294,14 +330,14 @@ int main(int argc, const char *argv[])
 			{
 				entry->offset = out.nbr_write;
 				entry->resolve = true;
-				printf("Label %s offset %llu\n", entry->key, entry->offset);
+				//printf("Label %s offset %llu\n", entry->key, entry->offset);
 			}
 			else
 			{
 				// TODO resolve labels
 				entry = hashtable_get(table, inst.label);
 				if (entry->resolve)
-					printf("Label alredy exist: %s\n", inst.label);
+					print_error(2, begin, in.span, "Label already exists: ", NULL); //mauvais token en span.col
 				else
 					bin_resolve_label(&out, entry->offset);
 			}
@@ -311,16 +347,19 @@ int main(int argc, const char *argv[])
 			last_label = 0;
 			while (g_ops[inst.opcode].params[i])
 			{
+	begin = in.span;
 				if (inst.params[i].type == PARAM_DIRECT
 						&& inst.params[i].direct.label)
 				{
-					printf("resolving direct %s\n", inst.params[i].direct.label);
+					//printf("resolving direct %s\n", inst.params[i].direct.label);
 					if ((entry = hashtable_get(table, inst.params[i].direct.label)))
 					{
 						//						printf("Offset %zu\n", entry->offset);
 						inst.params[i].direct.offset = entry->offset;
 						if (!entry->resolve)
 							entry->offset = out.nbr_write;
+						else
+							inst.params[i].direct.offset -= out.nbr_write;
 					}
 					else
 					{
@@ -335,12 +374,14 @@ int main(int argc, const char *argv[])
 				if (inst.params[i].type == PARAM_INDIRECT
 						&& inst.params[i].indirect.label)
 				{
-					printf("resolving indirect %s\n", inst.params[i].indirect.label);
+					//printf("resolving indirect %s\n", inst.params[i].indirect.label);
 					if ((entry = hashtable_get(table, inst.params[i].indirect.label)))
 					{
 						inst.params[i].indirect.offset = entry->offset;
 						if (!entry->resolve)
 							entry->offset = out.nbr_write;
+						else
+							inst.params[i].direct.offset -= out.nbr_write;
 					}
 					else
 					{

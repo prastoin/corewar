@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/22 13:56:07 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/22 17:36:39 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,25 @@ bool		io_skip(t_read *rd, char e)
 		io_next(rd);
 		return (true);
 	}
+}
+
+bool		io_skip_until(t_read *rd, char *chars)
+{
+	int16_t c;
+	size_t	i;
+
+	while ((c = io_peek(rd)) != -1)
+	{
+		i = 0;
+		while (chars[i])
+		{
+			if (chars[i] == c)
+				return (true);
+			i++;
+		}
+		io_next(rd);
+	}
+	return (false);
 }
 
 ssize_t		io_fill(t_read *rd)

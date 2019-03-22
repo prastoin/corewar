@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 17:54:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/22 15:28:54 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/22 18:12:31 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	print_error(uintmax_t severity, t_span begin, t_span end, char *error, char
 	char	buffer[4096]; //arevoir la taille pas confiant
 	size_t	len;
 
-//	printf("\ndeb = %d:%d fin = %d:%d\n", begin.lines, begin.col, end.lines, end.col);
+	//printf("\ndeb = %d:%d fin = %d:%d\n", begin.lines, begin.col, end.lines, end.col);
 	error_severity(severity);
 	//affichage error
 	write(2, CSI_WHITE, (sizeof(CSI_WHITE) - 1));
@@ -58,8 +58,8 @@ void	print_error(uintmax_t severity, t_span begin, t_span end, char *error, char
 	fd = open(begin.file_name, O_RDONLY);
 	lseek(fd, begin.offset - begin.col + 1, SEEK_SET);
 	read(fd, buffer, len);
-	size_t i = 0;
-	while (i < len && buffer[i] != '\n')
+	int  i = 0;
+	while (i < len  && buffer[i] != '\n')
 		i++;
 	len = i;
 	//conseils
@@ -78,6 +78,8 @@ void	print_error(uintmax_t severity, t_span begin, t_span end, char *error, char
 		write(2, CSI_RED, (sizeof(CSI_RED) - 1));
 	else
 		write(2, CSI_YELLOW, (sizeof(CSI_YELLOW) - 1));
+	dprintf(2, "^");
+	i++;
 	while (i < end.col - 1)
 	{
 		dprintf(2, "^");
