@@ -1,0 +1,279 @@
+#!/usr/bin/env node
+
+const fs = require('fs')
+const { diffString } = require('json-diff')
+
+const decoder = new TextDecoder()
+
+const NAME_LENGTH = 128
+const NAME_PADDING = 4
+const COMMENT_LENGTH = 2048
+const COMMENT_PADDING = 4
+const COREWAR_EXEC_MAGIC = 0xea83f3
+
+const PARAM_DIRECT = 0b1
+const PARAM_INDIRECT = 0b10
+const PARAM_REGISTER = 0b100
+const PARAM_ALL = 0b111
+const PARAM_INDEX = 0b1000
+
+const INSTRUCTIONS = new Map([
+    [0x01, {
+        name: "live",
+        params: [
+            PARAM_DIRECT
+        ]
+    }],
+    [0x02, {
+        name: "ld",
+        params: [
+            PARAM_DIRECT | PARAM_INDIRECT,
+            PARAM_REGISTER
+        ]
+    }],
+    [0x03, {
+        name: "st",
+        params: [
+            PARAM_REGISTER,
+            PARAM_INDIRECT | PARAM_REGISTER
+        ]
+    }],
+    [0x04, {
+        name: "add",
+        params: [
+            PARAM_REGISTER,
+            PARAM_REGISTER,
+            PARAM_REGISTER
+        ]
+    }],
+    [0x05, {
+        name: "sub",
+        params: [
+            PARAM_REGISTER,
+            PARAM_REGISTER,
+            PARAM_REGISTER
+        ]
+    }],
+    [0x06, {
+        name: "and",
+        params: [
+            PARAM_ALL,
+            PARAM_ALL,
+            PARAM_REGISTER
+        ]
+    }],
+    [0x07, {
+        name: "or",
+        params: [
+            PARAM_ALL,
+            PARAM_ALL,
+            PARAM_REGISTER
+        ]
+    }],
+    [0x08, {
+        name: "xor",
+        params: [
+            PARAM_ALL,
+            PARAM_ALL,
+            PARAM_REGISTER
+        ]
+    }],
+    [0x09, {
+        name: "xjmp",
+        params: [
+            PARAM_DIRECT | PARAM_INDEX
+        ]
+    }],
+    [0x09, {
+        name: "zjmp",
+        params: [
+            PARAM_DIRECT | PARAM_INDEX
+        ]
+    }],
+    [0x0a, {
+        name: "ldi",
+        params: [
+            PARAM_ALL | PARAM_INDEX,
+            PARAM_DIRECT | PARAM_DIRECT | PARAM_INDEX,
+            PARAM_REGISTER
+        ]
+    }],
+    [0x0b, {
+        name: "sti",
+        params: [
+            PARAM_REGISTER,
+            PARAM_ALL | PARAM_INDEX,
+            PARAM_REGISTER | PARAM_DIRECT | PARAM_INDEX
+        ]
+    }],
+    [0x0c, {
+        name: "fork",
+        params: [
+            PARAM_DIRECT | PARAM_INDEX
+        ]
+    }],
+    [0x0d, {
+        name: "lld",
+        params: [
+            PARAM_DIRECT | PARAM_INDIRECT,
+            PARAM_REGISTER
+        ]
+    }],
+    [0x0e, {
+        name: "lldi",
+        params: [
+            PARAM_ALL,
+            PARAM_DIRECT | PARAM_REGISTER,
+            PARAM_REGISTER
+        ]
+    }],
+    [0x0f, {
+        name: "lfork",
+        params: [
+            PARAM_DIRECT            
+        ]
+    }],
+    [0x10, {
+        name: "aff",
+        params: [
+            PARAM_REGISTER
+        ]
+    }]
+])
+
+function readBytecodeHeader(view) {
+    let offset = 0;
+
+    if (view.getUint32(offset) == COREWAR_EXEC_MAGIC)
+        throw new Error(`Invalid magic: ${view.getUint32(offset)}`);
+    offset += 4;
+    
+    const name = decoder.decode(view.buffer.slice(offset, offset + NAME_LENGTH))
+    offset += NAME_LENGTH;
+    offset += NAME_PADDING;
+
+    const size = view.getUint32(offset)
+    offset += 4;
+
+    const comment = decoder.decode(view.buffer.slice(offset, offset + COMMENT_LENGTH))
+    offset += COMMENT_LENGTH;
+    offset += COMMENT_PADDING;
+
+    return {
+        name,
+        size,
+        comment,
+        offset
+    }
+}
+
+function extractOCP(ocp) {
+    const types = [];
+
+    for (let i = 3; i >= 0; i--)
+    {
+        switch ((ocp >> (i * 2)) & 0b11)
+        {
+            case 0b01:
+                types.push("REGISTER")
+                break;
+            case 0b10:
+                types.push("DIRECT")
+                break;
+            case 0b11:
+                types.push("INDIRECT")
+                break;
+            case 0b00:
+                types.push("NONE")
+                break;
+        }
+    }
+
+    return types;
+}
+
+function getParamType(param) {
+    if (param & PARAM_DIRECT)
+        return "DIRECT"
+    if (param & PARAM_INDIRECT)
+        return "INDIRECT"
+    if (param & PARAM_REGISTER)
+        return "REGISTER"
+}
+
+function readParam(view, offset, type, inst, params) {
+    let value;
+
+    switch (type) {
+        case "REGISTER":
+            value = view.getUint8(offset)
+            offset += 1;
+            break;
+        case "DIRECT":
+            if (inst.params[params.length] & PARAM_INDEX) {
+                value = view.getInt16(offset)
+                offset += 2;
+            } else {
+                value = view.getInt32(offset)
+                offset += 4;
+            }
+            break;
+        case "INDIRECT":
+            value = view.getInt16(offset)
+            offset += 2;
+            break;
+    }
+    params.push({
+        type,
+        value
+    })
+    return (offset)
+}
+
+function readBytecode(view) {
+    const header = readBytecodeHeader(view)
+
+    if (header.size + header.offset != view.byteLength)
+        throw new Error(`Size in header is not well defined, actual: ${header.size + header.offset}, expected: ${view.byteLength}`)
+
+    let offset = header.offset
+
+    const body  = []
+
+    while (offset < view.byteLength) {
+        const op = view.getUint8(offset)
+        offset += 1;
+
+        const inst = INSTRUCTIONS.get(op)
+        if (inst) {
+            const params = [];
+            if (inst.params.length > 1) {
+                const ocp = extractOCP(view.getUint8(offset))
+                offset += 1;
+                ocp.slice(0, ocp.indexOf("NONE"))
+                    .forEach(type => offset = readParam(view, offset, type, inst, params))
+            }
+            else {
+                offset = readParam(view, offset, getParamType(inst.params[0]), inst, params)
+            }
+            body.push({
+                name: inst.name,
+                params
+            })
+        } else throw new Error(`Opcode not found ${op}`)
+    }
+    return {
+        header,
+        body
+    }
+}
+
+function readBytecodeFromFile(file) {
+    const buffer = new Uint8Array(fs.readFileSync(file))
+
+    const view = new DataView(buffer.buffer)
+
+    return readBytecode(view)
+}
+
+console.log(diffString(readBytecodeFromFile(process.argv[2]), readBytecodeFromFile(process.argv[3])))

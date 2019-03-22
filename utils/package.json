@@ -1,0 +1,12 @@
+{
+  "name": "corewar-utils",
+  "version": "1.0.0",
+  "description": "Corewar utilities",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "json-diff": "^0.5.4"
+  }
+}
