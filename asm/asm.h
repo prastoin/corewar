@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/21 16:07:40 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/22 15:03:08 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@
 #define HEADER_SIZE  2192
 
 #define MAX_PARAM 4
+
+typedef enum e_severity{
+	SEVERITY_WARNING,
+	SEVERITY_ERROR
+}	t_severity;
 
 typedef enum e_core_param {
 	PARAM_NONE = 0b0,
@@ -111,6 +116,7 @@ typedef struct	s_hashtable{
 
 typedef struct	s_span{
 	size_t		offset;
+	char		*file_name;
 	uintmax_t		lines;
 	uintmax_t		col;
 }				t_span;
@@ -133,7 +139,7 @@ void		io_next(t_read *rd);
 t_write		init_write(int fd);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
 ssize_t		io_read(t_read *rd, uint8_t data[], size_t data_len);
-t_read		init_read(int fd);
+t_read		init_read(int fd, char *argv);
 ssize_t		io_fill(t_read *rd);
 void	ft_itoa_base(uintmax_t nb, char *str, uint8_t b, const char *base);
 ssize_t		header(t_read *rd);
@@ -147,6 +153,8 @@ void	io_write_int(t_write *out, uintmax_t nb, size_t nb_bytes);
 void	bin_write_end(t_write *out, t_header *head);
 void	io_flush(t_write *out);
 void		bin_resolve_label(t_write *out, size_t offset);
+void	print_error(uintmax_t severity, t_span begin, t_span end, char *error, char *expected);
+char	*from_int_to_type(size_t type);
 
 /*
 ** Hashtable.c

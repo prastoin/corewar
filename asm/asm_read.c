@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/21 16:24:19 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/22 15:16:05 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ bool	asm_skip_ws(t_read *rd)
 
 	while ((c = io_peek(rd)) == ' ' || c == '\t' || c == '#' || c == '\n')
 	{
-		rd->index++;
+		io_next(rd);
 		if (c == '#')
 			if (!io_skip(rd , '\n'))
 				return (false);
-	}
+	}	
 	return (true);
 }
 
@@ -39,12 +39,12 @@ bool		asm_read_quoted(t_read *rd, char data[], size_t len)
 	{
 		if (c == '\\')
 		{
-			rd->index++;
+			io_next(rd);
 			if ((c = io_peek(rd)) == -1)
 				return (false);
 		}
 		data[i] = c;
-		rd->index++;
+		io_next(rd);
 		i++;
 		if (i >= len)
 		{
@@ -55,7 +55,7 @@ bool		asm_read_quoted(t_read *rd, char data[], size_t len)
 	if (i < len)
 		data[i] = '\0';
 	if (c == '"')
-		rd->index++;
+		io_next(rd);
 	return (c != -1);
 }
 
@@ -86,14 +86,22 @@ size_t		asm_opcode_for(char *name)
 
 bool		asm_parse_header(t_read *rd, t_header *header)
 {
+	t_span begin;
+	
 	header->size = 0;
 	asm_skip_ws(rd);
-	io_expect(rd, ".name");
+	begin = rd->span;
+	if (!io_expect(rd, ".name"))
+		print_error(1, begin, rd->span, "Expected \".name\"", "Replace by .name");
 	asm_skip_ws(rd);
+	begin = rd->span;
 	asm_read_quoted(rd, header->name, sizeof(header->name));
 	asm_skip_ws(rd);
-	io_expect(rd, ".comment");
+	begin = rd->span;
+	if (!io_expect(rd, ".comment"))
+		print_error(1, begin, rd->span, "Expected \".comment\"", "Replace by .comment");
 	asm_skip_ws(rd);
+	begin = rd->span;
 	asm_read_quoted(rd, header->comment, sizeof(header->comment));
 	return (true);
 }
@@ -157,11 +165,13 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 {
 	size_t		i;
 	uint16_t	c;
+	t_span		begin;
 
 	i = 0;
 	while (g_ops[inst->opcode].params[i])
 	{
 		asm_skip_ws(in);
+		begin = in->span;
 		c = io_peek(in);
 		if (c == DIRECT_CHAR)
 		{
@@ -200,10 +210,20 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 				inst->params[i].direct.label = NULL;
 			}
 		}
+		else
+		{
+			io_skip(in, ',');
+			in->index--;
+			in->span.offset--;
+			in->span.col--;
+
+			print_error(1, begin, in->span, "Invalid param", from_int_to_type(g_ops[inst->opcode].params[i]));
+		}
 		if (!(g_ops[inst->opcode].params[i] & inst->params[i].type))
 		{
-			// Echo pabon
+			print_error(2, begin, in->span, "Type for param is invalid", from_int_to_type(g_ops[inst->opcode].params[i]));
 		}
+		begin = in->span;
 		i++;
 		if (g_ops[inst->opcode].params[i])
 		{
@@ -214,6 +234,7 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 	return (true);
 }
 
+//	printf("CURR %c\n", in->buffer[in->index]);
 bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 {
 	char	*tmp;
@@ -222,8 +243,10 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 
 	i = 0;
 	asm_skip_ws(in);
+	const t_span begin = in->span;
 	if (!(tmp = asm_parse_name(in)))
 		return (false);
+//	printf("\ndeb = %d:%d fin = %d:%d\n", begin.lines, begin.col, in->span.lines, in->span.col);
 	c = io_peek(in); //TODO protect return
 	if (c == ':')
 	{
@@ -233,8 +256,13 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 	else
 	{
 		inst->label = NULL;
+//		printf("TMP = %s\n", tmp);
 		if ((inst->opcode = asm_opcode_for(tmp)) != -1)
 			asm_parse_params(in, inst);
+		else
+		{
+			print_error(1, begin, in->span, "Unknown Instructions", NULL);
+		}
 		free(tmp);
 	}
 	return (true);
@@ -252,10 +280,11 @@ int main(int argc, const char *argv[])
 	uint8_t			last_label;
 
 	table = create_hashtable(8);
-	in = init_read(open(argv[1], O_RDONLY));
+	in = init_read(open(argv[1], O_RDONLY), (char *)argv[1]);
 	out = init_write(open("yolo.cor", O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR));
 	asm_parse_header(&in, &head);
 	write_header(&head, &out);
+//	printf("AFTER HEader %d:%d\n", in.span.lines, in.span.col);
 	while (io_peek(&in) != -1)
 	{
 		if (!asm_parse_instruction(&in, &inst))
@@ -288,7 +317,7 @@ int main(int argc, const char *argv[])
 					printf("resolving direct %s\n", inst.params[i].direct.label);
 					if ((entry = hashtable_get(table, inst.params[i].direct.label)))
 					{
-//						printf("Offset %zu\n", entry->offset);
+						//						printf("Offset %zu\n", entry->offset);
 						inst.params[i].direct.offset = entry->offset;
 						if (!entry->resolve)
 							entry->offset = out.nbr_write;

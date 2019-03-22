@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/21 16:16:58 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/22 13:56:07 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ ssize_t		io_fill(t_read *rd)
 	return (ret < 0 ? ret : (rd->len = ret));
 }
 
-t_read		init_read(int fd)
+t_read		init_read(int fd, char *argv)
 {
 	t_read	rd;
 
@@ -65,9 +65,10 @@ t_read		init_read(int fd)
 		.index = 0,
 		.len = 0,
 		.span = (t_span){
-				.lines = 0,
-				.col = 0,
-				.offset = 0
+				.lines = 1,
+				.col = 1,
+				.offset = 0,
+				.file_name = argv
 		},
 		.nbr_read = 0,
 		.fd = fd
@@ -102,7 +103,7 @@ void		io_next(t_read *rd)
 	rd->span.offset++;
 	if (io_peek(rd) == '\n')
 	{
-		rd->span.col = 0;
+		rd->span.col = 1;
 		rd->span.lines++;
 	}
 	rd->index++;
