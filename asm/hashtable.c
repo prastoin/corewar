@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/20 13:58:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/22 17:11:09 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/25 15:07:09 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,13 +109,13 @@ t_entry	*hashtable_get(t_hashtable *table, char *name)
 	j = 0;
 	while (j < table->size
 			&& curr[i % table->size].key
-			&& curr[i % table->size].hash != hash_name
-			&& ft_strcmp(curr[i % table->size].key, name) != 0)
+			&& (curr[i % table->size].hash != hash_name
+				|| ft_strcmp(curr[i % table->size].key, name) != 0))
 	{
 		i++;
 		j++;
 	}
-	if (curr[i % table->size].key)
+	if (curr[i % table->size].key && j < table->size)
 		return (curr + i % table->size);
 	else
 		return (NULL);

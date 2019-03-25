@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/22 13:28:42 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/25 15:50:49 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,8 @@ bool	write_header(t_header *head, t_write *out)
 	size_t		len;
 
 	io_write_int(out, COREWAR_EXEC_MAGIC, 4);
-	padd = (sizeof(head->name) + 1);
-	padd += ((4 - (sizeof(head->name) + 1) % 4) % 4);
+	padd = (sizeof(head->name));
+	padd += (4 - (sizeof(head->name) % 4));
 	i = 0;
 	len = ft_strlen(head->name);
 	while (i < padd)
@@ -107,8 +107,8 @@ bool	write_header(t_header *head, t_write *out)
 	}
 	io_write_int(out, 0, 4);
 	i = 0;
-	padd = sizeof(head->comment) + 1;
-	padd += ((4 - (sizeof(head->comment) + 1) % 4) % 4);
+	padd = sizeof(head->comment);
+	padd += (4 - (sizeof(head->comment) % 4));
 	len = ft_strlen(head->comment);
 	while (i < padd)
 	{
@@ -122,35 +122,46 @@ bool	write_header(t_header *head, t_write *out)
 	return (true);
 }
 
+#include <errno.h>
+
 void		bin_resolve_label(t_write *out, size_t offset)
 {
-	size_t	src;
+	ssize_t	src;
 	uint8_t	opcode;
 	uint8_t	ocp;
-	uint8_t	tmp[2];
+	uint8_t	tmp[4];
 	int8_t	size;
 	size_t	i;
 
 	io_flush(out);
 	src = out->nbr_write;
+	printf("Off: %d\n", offset);
 	while (offset != 0x0000)
 	{
 		lseek(out->fd, offset, SEEK_SET);
-		read(out->fd, &opcode, 1);
-		printf("OP: %s\n", g_ops[opcode].name);
+		read(out->fd, &opcode, 1); //opcode mauvais == 253 parfois
+		printf ("DEBUT CASCADE opcode = %d\n", opcode);
+		if (!(opcode) || opcode <= 0 || opcode > 17 )
+		{
+			printf ("ERROR\n");
+			exit(0);
+		}
 		if (g_ops[opcode].params[1])
 		{
 			// OCP
+			size = 0;
 			read(out->fd, &ocp, 1);
 			i = 0;
 			while (i < (ocp & 0b11))
 			{
-				if (ocp & 0b11 << ((3 - i) * 2))
-					size += 2;
-				else if (ocp & 0b10 << ((3 - i) * 2))
-					size += g_ops[opcode].params[i] & PARAM_INDEX ? 2 : 4;
-				else if (ocp & 0b01 << ((3 - i) * 2))
+				printf("a: %x\n", ocp & (0b11 << ((3 - i) * 2)));
+				uint8_t type = (ocp >> ((3 - i) * 2)) & 0b11;
+				if (type == 0b01)
 					size += 1;
+				else if (type == 0b10)
+					size += g_ops[opcode].params[i] & PARAM_INDEX ? 2 : 4;
+				else if (type == 0b11)
+					size += 2;
 				i++;
 			}
 			printf("OCP: %x\n", ocp);
@@ -158,23 +169,31 @@ void		bin_resolve_label(t_write *out, size_t offset)
 			printf("OCP: %x\n", ocp);
 			lseek(out->fd, -1, SEEK_CUR);
 			write(out->fd, &ocp, 1);
+			printf("JSize: %x\n", size);
 			lseek(out->fd, size, SEEK_CUR);
-			// TODO Calc it
 			size = 2;
+			uint8_t type = (ocp >> ((3 - i) * 2)) & 0b11;
+			if (type == 0b10 && (!(g_ops[opcode].params[i] & PARAM_INDEX)))
+				size = 4;
 		}
 		else
 		{
-			// TODO Calc it
 			size = 2;
-			printf("No OCP\n");
+			if (g_ops[opcode].params[0] & PARAM_DIRECT && (!(g_ops[opcode].params[0] & PARAM_INDEX)))
+				size = 4;
 		}
+		printf("%d\n", size);
 		read(out->fd, tmp, size);
 		lseek(out->fd, -size, SEEK_CUR);
-		io_write_int(out, src - offset, size);
+		io_write_int(out, src - (ssize_t)offset, size);
 		io_flush(out);
-		offset = tmp[0] * 256 + tmp[1];
-		printf("Offset %zu\n", offset);
+		if (size == 2)
+			offset = tmp[0] * 0x100 + tmp[1];
+		else if (size == 4)
+			offset = tmp[0] * 0x1000000 + tmp[1] * 0x10000 + tmp[2] * 0x100 + tmp[3];
+		printf("Offset %zu size = %d\n", offset, size);
 	}
 	lseek (out->fd, 0, SEEK_END);
 	out->nbr_write = src;
+	printf ("FIN CASCADE\n");
 }
