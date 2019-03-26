@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/26 15:44:40 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/26 16:50:31 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	io_flush(t_write *out)
 	else
 	{
 		printf("ERROR\n");
+		out->buffer_size = -1;
 		exit(0);
 	}
 	out->index = 0;
@@ -93,9 +94,10 @@ void		bin_write_inst(t_write *out, t_instruction *inst, uint8_t last_label)
 	}
 }
 
-void	bin_write_end(t_write *out, t_header *head)
+void	bin_write_end(t_write *out)
 {
-	size_t	len;
+	size_t		len;
+	t_header	*head;
 
 	io_flush(out);
 	len = 4 + sizeof(head->name) + 4 - sizeof(head->name) % 4;
@@ -114,6 +116,17 @@ bool	write_header(t_header *head, t_write *out)
 	io_write(out, head->comment, sizeof(head->comment));
 	io_write(out, (char [4]){0, 0, 0, 0}, 4 - sizeof(head->comment) % 4);
 	return (true);
+}
+
+void		io_seek(t_write *out, ssize_t offset, bool set_cur)
+{
+	if (out->flushable)
+		lseek(out->fd, offset, (set_cur ? SEEK_SET : SEEK_CUR));
+	else
+		if (set_cur)
+			out->index -= offset;
+		else
+			out->index = offset;
 }
 
 void		bin_resolve_label(t_write *out, size_t offset)
@@ -185,6 +198,7 @@ void		bin_resolve_label(t_write *out, size_t offset)
 			write(out->fd, &ocp, 1);
 		}
 	}
-	lseek (out->fd, 0, SEEK_END);
+	lseek(out->fd, src, SEEK_SET);
+//	lseek (out->fd, 0, SEEK_END); TODO David need to work
 	out->nbr_write = src;
 }

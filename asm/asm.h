@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/26 15:35:33 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/26 16:31:50 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 
 #define BUFFER_SIZE  4096
 #define HEADER_SIZE  16 + PROG_NAME_LENGTH + COMMENT_LENGTH
+#define EXT ".cor"
 
 #define MAX_PARAM 4
 
@@ -133,6 +134,7 @@ typedef struct	s_read
 	size_t		nbr_read;
 	int			fd;
 	t_span		span;
+	t_span		begin;
 }				t_read;
 
 #include <stdio.h>
@@ -155,7 +157,7 @@ int32_t	io_readnum(t_read *rd);
 bool	write_header(t_header *head, t_write *out);
 void		bin_write_inst(t_write *out, t_instruction *inst, uint8_t last_label);
 void	io_write_int(t_write *out, uintmax_t nb, size_t nb_bytes);
-void	bin_write_end(t_write *out, t_header *head);
+void	bin_write_end(t_write *out);
 void	io_flush(t_write *out);
 void		bin_resolve_label(t_write *out, size_t offset);
 void	print_error(uintmax_t severity, t_span begin, t_span end, char *error, char *expected);

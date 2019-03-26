@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/26 15:45:25 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/26 16:42:40 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ ssize_t		asm_opcode_for(char *name)
 bool		asm_parse_header(t_read *rd, t_header *header)
 {
 	t_span begin;
-	
+
 	header->size = 0;
 	asm_skip_ws(rd);
 	begin = rd->span;
@@ -163,13 +163,12 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 {
 	size_t		i;
 	uint16_t	c;
-	t_span		begin;
 
 	i = 0;
 	while (g_ops[inst->opcode].params[i])
 	{
 		asm_skip_ws(in);
-		begin = in->span;
+		in->begin = in->span;
 		c = io_peek(in);
 		if (c == DIRECT_CHAR)
 		{
@@ -192,21 +191,21 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 		else
 		{
 			io_skip_until(in, SEPARATOR_CHAR);
-			print_error(1, begin, in->span, "Invalid param", from_int_to_type(g_ops[inst->opcode].params[i]));
+			print_error(1, in->begin, in->span, "Invalid param", from_int_to_type(g_ops[inst->opcode].params[i]));
 		}
 
 		if (!(g_ops[inst->opcode].params[i] & inst->params[i].type))
 		{
-			print_error(2, begin, in->span, "Type for param is invalid", from_int_to_type(g_ops[inst->opcode].params[i]));
+			print_error(2, in->begin, in->span, "Type for param is invalid", from_int_to_type(g_ops[inst->opcode].params[i]));
 		}
 		i++;
 		if (g_ops[inst->opcode].params[i])
 		{
-			begin = in->span;
+			in->begin = in->span;
 			asm_skip_ws(in);
 			if (!io_expect(in, SEPARATOR_CHAR))
 			{
-				print_error(1, begin, in->span, "Expected " SEPARATOR_CHAR, NULL);
+				print_error(1, in->begin, in->span, "Expected " SEPARATOR_CHAR, NULL);
 			}
 		}
 	}
@@ -218,9 +217,9 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 	char	*tmp;
 	char	c;
 	size_t	i;
+	const t_span begin = in->span;
 
 	i = 0;
-	const t_span begin = in->span;
 	if (!(tmp = asm_parse_name(in)))
 		return (false);
 	c = io_peek(in); //TODO protect return
@@ -274,8 +273,6 @@ static char	*ft_strrchr(const char *s, int c)
 	return (*s == c ? (char *)s : NULL);
 }
 
-#define EXT ".cor"
-
 char			*change_ext(char *name)
 {
 	static char	file[PATH_MAX - 1];
@@ -289,85 +286,106 @@ char			*change_ext(char *name)
 	return (file);
 }
 
-bool	asm_parser(t_write *out, t_read *in, t_hashtable *table)
+void		gest_arg(t_instruction inst, t_hashtable **table, t_write *out, t_read *in)
 {
-	t_instruction	inst;
-	t_entry			*entry;
-	size_t			i;
-	uint8_t			last_label;
-	t_span			begin;
+	size_t i;
+	size_t last_label;
+	t_entry *entry;
+
+	i = 0;
+	last_label = 0;
+	while (g_ops[inst.opcode].params[i])
+	{
+		in->begin = in->span;
+		if ((inst.params[i].type == PARAM_DIRECT || inst.params[i].type == PARAM_INDIRECT)
+				&& inst.params[i].offset.label)
+		{
+			if ((entry = hashtable_get((*table), inst.params[i].offset.label)))
+			{
+				inst.params[i].offset.offset = entry->offset;
+				if (!entry->resolve)
+					entry->offset = out->nbr_write;
+				else
+					inst.params[i].offset.offset -= (ssize_t)out->nbr_write;
+			}
+			else
+			{
+				entry = insert_hashtable(table, create_entry(inst.params[i].offset.label));
+				entry->resolve = false;
+				entry->offset = out->nbr_write;
+				inst.params[i].offset.offset = 0;
+			}
+			if (!entry->resolve)
+			{
+				if (last_label == 1)
+					last_label = 3;
+				else
+					last_label = i;
+			}
+		}
+		i++;
+	}
+	bin_write_inst(out, &inst, last_label);
+}
+
+void		case_label(t_hashtable **table, t_instruction inst, t_write *out, t_read *in)
+{
+	t_entry *entry;
+
+	if ((entry = insert_hashtable(table, create_entry(inst.label))))
+	{
+		entry->offset = out->nbr_write;
+		entry->resolve = true;
+	}
+	else
+	{
+		entry = hashtable_get((*table), inst.label);
+		if (entry->resolve)
+			print_error(2, in->begin, in->span, "Label already exists: ", NULL);
+		else
+		{
+			bin_resolve_label(out, entry->offset);
+			entry->resolve = true;
+			entry->offset = out->nbr_write;
+		}
+	}
+}
+
+bool	ft_header(t_write *out, t_read *in)
+{
 	t_header		head;
 
 	head = (t_header) {
 		.size = 0
 	};
 	if (!asm_parse_header(in, &head))
-		return (0);
+		return (false);
 	write_header(&head, out);
-	begin = in->span;
+	return (true);
+}
+
+bool	asm_parser(t_write *out, t_read *in, t_hashtable *table)
+{
+	t_instruction	inst;
+
+	ft_header(out, in);
+	in->begin = in->span;
 	while (io_peek(in) != -1)
 	{
 		asm_skip_ws(in);
-		begin = in->span;
+		in->begin = in->span;
 		if (!asm_parse_instruction(in, &inst))
 			break ;
 		if (inst.label)
-			if ((entry = insert_hashtable(&table, create_entry(inst.label))))
-			{
-				entry->offset = out->nbr_write;
-				entry->resolve = true;
-			}
-			else
-			{
-				entry = hashtable_get(table, inst.label);
-				if (entry->resolve)
-					print_error(2, begin, in->span, "Label already exists: ", NULL); //mauvais token en span.col
-				else
-				{
-					bin_resolve_label(out, entry->offset);
-					entry->resolve = true;
-					entry->offset = out->nbr_write;
-				}
-			}
+			case_label(&table, inst, out, in);
 		else if (inst.opcode != -1)
+			gest_arg(inst, &table, out, in);
+		else
 		{
-			i = 0;
-			last_label = 0;
-			while (g_ops[inst.opcode].params[i])
-			{
-	begin = in->span;
-				if ((inst.params[i].type == PARAM_DIRECT || inst.params[i].type == PARAM_INDIRECT)
-						&& inst.params[i].offset.label)
-				{
-					if ((entry = hashtable_get(table, inst.params[i].offset.label)))
-					{
-						inst.params[i].offset.offset = entry->offset;
-						if (!entry->resolve)
-							entry->offset = out->nbr_write;
-						else
-							inst.params[i].offset.offset -= (ssize_t)out->nbr_write;
-					}
-					else
-					{
-						entry = insert_hashtable(&table, create_entry(inst.params[i].offset.label));
-						entry->resolve = false;
-						entry->offset = out->nbr_write;
-						inst.params[i].offset.offset = 0;
-					}
-					if (!entry->resolve)
-					{
-						if (last_label == 1)
-							last_label = 3;
-						else
-							last_label = i;
-					}
-				}
-				i++;
-			}
-			bin_write_inst(out, &inst, last_label);
+			// TODO gestion de l'erreur
 		}
 	}
-	bin_write_end(out, &head);
+	bin_write_end(out);
 	return (0);
 }
 
@@ -384,7 +402,7 @@ void		read_fixed(t_read *in, char *name)
 	if (!asm_parser(&out, in, table))
 		return ;
 	out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-	io_flush(&out);
+	write (out.fd, out.buffer, out.nbr_write);
 	return ;
 }
 
@@ -433,5 +451,3 @@ int main(int argc, char *argv[])
 	in = init_read(fd, file);
 	(streaming ? read_streaming : read_fixed)(&in, out);
 }
-
-
