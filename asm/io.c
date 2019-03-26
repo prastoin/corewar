@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/25 11:30:15 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/26 10:48:20 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,20 +178,3 @@ ssize_t		io_read(t_read *rd, uint8_t data[], size_t data_len)
 	}
 	return (data_len + i);
 }
-
-/*int		main(int argc, const char *argv[])
-{
-	t_read		rd;
-	size_t		fd;
-	uint8_t		test[8];
-	size_t		r;
-
-	if ((fd = open(argv[1], O_RDWR)) == -1)
-		return (-1);
-	rd = init_read(fd);
-	while ((r = io_read(&rd, test, 8)) != 0)
-	{
-		printf("%.*s", r, test);
-	}
-	return (0);
-}*/

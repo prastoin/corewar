@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/25 15:42:52 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/26 10:49:36 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,6 @@ bool		asm_parse_header(t_read *rd, t_header *header)
 	{
 		print_error(1, begin, rd->span, ".comment not found", NULL);
 	}
-	printf("%s %s\n", header->name, header->comment);
 	return (true);
 }
 
@@ -262,7 +261,6 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 	return (true);
 }
 
-//	printf("CURR %c\n", in->buffer[in->index]);
 bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 {
 	char	*tmp;
@@ -273,7 +271,6 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 	const t_span begin = in->span;
 	if (!(tmp = asm_parse_name(in)))
 		return (false);
-//	printf("\ndeb = %d:%d fin = %d:%d\n", begin.lines, begin.col, in->span.lines, in->span.col);
 	c = io_peek(in); //TODO protect return
 	if (c == ':')
 	{
@@ -283,7 +280,6 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 	else
 	{
 		inst->label = NULL;
-//		printf("TMP = %s\n", tmp);
 		if ((inst->opcode = asm_opcode_for(tmp)) != -1)
 			asm_parse_params(in, inst);
 		else
@@ -318,7 +314,6 @@ int main(int argc, const char *argv[])
 		return (0);
 	write_header(&head, &out);
 	begin = in.span;
-//	printf("AFTER HEader %d:%d\n", in.span.lines, in.span.col);
 	while (io_peek(&in) != -1)
 	{
 		asm_skip_ws(&in);
@@ -330,17 +325,14 @@ int main(int argc, const char *argv[])
 			{
 				entry->offset = out.nbr_write;
 				entry->resolve = true;
-				printf("Label %s offset %llu\n", entry->key, entry->offset);
 			}
 			else
 			{
-				// TODO resolve labels
 				entry = hashtable_get(table, inst.label);
 				if (entry->resolve)
 					print_error(2, begin, in.span, "Label already exists: ", NULL); //mauvais token en span.col
 				else
 				{
-					printf("On regarde en cascasde %s\n", inst.label);
 					bin_resolve_label(&out, entry->offset);
 					entry->resolve = true;
 					entry->offset = out.nbr_write;
@@ -358,31 +350,30 @@ int main(int argc, const char *argv[])
 				{
 					if ((entry = hashtable_get(table, inst.params[i].direct.label)))
 					{
-						printf("Offset %zu %zu\n", entry->offset, out.nbr_write);
 						inst.params[i].direct.offset = entry->offset;
 						if (!entry->resolve)
 							entry->offset = out.nbr_write;
 						else
-						{
 							inst.params[i].direct.offset -= (ssize_t)out.nbr_write;
-							printf("HERE !!!!!!!!!!!!!!!!!1 %s -- %d\n", inst.params[i].direct.label, inst.params[i].direct.offset);
-						}
 					}
 					else
 					{
-						printf("resolving direct, insert fst time %s\n", inst.params[i].direct.label);
 						entry = insert_hashtable(&table, create_entry(inst.params[i].direct.label));
 						entry->resolve = false;
 						entry->offset = out.nbr_write;
 						inst.params[i].direct.offset = 0;
 					}
 					if (!entry->resolve)
-						last_label = i;
+					{
+						if (last_label == 1)
+							last_label = 3;
+						else
+							last_label = i;
+					}
 				}
 				if (inst.params[i].type == PARAM_INDIRECT
 						&& inst.params[i].indirect.label)
 				{
-					printf("resolving indirect %s\n", inst.params[i].indirect.label);
 					if ((entry = hashtable_get(table, inst.params[i].indirect.label)))
 					{
 						inst.params[i].indirect.offset = entry->offset;
@@ -399,7 +390,12 @@ int main(int argc, const char *argv[])
 						inst.params[i].indirect.offset = 0;
 					}
 					if (!entry->resolve)
-						last_label = i;
+					{
+						if (last_label == 1)
+							last_label = 3;
+						else
+							last_label = i;
+					}
 				}
 				i++;
 			}

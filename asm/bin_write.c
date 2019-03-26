@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/25 15:50:49 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/26 10:47:52 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,11 +118,8 @@ bool	write_header(t_header *head, t_write *out)
 			io_write(out, '\0');
 		i++;
 	}
-	printf("%lu\n", out->index);
 	return (true);
 }
-
-#include <errno.h>
 
 void		bin_resolve_label(t_write *out, size_t offset)
 {
@@ -132,29 +129,22 @@ void		bin_resolve_label(t_write *out, size_t offset)
 	uint8_t	tmp[4];
 	int8_t	size;
 	size_t	i;
+	size_t save_ocp;
+	size_t save_off;
 
 	io_flush(out);
 	src = out->nbr_write;
-	printf("Off: %d\n", offset);
 	while (offset != 0x0000)
 	{
 		lseek(out->fd, offset, SEEK_SET);
-		read(out->fd, &opcode, 1); //opcode mauvais == 253 parfois
-		printf ("DEBUT CASCADE opcode = %d\n", opcode);
-		if (!(opcode) || opcode <= 0 || opcode > 17 )
-		{
-			printf ("ERROR\n");
-			exit(0);
-		}
+		read(out->fd, &opcode, 1);
 		if (g_ops[opcode].params[1])
 		{
-			// OCP
 			size = 0;
 			read(out->fd, &ocp, 1);
 			i = 0;
-			while (i < (ocp & 0b11))
+			while (i < (ocp & 0b11) && i < 2)
 			{
-				printf("a: %x\n", ocp & (0b11 << ((3 - i) * 2)));
 				uint8_t type = (ocp >> ((3 - i) * 2)) & 0b11;
 				if (type == 0b01)
 					size += 1;
@@ -164,12 +154,10 @@ void		bin_resolve_label(t_write *out, size_t offset)
 					size += 2;
 				i++;
 			}
-			printf("OCP: %x\n", ocp);
+			save_ocp = ocp;
 			ocp &= 0b11111100;
-			printf("OCP: %x\n", ocp);
 			lseek(out->fd, -1, SEEK_CUR);
 			write(out->fd, &ocp, 1);
-			printf("JSize: %x\n", size);
 			lseek(out->fd, size, SEEK_CUR);
 			size = 2;
 			uint8_t type = (ocp >> ((3 - i) * 2)) & 0b11;
@@ -182,18 +170,26 @@ void		bin_resolve_label(t_write *out, size_t offset)
 			if (g_ops[opcode].params[0] & PARAM_DIRECT && (!(g_ops[opcode].params[0] & PARAM_INDEX)))
 				size = 4;
 		}
-		printf("%d\n", size);
 		read(out->fd, tmp, size);
 		lseek(out->fd, -size, SEEK_CUR);
 		io_write_int(out, src - (ssize_t)offset, size);
 		io_flush(out);
+		save_off = offset;
 		if (size == 2)
 			offset = tmp[0] * 0x100 + tmp[1];
 		else if (size == 4)
 			offset = tmp[0] * 0x1000000 + tmp[1] * 0x10000 + tmp[2] * 0x100 + tmp[3];
-		printf("Offset %zu size = %d\n", offset, size);
+		if (save_off == offset)
+		{
+			lseek(out->fd, (save_off + 1), SEEK_SET);
+			if ((save_ocp & 0b11) >= 2)
+				save_ocp -= 2;
+			else
+				save_ocp -= 1;
+			ocp = save_ocp;
+			write(out->fd, &ocp, 1);
+		}
 	}
 	lseek (out->fd, 0, SEEK_END);
 	out->nbr_write = src;
-	printf ("FIN CASCADE\n");
 }
