@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/26 10:49:36 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/26 15:45:25 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,22 +59,7 @@ bool		asm_read_quoted(t_read *rd, char data[], size_t len)
 	return (c == '"');
 }
 
-/*bool		asm_fill_header(t_write *out, t_header *head)
-  {
-  size_t i;
-
-  i = 0;
-  asm_fill_magic();
-  while (head->name[i] || i < PROG_NAME_LENGTH)
-  {
-  out->buffer[out->index] = head->name[i];
-  out->index++;
-  i++;
-  }
-  return (true);
-  }*/
-
-size_t		asm_opcode_for(char *name)
+ssize_t		asm_opcode_for(char *name)
 {
 	size_t i;
 
@@ -134,40 +119,8 @@ bool		asm_parse_header(t_read *rd, t_header *header)
 	return (true);
 }
 
-#include <string.h>
-
-/*bool		asm_parse_op(t_read *in, size_t opcode)
-  {4444444444
-  bool	matched[17];
-  int16_t	c;
-  size_t	i;
-  size_t	j;
-
-  memset(matched, true, 17);
-  j = 0;
-  while ((c = io_peek(in)))
-  {
-  i = 0;
-  while (i < sizeof(matched))
-  {
-  if (matched[i])
-  {
-  if (g_ops[i].name[j] == '\0')
-  {
-
-  }
-  if (g_ops[i].name[j] != c)
-  matched[i] = false;
-  }
-  i++;
-  }
-  j++;
-  }
-  }*/
-
 char		*asm_parse_name(t_read *in)
 {
-	size_t		i;
 	size_t		len;
 	int16_t		c;
 	char		*str;
@@ -189,6 +142,23 @@ char		*asm_parse_name(t_read *in)
 	return (str);
 }
 
+void		asm_read_offset_value(t_read *in, t_param *param)
+{
+	uint16_t	c;
+
+	c = io_peek(in);
+	if (c == LABEL_CHAR)
+	{
+		io_next(in);
+		param->offset.label = asm_parse_name(in);
+	}
+	else
+	{
+		param->offset.offset = io_readnum(in);
+		param->offset.label = NULL;
+	}
+}
+
 bool		asm_parse_params(t_read *in, t_instruction *inst)
 {
 	size_t		i;
@@ -205,17 +175,7 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 		{
 			io_next(in);
 			inst->params[i].type = PARAM_DIRECT;
-			c = io_peek(in);
-			if (c == LABEL_CHAR)
-			{
-				io_next(in);
-				inst->params[i].direct.label = asm_parse_name(in);
-			}
-			else
-			{
-				inst->params[i].direct.offset = io_readnum(in);
-				inst->params[i].direct.label = NULL;
-			}
+			asm_read_offset_value(in, inst->params + i);
 		}
 		else if (c == 'r')
 		{
@@ -227,22 +187,14 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 				|| (c == '+' || c == '-'))
 		{
 			inst->params[i].type = PARAM_INDIRECT;
-			if (c == LABEL_CHAR)
-			{
-				io_next(in);
-				inst->params[i].indirect.label = asm_parse_name(in);
-			}
-			else
-			{
-				inst->params[i].indirect.offset = io_readnum(in);
-				inst->params[i].direct.label = NULL;
-			}
+			asm_read_offset_value(in, inst->params + i);
 		}
 		else
 		{
 			io_skip_until(in, SEPARATOR_CHAR);
 			print_error(1, begin, in->span, "Invalid param", from_int_to_type(g_ops[inst->opcode].params[i]));
 		}
+
 		if (!(g_ops[inst->opcode].params[i] & inst->params[i].type))
 		{
 			print_error(2, begin, in->span, "Type for param is invalid", from_int_to_type(g_ops[inst->opcode].params[i]));
@@ -292,50 +244,89 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 	return (true);
 }
 
-int main(int argc, const char *argv[])
+bool		parse_args(int argc, char **argv, bool *streaming, char **file)
 {
-	t_read			in;
-	t_header		head;
-	t_write			out;
+
+	*streaming = false;
+	if (argc > 3 && argc <= 1)
+		return (false);
+	if (argc == 3)
+		if (ft_strcmp(argv[1], "-s") == 0)
+		{
+			*file = argv[2];
+			*streaming = true;
+		}
+		else
+			return (false);
+	else
+		*file = argv[1];
+	return (true);
+}
+
+static char	*ft_strrchr(const char *s, int c)
+{
+	size_t	len;
+
+	len = ft_strlen(s) + 1;
+	while (--len)
+		if (s[len] == c)
+			return ((char *)s + len);
+	return (*s == c ? (char *)s : NULL);
+}
+
+#define EXT ".cor"
+
+char			*change_ext(char *name)
+{
+	static char	file[PATH_MAX - 1];
+	char		*dot;
+
+	dot = ft_strrchr(name, '.');
+	if ((dot - name + (sizeof(EXT) - 1)) > PATH_MAX)
+		return (NULL);
+	ft_memcpy(file, name, dot - name);
+	ft_memcpy(file + (dot - name), EXT, sizeof(EXT));
+	return (file);
+}
+
+bool	asm_parser(t_write *out, t_read *in, t_hashtable *table)
+{
 	t_instruction	inst;
-	t_hashtable		*table;
 	t_entry			*entry;
 	size_t			i;
 	uint8_t			last_label;
 	t_span			begin;
+	t_header		head;
 
-	table = create_hashtable(8);
-	in = init_read(open(argv[1], O_RDONLY), (char *)argv[1]);
-	out = init_write(open("yolo.cor", O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR));
 	head = (t_header) {
 		.size = 0
 	};
-	if (!asm_parse_header(&in, &head))
+	if (!asm_parse_header(in, &head))
 		return (0);
-	write_header(&head, &out);
-	begin = in.span;
-	while (io_peek(&in) != -1)
+	write_header(&head, out);
+	begin = in->span;
+	while (io_peek(in) != -1)
 	{
-		asm_skip_ws(&in);
-		begin = in.span;
-		if (!asm_parse_instruction(&in, &inst))
+		asm_skip_ws(in);
+		begin = in->span;
+		if (!asm_parse_instruction(in, &inst))
 			break ;
 		if (inst.label)
 			if ((entry = insert_hashtable(&table, create_entry(inst.label))))
 			{
-				entry->offset = out.nbr_write;
+				entry->offset = out->nbr_write;
 				entry->resolve = true;
 			}
 			else
 			{
 				entry = hashtable_get(table, inst.label);
 				if (entry->resolve)
-					print_error(2, begin, in.span, "Label already exists: ", NULL); //mauvais token en span.col
+					print_error(2, begin, in->span, "Label already exists: ", NULL); //mauvais token en span.col
 				else
 				{
-					bin_resolve_label(&out, entry->offset);
+					bin_resolve_label(out, entry->offset);
 					entry->resolve = true;
-					entry->offset = out.nbr_write;
+					entry->offset = out->nbr_write;
 				}
 			}
 		else if (inst.opcode != -1)
@@ -344,50 +335,24 @@ int main(int argc, const char *argv[])
 			last_label = 0;
 			while (g_ops[inst.opcode].params[i])
 			{
-	begin = in.span;
-				if (inst.params[i].type == PARAM_DIRECT
-						&& inst.params[i].direct.label)
+	begin = in->span;
+				if ((inst.params[i].type == PARAM_DIRECT || inst.params[i].type == PARAM_INDIRECT)
+						&& inst.params[i].offset.label)
 				{
-					if ((entry = hashtable_get(table, inst.params[i].direct.label)))
+					if ((entry = hashtable_get(table, inst.params[i].offset.label)))
 					{
-						inst.params[i].direct.offset = entry->offset;
+						inst.params[i].offset.offset = entry->offset;
 						if (!entry->resolve)
-							entry->offset = out.nbr_write;
+							entry->offset = out->nbr_write;
 						else
-							inst.params[i].direct.offset -= (ssize_t)out.nbr_write;
+							inst.params[i].offset.offset -= (ssize_t)out->nbr_write;
 					}
 					else
 					{
-						entry = insert_hashtable(&table, create_entry(inst.params[i].direct.label));
+						entry = insert_hashtable(&table, create_entry(inst.params[i].offset.label));
 						entry->resolve = false;
-						entry->offset = out.nbr_write;
-						inst.params[i].direct.offset = 0;
-					}
-					if (!entry->resolve)
-					{
-						if (last_label == 1)
-							last_label = 3;
-						else
-							last_label = i;
-					}
-				}
-				if (inst.params[i].type == PARAM_INDIRECT
-						&& inst.params[i].indirect.label)
-				{
-					if ((entry = hashtable_get(table, inst.params[i].indirect.label)))
-					{
-						inst.params[i].indirect.offset = entry->offset;
-						if (!entry->resolve)
-							entry->offset = out.nbr_write;
-						else
-							inst.params[i].direct.offset -= (ssize_t)out.nbr_write;
-					}
-					else
-					{
-						entry = insert_hashtable(&table, create_entry(inst.params[i].indirect.label));
-						entry->resolve = false;
-						entry->offset = out.nbr_write;
-						inst.params[i].indirect.offset = 0;
+						entry->offset = out->nbr_write;
+						inst.params[i].offset.offset = 0;
 					}
 					if (!entry->resolve)
 					{
@@ -399,9 +364,74 @@ int main(int argc, const char *argv[])
 				}
 				i++;
 			}
-			bin_write_inst(&out, &inst, last_label);
+			bin_write_inst(out, &inst, last_label);
 		}
 	}
-	bin_write_end(&out, &head);
+	bin_write_end(out, &head);
 	return (0);
 }
+
+void		read_fixed(t_read *in, char *name)
+{
+	uint8_t	buffer[CHAMP_MAX_SIZE + HEADER_SIZE];
+	t_write	out;
+	t_hashtable		*table;
+
+	out = init_write();
+	out.buffer_size = CHAMP_MAX_SIZE + HEADER_SIZE;
+	out.buffer = buffer;
+	table = create_hashtable(8);
+	if (!asm_parser(&out, in, table))
+		return ;
+	out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+	io_flush(&out);
+	return ;
+}
+
+void		read_streaming(t_read *in, char *name)
+{
+	uint8_t		buffer[BUFFER_SIZE];
+	t_write		out;
+	t_hashtable		*table;
+
+	out = init_write();
+	out.buffer_size = BUFFER_SIZE;
+	out.flushable = true;
+	out.buffer = buffer;
+	out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+	table = create_hashtable(8);
+	asm_parser(&out, in, table);
+}
+
+int main(int argc, char *argv[])
+{
+	bool	streaming;
+	char	*file;
+	char	*out;
+	int		fd;
+	t_read	in;
+
+	if (!parse_args(argc, argv, &streaming, &file))
+	{
+		printf("parse_args\n");
+		return 1;
+		// ERROR
+	}
+	if (!(out = change_ext(file)))
+	{
+		printf("change_ext\n");
+		return 1;
+		// ERROR
+	}
+	printf("%s\n", out);
+	if ((fd = open(file, O_RDONLY)) == -1)
+	{
+		printf("open failed\n");
+		return 1;
+		// ERROR
+	}
+	in = init_read(fd, file);
+	(streaming ? read_streaming : read_fixed)(&in, out);
+}
+
+

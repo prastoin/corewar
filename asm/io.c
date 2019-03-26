@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/26 10:48:20 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/26 15:39:11 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,14 +95,13 @@ t_read		init_read(int fd, char *argv)
 	return (rd);
 }
 
-t_write		init_write(int fd)
+t_write		init_write(void)
 {
 	t_write		out;
-	header_t	tmp;
 
 	out = (t_write){
 		.index = 0,
-		.fd = fd,
+		.flushable = false,
 		.nbr_write = 0
 	};
 	return (out);
@@ -148,6 +147,7 @@ ssize_t		io_read(t_read *rd, uint8_t data[], size_t data_len)
 	ssize_t	ret;
 	size_t save_data_len;
 
+	save_data_len = data_len;
 	remaining = rd->len - rd->index;
 	i = 0;
 	while (remaining < data_len)

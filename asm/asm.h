@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/22 18:19:17 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/26 15:35:33 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,13 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <limits.h>
 #include <stdbool.h>
 
 #include "op.h"
 
 #define BUFFER_SIZE  4096
-#define HEADER_SIZE  2192
+#define HEADER_SIZE  16 + PROG_NAME_LENGTH + COMMENT_LENGTH
 
 #define MAX_PARAM 4
 
@@ -57,17 +58,19 @@ typedef struct	s_header
 	size_t	size;
 }				t_header;
 
-typedef struct	s_param_direct {
-	t_core_param	type;
-	char			*label;
-	int32_t			offset;
-}				t_param_direct;
+typedef enum e_param_type {
+	TYPE_LABEL_INDIRECT,
+	TYPE_LABEL_DIRECT,
+	TYPE_OFFSET_DIRECT,
+	TYPE_OFFSET_INDIRECT,
+	TYPE_REGISTER
+}			t_param_type;
 
-typedef struct	s_param_indirect {
+typedef struct	s_param_offset {
 	t_core_param	type;
 	char			*label;
 	int32_t			offset;
-}				t_param_indirect;
+}				t_param_offset;
 
 typedef struct	s_param_register {
 	t_core_param	type;
@@ -76,15 +79,14 @@ typedef struct	s_param_register {
 
 typedef union	u_param {
 	t_core_param		type;
-	t_param_direct		direct;
-	t_param_indirect	indirect;
+	t_param_offset		offset;
 	t_param_register	reg;
 }				t_param;
 
 typedef struct	s_instruction
 {
 	char	*label;
-	size_t	opcode;
+	ssize_t	opcode;
 	t_param	params[MAX_PARAM];
 }				t_instruction;
 
@@ -96,10 +98,12 @@ typedef struct	s_label
 
 typedef struct	s_write
 {
-	uint8_t		buffer[BUFFER_SIZE];
+	uint8_t		*buffer;
 	size_t		index;
 	size_t		nbr_write;
+	bool		flushable;
 	size_t		fd;
+	size_t		buffer_size;
 }				t_write;
 
 typedef struct		s_entry{
@@ -136,7 +140,7 @@ typedef struct	s_read
 extern t_core_tab g_ops[17];
 
 void		io_next(t_read *rd);
-t_write		init_write(int fd);
+t_write		init_write(void);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
 ssize_t		io_read(t_read *rd, uint8_t data[], size_t data_len);
 t_read		init_read(int fd, char *argv);

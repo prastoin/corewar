@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/26 10:47:52 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/26 15:44:40 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,32 +15,53 @@
 
 void	io_flush(t_write *out)
 {
-	write(out->fd, &out->buffer, out->index);
+	if (out->flushable == true)
+		write(out->fd, out->buffer, out->index);
+	else
+	{
+		printf("ERROR\n");
+		exit(0);
+	}
 	out->index = 0;
 }
 
-void	io_write(t_write *out, uint8_t c)
+void	io_write(t_write *out, char *data, size_t size)
 {
-	out->buffer[out->index] = c;
-	out->index++;
-	out->nbr_write++;
-	if (out->index == BUFFER_SIZE)
+	size_t space;
+
+	space = out->buffer_size - out->index;
+	while (space < size)
+	{
+		ft_memcpy(out->buffer + out->index, data, space);
 		io_flush(out);
+		data += space;
+		size -= space;
+		out->nbr_write += space;
+		space = out->buffer_size;
+	}
+	ft_memcpy(out->buffer + out->index, data, size);
+	out->index += size;
+	out->nbr_write += size;
 }
+
+void	io_write_one(t_write *out, char c)
+{
+	io_write(out, &c, 1);
+}
+
 
 void	io_write_int(t_write *out, uintmax_t nb, size_t nb_bytes)
 {
 	while (nb_bytes != 0)
 	{
 		nb_bytes--;
-		io_write(out, (nb >> (nb_bytes * 8)) & 0xFF);
+		io_write_one(out, (nb >> (nb_bytes * 8)) & 0xFF);
 	}
 }
 
 void		bin_write_inst(t_write *out, t_instruction *inst, uint8_t last_label)
 {
 	size_t			i;
-	static	int		lb;
 	uint8_t			ocp;
 
 	ocp = last_label & 0b11;
@@ -63,9 +84,9 @@ void		bin_write_inst(t_write *out, t_instruction *inst, uint8_t last_label)
 	{
 
 		if (inst->params[i].type == PARAM_DIRECT)
-			io_write_int(out, inst->params[i].direct.offset, g_ops[inst->opcode].params[i] & PARAM_INDEX ? 2 : 4);
+			io_write_int(out, inst->params[i].offset.offset, g_ops[inst->opcode].params[i] & PARAM_INDEX ? 2 : 4);
 		else if (inst->params[i].type == PARAM_INDIRECT)
-			io_write_int(out, inst->params[i].indirect.offset, 2);
+			io_write_int(out, inst->params[i].offset.offset, 2);
 		else if (inst->params[i].type == PARAM_REGISTER)
 			io_write_int(out, inst->params[i].reg.reg, 1);
 		i++;
@@ -75,49 +96,23 @@ void		bin_write_inst(t_write *out, t_instruction *inst, uint8_t last_label)
 void	bin_write_end(t_write *out, t_header *head)
 {
 	size_t	len;
-	size_t	nb;
 
 	io_flush(out);
-	len = 4 + (sizeof(head->name) + 1) + ((4 - (sizeof(head->name) + 1) % 4) % 4);
+	len = 4 + sizeof(head->name) + 4 - sizeof(head->name) % 4;
 	lseek(out->fd, len, SEEK_SET);
-	len += 4 + (sizeof(head->comment) + 1) + ((4 - (sizeof(head->comment) + 1) % 4) % 4);
-	nb = out->nbr_write - len;
-	io_write_int(out, nb, 4);
+	len += 4 + sizeof(head->comment) + 4 - sizeof(head->comment) % 4;
+	io_write_int(out, out->nbr_write - len, 4);
 	io_flush(out);
 }
 
 bool	write_header(t_header *head, t_write *out)
 {
-	size_t		padd;
-	size_t		i;
-	size_t		len;
-
 	io_write_int(out, COREWAR_EXEC_MAGIC, 4);
-	padd = (sizeof(head->name));
-	padd += (4 - (sizeof(head->name) % 4));
-	i = 0;
-	len = ft_strlen(head->name);
-	while (i < padd)
-	{
-		if (i < PROG_NAME_LENGTH && i < len)
-			io_write(out, head->name[i]);
-		else
-			io_write(out, '\0');
-		i++;
-	}
+	io_write(out, head->name, sizeof(head->name));
+	io_write(out, (char [4]){0, 0, 0, 0}, 4 - sizeof(head->name) % 4);
 	io_write_int(out, 0, 4);
-	i = 0;
-	padd = sizeof(head->comment);
-	padd += (4 - (sizeof(head->comment) % 4));
-	len = ft_strlen(head->comment);
-	while (i < padd)
-	{
-		if (i < COMMENT_LENGTH && i < len)
-			io_write(out, head->comment[i]);
-		else
-			io_write(out, '\0');
-		i++;
-	}
+	io_write(out, head->comment, sizeof(head->comment));
+	io_write(out, (char [4]){0, 0, 0, 0}, 4 - sizeof(head->comment) % 4);
 	return (true);
 }
 
