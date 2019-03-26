@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/26 16:50:31 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/26 18:08:22 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 void	io_flush(t_write *out)
 {
+	printf("Je flush\n");
+	printf("%s\n", out->buffer);
 	if (out->flushable == true)
 		write(out->fd, out->buffer, out->index);
 	else
@@ -94,17 +96,41 @@ void		bin_write_inst(t_write *out, t_instruction *inst, uint8_t last_label)
 	}
 }
 
+void		io_seek(t_write *out, ssize_t offset, bool set_cur)
+{
+	if (out->flushable)
+		lseek(out->fd, offset, (set_cur ? SEEK_SET : SEEK_CUR));
+	else
+		if (set_cur)
+			out->index = offset;
+		else
+			out->index -= offset;
+}
+
+void		io_write_read(t_write *out, uint8_t *tmp, size_t size)
+{
+	if (out->flushable)
+		read(out->fd, tmp, size);
+	else
+	{
+		ft_memcpy(tmp, out->buffer + out->index, size);
+		out->index += size;
+	}
+}
+
 void	bin_write_end(t_write *out)
 {
 	size_t		len;
 	t_header	*head;
 
-	io_flush(out);
+	if (out->flushable)
+		io_flush(out);
 	len = 4 + sizeof(head->name) + 4 - sizeof(head->name) % 4;
-	lseek(out->fd, len, SEEK_SET);
+	io_seek(out, len, true);
 	len += 4 + sizeof(head->comment) + 4 - sizeof(head->comment) % 4;
 	io_write_int(out, out->nbr_write - len, 4);
-	io_flush(out);
+	if (out->flushable)
+		io_flush(out);
 }
 
 bool	write_header(t_header *head, t_write *out)
@@ -118,17 +144,6 @@ bool	write_header(t_header *head, t_write *out)
 	return (true);
 }
 
-void		io_seek(t_write *out, ssize_t offset, bool set_cur)
-{
-	if (out->flushable)
-		lseek(out->fd, offset, (set_cur ? SEEK_SET : SEEK_CUR));
-	else
-		if (set_cur)
-			out->index -= offset;
-		else
-			out->index = offset;
-}
-
 void		bin_resolve_label(t_write *out, size_t offset)
 {
 	ssize_t	src;
@@ -140,16 +155,17 @@ void		bin_resolve_label(t_write *out, size_t offset)
 	size_t save_ocp;
 	size_t save_off;
 
-	io_flush(out);
+	if (out->flushable)
+		io_flush(out);
 	src = out->nbr_write;
 	while (offset != 0x0000)
 	{
-		lseek(out->fd, offset, SEEK_SET);
-		read(out->fd, &opcode, 1);
+		io_seek(out, offset, true);
+		io_write_read(out, &opcode, 1);
 		if (g_ops[opcode].params[1])
 		{
 			size = 0;
-			read(out->fd, &ocp, 1);
+			io_write_read(out, &ocp, 1);
 			i = 0;
 			while (i < (ocp & 0b11) && i < 2)
 			{
@@ -164,9 +180,9 @@ void		bin_resolve_label(t_write *out, size_t offset)
 			}
 			save_ocp = ocp;
 			ocp &= 0b11111100;
-			lseek(out->fd, -1, SEEK_CUR);
+			io_seek(out, -1, false);
 			write(out->fd, &ocp, 1);
-			lseek(out->fd, size, SEEK_CUR);
+			io_seek(out, size, false);
 			size = 2;
 			uint8_t type = (ocp >> ((3 - i) * 2)) & 0b11;
 			if (type == 0b10 && (!(g_ops[opcode].params[i] & PARAM_INDEX)))
@@ -178,10 +194,11 @@ void		bin_resolve_label(t_write *out, size_t offset)
 			if (g_ops[opcode].params[0] & PARAM_DIRECT && (!(g_ops[opcode].params[0] & PARAM_INDEX)))
 				size = 4;
 		}
-		read(out->fd, tmp, size);
-		lseek(out->fd, -size, SEEK_CUR);
+		io_write_read(out, tmp, size);
+		io_seek(out, -size, false);
 		io_write_int(out, src - (ssize_t)offset, size);
-		io_flush(out);
+		if (out->flushable)
+			io_flush(out);
 		save_off = offset;
 		if (size == 2)
 			offset = tmp[0] * 0x100 + tmp[1];
@@ -189,7 +206,7 @@ void		bin_resolve_label(t_write *out, size_t offset)
 			offset = tmp[0] * 0x1000000 + tmp[1] * 0x10000 + tmp[2] * 0x100 + tmp[3];
 		if (save_off == offset)
 		{
-			lseek(out->fd, (save_off + 1), SEEK_SET);
+			io_seek(out, (save_off + 1), true);
 			if ((save_ocp & 0b11) >= 2)
 				save_ocp -= 2;
 			else
@@ -198,7 +215,7 @@ void		bin_resolve_label(t_write *out, size_t offset)
 			write(out->fd, &ocp, 1);
 		}
 	}
-	lseek(out->fd, src, SEEK_SET);
-//	lseek (out->fd, 0, SEEK_END); TODO David need to work
+	io_seek(out, src, true);
+//	io_seek (out->fd, 0, SEEK_END); TODO David need to work
 	out->nbr_write = src;
 }
