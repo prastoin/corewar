@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/27 10:51:27 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/27 11:20:23 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -344,7 +344,6 @@ void		case_label(t_hashtable **table, t_instruction inst, t_write *out, t_read *
 			print_error(2, in->begin, in->span, "Label already exists: ", NULL);
 		else
 		{
-			printf("%s\n", entry->key);
 			bin_resolve_label(out, entry->offset);
 			entry->resolve = true;
 			entry->offset = out->nbr_write;
@@ -444,7 +443,6 @@ int main(int argc, char *argv[])
 		return 1;
 		// ERROR
 	}
-	printf("%s\n", out);
 	if ((fd = open(file, O_RDONLY)) == -1)
 	{
 		printf("open failed\n");

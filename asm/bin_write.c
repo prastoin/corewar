@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/27 10:21:30 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/27 11:56:16 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,16 +154,65 @@ bool	write_header(t_header *head, t_write *out)
 	return (true);
 }
 
+void		bin_padding_ocp(uint8_t ocp, t_write *out, int8_t *size, uint8_t opcode)
+{
+	uint8_t i;
+	uint8_t type;
+
+	(*size) = 0;
+	i = 0;
+	while (i < (ocp & 0b11) && i < 2)
+	{
+		type = (ocp >> ((3 - i) * 2)) & 0b11;
+		if (type == 0b01)
+			(*size) += 1;
+		else if (type == 0b10)
+			(*size) += g_ops[opcode].params[i] & PARAM_INDEX ? 2 : 4;
+		else if (type == 0b11)
+			(*size) += 2;
+		i++;
+	}
+	ocp &= 0b11111100;
+	io_seek(out, -1, false);
+	io_write(out, &ocp, 1);
+	io_seek(out, (*size), false);
+	(*size) = 2;
+	type = (ocp >> ((3 - i) * 2)) & 0b11;
+	if (type == 0b10 && (!(g_ops[opcode].params[i] & PARAM_INDEX)))
+		(*size) = 4;
+}
+
+size_t		bin_multi_label_case(size_t offset, int8_t size, t_write *out, int8_t ocp)
+{
+	size_t save_off;
+	uint8_t tmp[4];
+
+	io_write_read(out, tmp, size);
+	io_seek(out, -size, false);
+	io_write_int(out, out->nbr_write - (ssize_t)offset, size);
+	save_off = offset;
+	if (size == 2)
+		offset = tmp[0] * 0x100 + tmp[1];
+	else if (size == 4)
+		offset = tmp[0] * 0x1000000 + tmp[1] * 0x10000 + tmp[2] * 0x100 + tmp[3];
+	if (save_off == offset)
+	{
+		io_seek(out, (save_off + 1), true);
+		if ((ocp & 0b11) >= 2)
+			ocp -= 2;
+		else
+			ocp -= 1;
+		io_write(out, &ocp, 1);
+	}
+	return (offset);
+}
+
 void		bin_resolve_label(t_write *out, size_t offset)
 {
 	ssize_t	src;
 	uint8_t	opcode;
 	uint8_t	ocp;
-	uint8_t	tmp[4];
 	int8_t	size;
-	size_t	i;
-	size_t save_ocp;
-	size_t save_off;
 
 	src = out->nbr_write;
 	while (offset != 0x0000)
@@ -172,56 +221,15 @@ void		bin_resolve_label(t_write *out, size_t offset)
 		io_write_read(out, &opcode, 1);
 		if (g_ops[opcode].params[1])
 		{
-			size = 0;
 			io_write_read(out, &ocp, 1);
-			i = 0;
-			while (i < (ocp & 0b11) && i < 2)
-			{
-				uint8_t type = (ocp >> ((3 - i) * 2)) & 0b11;
-				if (type == 0b01)
-					size += 1;
-				else if (type == 0b10)
-					size += g_ops[opcode].params[i] & PARAM_INDEX ? 2 : 4;
-				else if (type == 0b11)
-					size += 2;
-				i++;
-			}
-			save_ocp = ocp;
-			ocp &= 0b11111100;
-			io_seek(out, -1, false);
-			io_write(out, &ocp, 1);
-			io_seek(out, size, false);
-			size = 2;
-			uint8_t type = (ocp >> ((3 - i) * 2)) & 0b11;
-			if (type == 0b10 && (!(g_ops[opcode].params[i] & PARAM_INDEX)))
-				size = 4;
+			bin_padding_ocp(ocp, out, &size, opcode);
 		}
 		else
-		{
-			size = 2;
-			if (g_ops[opcode].params[0] & PARAM_DIRECT && (!(g_ops[opcode].params[0] & PARAM_INDEX)))
-				size = 4;
-		}
-		io_write_read(out, tmp, size);
-		io_seek(out, -size, false);
-		io_write_int(out, src - (ssize_t)offset, size);
-		save_off = offset;
-		if (size == 2)
-			offset = tmp[0] * 0x100 + tmp[1];
-		else if (size == 4)
-			offset = tmp[0] * 0x1000000 + tmp[1] * 0x10000 + tmp[2] * 0x100 + tmp[3];
-		if (save_off == offset)
-		{
-			io_seek(out, (save_off + 1), true);
-			if ((save_ocp & 0b11) >= 2)
-				save_ocp -= 2;
-			else
-				save_ocp -= 1;
-			ocp = save_ocp;
-			io_write(out, &ocp, 1);
-		}
+			size = g_ops[opcode].params[0] & PARAM_DIRECT
+				&& (!(g_ops[opcode].params[0] & PARAM_INDEX)) ? 4 : 2;
+		out->nbr_write = src;
+		offset = bin_multi_label_case(offset, size, out, ocp);
 	}
 	io_seek(out, src, true);
-//	io_seek (out->fd, 0, SEEK_END); TODO David need to work
 	out->nbr_write = src;
 }
