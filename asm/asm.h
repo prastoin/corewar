@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/27 09:36:40 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/27 13:44:58 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,9 @@ void	io_flush(t_write *out);
 void		bin_resolve_label(t_write *out, size_t offset);
 void	print_error(uintmax_t severity, t_span begin, t_span end, char *error, char *expected);
 char	*from_int_to_type(size_t type);
+void	io_write(t_write *out, void *o_data, size_t size);
+void	io_write_one(t_write *out, char c);
+void		io_seek(t_write *out, ssize_t offset, bool set_cur);
 
 /*
 ** Hashtable.c
