@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/26 16:31:50 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/27 09:36:40 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 
 #define BUFFER_SIZE  4096
 #define HEADER_SIZE  16 + PROG_NAME_LENGTH + COMMENT_LENGTH
-#define EXT ".cor"
+#define EXT ".cro"
 
 #define MAX_PARAM 4
 

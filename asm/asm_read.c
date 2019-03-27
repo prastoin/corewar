@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/26 17:42:58 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/27 10:51:27 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -344,6 +344,7 @@ void		case_label(t_hashtable **table, t_instruction inst, t_write *out, t_read *
 			print_error(2, in->begin, in->span, "Label already exists: ", NULL);
 		else
 		{
+			printf("%s\n", entry->key);
 			bin_resolve_label(out, entry->offset);
 			entry->resolve = true;
 			entry->offset = out->nbr_write;
@@ -386,7 +387,7 @@ bool	asm_parser(t_write *out, t_read *in, t_hashtable *table)
 		}
 	}
 	bin_write_end(out);
-	return (0);
+	return (true);
 }
 
 void		read_fixed(t_read *in, char *name)
@@ -403,6 +404,7 @@ void		read_fixed(t_read *in, char *name)
 		return ;
 	out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	write (out.fd, out.buffer, out.nbr_write);
+	printf("fin\n");
 	return ;
 }
 
@@ -419,6 +421,7 @@ void		read_streaming(t_read *in, char *name)
 	out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	table = create_hashtable(8);
 	asm_parser(&out, in, table);
+	printf("fin\n");
 }
 
 int main(int argc, char *argv[])

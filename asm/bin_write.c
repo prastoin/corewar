@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/26 18:08:22 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/27 10:21:30 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,11 @@
 
 void	io_flush(t_write *out)
 {
-	printf("Je flush\n");
-	printf("%s\n", out->buffer);
 	if (out->flushable == true)
-		write(out->fd, out->buffer, out->index);
+	{
+		if (out->index)
+			write(out->fd, out->buffer, out->index);
+	}
 	else
 	{
 		printf("ERROR\n");
@@ -28,10 +29,12 @@ void	io_flush(t_write *out)
 	out->index = 0;
 }
 
-void	io_write(t_write *out, char *data, size_t size)
+void	io_write(t_write *out, void *o_data, size_t size)
 {
 	size_t space;
+	uint8_t	*data;
 
+	data = o_data;
 	space = out->buffer_size - out->index;
 	while (space < size)
 	{
@@ -99,18 +102,24 @@ void		bin_write_inst(t_write *out, t_instruction *inst, uint8_t last_label)
 void		io_seek(t_write *out, ssize_t offset, bool set_cur)
 {
 	if (out->flushable)
+	{
+		io_flush(out);
 		lseek(out->fd, offset, (set_cur ? SEEK_SET : SEEK_CUR));
+	}
 	else
 		if (set_cur)
 			out->index = offset;
 		else
-			out->index -= offset;
+			out->index += offset;
 }
 
 void		io_write_read(t_write *out, uint8_t *tmp, size_t size)
 {
 	if (out->flushable)
+	{
+		io_flush(out);
 		read(out->fd, tmp, size);
+	}
 	else
 	{
 		ft_memcpy(tmp, out->buffer + out->index, size);
@@ -131,16 +140,17 @@ void	bin_write_end(t_write *out)
 	io_write_int(out, out->nbr_write - len, 4);
 	if (out->flushable)
 		io_flush(out);
+	out->nbr_write -= 4;
 }
 
 bool	write_header(t_header *head, t_write *out)
 {
 	io_write_int(out, COREWAR_EXEC_MAGIC, 4);
 	io_write(out, head->name, sizeof(head->name));
-	io_write(out, (char [4]){0, 0, 0, 0}, 4 - sizeof(head->name) % 4);
+	io_write(out, (uint8_t [4]){0, 0, 0, 0}, 4 - sizeof(head->name) % 4);
 	io_write_int(out, 0, 4);
 	io_write(out, head->comment, sizeof(head->comment));
-	io_write(out, (char [4]){0, 0, 0, 0}, 4 - sizeof(head->comment) % 4);
+	io_write(out, (uint8_t [4]){0, 0, 0, 0}, 4 - sizeof(head->comment) % 4);
 	return (true);
 }
 
@@ -155,8 +165,6 @@ void		bin_resolve_label(t_write *out, size_t offset)
 	size_t save_ocp;
 	size_t save_off;
 
-	if (out->flushable)
-		io_flush(out);
 	src = out->nbr_write;
 	while (offset != 0x0000)
 	{
@@ -181,7 +189,7 @@ void		bin_resolve_label(t_write *out, size_t offset)
 			save_ocp = ocp;
 			ocp &= 0b11111100;
 			io_seek(out, -1, false);
-			write(out->fd, &ocp, 1);
+			io_write(out, &ocp, 1);
 			io_seek(out, size, false);
 			size = 2;
 			uint8_t type = (ocp >> ((3 - i) * 2)) & 0b11;
@@ -197,8 +205,6 @@ void		bin_resolve_label(t_write *out, size_t offset)
 		io_write_read(out, tmp, size);
 		io_seek(out, -size, false);
 		io_write_int(out, src - (ssize_t)offset, size);
-		if (out->flushable)
-			io_flush(out);
 		save_off = offset;
 		if (size == 2)
 			offset = tmp[0] * 0x100 + tmp[1];
@@ -212,7 +218,7 @@ void		bin_resolve_label(t_write *out, size_t offset)
 			else
 				save_ocp -= 1;
 			ocp = save_ocp;
-			write(out->fd, &ocp, 1);
+			io_write(out, &ocp, 1);
 		}
 	}
 	io_seek(out, src, true);

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 16:49:30 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/25 11:38:08 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/27 09:31:08 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 
 # define MAX_ARGS_NUMBER 4
 # define MAX_PLAYERS 4
-# define MEM_SIZE (4*1024)
+# define MEM_SIZE (100*1024)
 # define IDX_MOD (MEM_SIZE / 8)
 # define CHAMP_MAX_SIZE (MEM_SIZE / 6)
 
