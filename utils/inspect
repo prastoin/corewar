@@ -144,7 +144,7 @@ const INSTRUCTIONS = new Map([
 function readBytecodeHeader(view) {
     let offset = 0;
 
-    if (view.getUint32(offset) == COREWAR_EXEC_MAGIC)
+    if (view.getUint32(offset) != COREWAR_EXEC_MAGIC)
         throw new Error(`Invalid magic: ${view.getUint32(offset)}`);
     offset += 4;
     

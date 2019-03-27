@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/27 11:20:23 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/03/27 12:09:43 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,7 @@ bool		asm_parse_header(t_read *rd, t_header *header)
 		}
 	}
 	else
-	{
-		print_error(1, begin, rd->span, ".name not found", NULL);
-	}
+		print_small_error(1, ".name not found");
 	asm_skip_ws(rd);
 	begin = rd->span;
 	if (io_expect(rd, "."))
@@ -113,9 +111,7 @@ bool		asm_parse_header(t_read *rd, t_header *header)
 		}
 	}
 	else
-	{
-		print_error(1, begin, rd->span, ".comment not found", NULL);
-	}
+		print_small_error(1, ".comment not found");
 	return (true);
 }
 
@@ -278,7 +274,8 @@ char			*change_ext(char *name)
 	static char	file[PATH_MAX - 1];
 	char		*dot;
 
-	dot = ft_strrchr(name, '.');
+	if (!(dot = ft_strrchr(name, '.')))
+		dot = name + ft_strlen(name);
 	if ((dot - name + (sizeof(EXT) - 1)) > PATH_MAX)
 		return (NULL);
 	ft_memcpy(file, name, dot - name);

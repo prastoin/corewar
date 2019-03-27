@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 17:54:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/26 17:42:18 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/27 11:53:38 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,36 +35,58 @@ char	*from_int_to_type(size_t type)
 	return (NULL);
 }
 
+#define SEV_1 "error: "
+#define SEV_2 "warning: "
+#define LEN_1 sizeof(SEV_1)
+#define LEN_2 sizeof(SEV_2)
+
 void	error_severity(size_t severity)
 {
-	severity == 1 ? write(2, CSI_RED, (sizeof(CSI_RED) - 1)) : write(2, CSI_YELLOW, (sizeof(CSI_YELLOW) - 1));
-	severity == 1 ? write(2, "error: ", ft_strlen("error: ")) : write(2, "warning: ", ft_strlen("warning: "));
+	if (severity == 1)
+	{
+		write(2, CSI_RED, (sizeof(CSI_RED) - 1));
+		write(2, "error: ", ft_strlen("error: "));
+	}
+	if (severity == 2)
+	{
+		write(2, CSI_YELLOW, (sizeof(CSI_YELLOW) - 1));
+		write(2, "warning: ", ft_strlen("warning: "));
+	}
 	write(2, CSI_RESET, (sizeof(CSI_RESET) - 1));
 }
 
-void	print_error(uintmax_t severity, t_span begin, t_span end, char *error, char *expected)
+void	error_msg(char *error)
 {
-	size_t	fd;
-	char	buffer[4096]; //arevoir la taille pas confiant
-	size_t	len;
-
-	//printf("\ndeb = %d:%d fin = %d:%d\n", begin.lines, begin.col, end.lines, end.col);
-	error_severity(severity);
-	//affichage error
 	write(2, CSI_WHITE, (sizeof(CSI_WHITE) - 1));
 	write(2, error, ft_strlen(error));
-	//affichage de l erreur;
-	len = end.col + 100;
+}
+
+void	locate_error(t_span begin)
+{
+	dprintf(2, CSI_RESET "\n- <%s>:%zu:%zu\n", begin.file_name, begin.lines, begin.col);
+}
+
+void	error_contxt_print(t_span begin, t_span end, char buffer[])
+{
+	size_t	fd;
+	size_t	len;
+	size_t	i;
+
+	i = 0;
 	fd = open(begin.file_name, O_RDONLY);
+	len = end.col + 100;
 	lseek(fd, begin.offset - begin.col + 1, SEEK_SET);
-	read(fd, buffer, len);
-	int  i = 0;
+	len = read(fd, buffer, len);
 	while (i < len  && buffer[i] != '\n')
 		i++;
 	len = i;
-	//conseils
-	dprintf(2, CSI_RESET "\n- <%s>:%zu:%zu\n", begin.file_name, begin.lines, begin.col);
-	dprintf(2, CSI_BLUE "%4zu │ " CSI_RESET "%.*s\n"  CSI_BLUE "     │ ", begin.lines, len, buffer, begin.file_name);
+	dprintf(2, CSI_BLUE "%4zu │ " CSI_RESET "%.*s\n"  CSI_BLUE "     │ ", begin.lines, (int)len, buffer);//, begin.file_name);
+}
+
+void		underline_error(t_span begin, t_span end, uintmax_t severity, char buffer[])
+{
+	size_t i;
+
 	i = 0;
 	while (i < begin.col - 1)
 	{
@@ -85,12 +107,29 @@ void	print_error(uintmax_t severity, t_span begin, t_span end, char *error, char
 		dprintf(2, "^");
 		i++;
 	}
-	if (expected)
-		dprintf(2, " %s\n", expected);
-	else
-		dprintf(2, "\n");
+}
 
-	write(2, CSI_RESET, (sizeof(CSI_RESET) - 1));
+void	print_small_error(uintmax_t severity, char *error)
+{
+	error_severity(severity);
+	error_msg(error);
+	write(2, CSI_RESET "\n\n", (sizeof(CSI_RESET) - 1 + 2));
+}
+
+void	print_error(uintmax_t severity, t_span begin, t_span end, char *error, char *expected)
+{
+	char	buffer[4096];
+	size_t  i;
+
+	i = 0;
+	error_severity(severity);
+	error_msg(error);
+	locate_error(begin);
+	error_contxt_print(begin, end, buffer);
+	underline_error(begin, end, severity, buffer);
+	if (expected)
+		dprintf(2, " %s", expected);
+	write(2, CSI_RESET "\n\n", (sizeof(CSI_RESET) - 1 + 2));
 }
 
 void	ex_error(char *str)
