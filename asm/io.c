@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/27 09:20:51 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/28 10:17:40 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ ssize_t		io_read(t_read *rd, uint8_t data[], size_t data_len)
 		ft_memcpy(data, rd->buffer + rd->index, remaining);
 		if ((ret = io_fill(rd)) <= 0)
 			return (ret < 0 ? ret : i);
-		rd->nbr_read += 1;
+		rd->nbr_read++;
 		data += remaining;
 		data_len -= remaining;
 		remaining = rd->len - rd->index;

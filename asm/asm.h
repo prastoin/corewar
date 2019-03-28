@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/27 13:44:58 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/28 14:03:20 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,7 @@ typedef struct	s_read
 	t_span		begin;
 }				t_read;
 
+
 #include <stdio.h>
 
 extern t_core_tab g_ops[17];
@@ -165,6 +166,8 @@ char	*from_int_to_type(size_t type);
 void	io_write(t_write *out, void *o_data, size_t size);
 void	io_write_one(t_write *out, char c);
 void		io_seek(t_write *out, ssize_t offset, bool set_cur);
+void	print_small_error(uintmax_t severity, char *error);
+void		ft_itoa_hexa(char *str, uintmax_t nb, size_t len);
 
 /*
 ** Hashtable.c
