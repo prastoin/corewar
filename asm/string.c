@@ -6,11 +6,26 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 10:05:53 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/22 11:35:39 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/28 16:48:15 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_string.h"
+
+char		*ft_strchr(const char *s, int c)
+{
+	size_t	i;
+	size_t	max;
+
+	i = 0;
+	max = ft_strlen(s);
+	while (s[i] != c && s[i])
+		i++;
+	if (i == max && s[i] != c)
+		return (0);
+	else
+		return ((char *)(s + i));
+}
 
 ssize_t		ft_strcmp(const char *s1, const char *s2)
 {

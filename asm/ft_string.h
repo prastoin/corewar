@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 10:07:00 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/27 14:31:33 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/03/28 16:48:31 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,6 @@ ssize_t		ft_strcmp(const char *s1, const char *s2);
 size_t		atoi_hexa(char nb[], size_t size);
 void	ft_putf_fd(int fd, char *fmt, ...);
 void		ft_putstr_fd(char *str, size_t fd);
+char		*ft_strchr(const char *s, int c);
 
 #endif
