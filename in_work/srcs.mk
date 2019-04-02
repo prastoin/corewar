@@ -1,0 +1,10 @@
+SRC += asm_files/asm_read.c
+SRC += asm_files/bin_write.c
+SRC += fcnt/error.c
+SRC += fcnt/ft_memcpy.c
+SRC += fcnt/ft_putf.c
+SRC += asm_files/hashtable.c
+SRC += fcnt/io.c
+SRC += fcnt/itoa_base.c
+SRC += includes/op.c
+SRC += fcnt/string.c
