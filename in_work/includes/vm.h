@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/02 13:39:35 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/02 16:30:56 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,6 @@
 
 #include "op.h"
 #include "asm.h"
-
-typedef struct	s_champ
-{
-	uint8_t		name[PATH_MAX];
-	size_t		fd;
-	int			num;
-	t_header	header;
-}				t_champ;
 
 typedef enum	e_arg_type
 {
@@ -34,19 +26,9 @@ typedef enum	e_arg_type
 
 typedef struct	s_datan
 {
-	size_t	index;
 	size_t	num;
 	char	*name;
 }				t_datan;
-
-typedef struct	s_flags
-{
-	t_datan	num[MAX_PLAYERS];
-	size_t	dump_c;
-	size_t	run_c;
-	bool	bin_o;
-	bool	ncurse_o;
-}				t_flags;
 
 typedef	struct	s_arg
 {
@@ -57,11 +39,21 @@ typedef	struct	s_arg
 	const char *help;
 }				t_arg;
 
+typedef struct	s_flags
+{
+	t_datan	*num;
+	size_t	dump_c;
+	size_t	run_c;
+	bool	bin_o;
+	bool	ncurse_o;
+}				t_flags;
+
 typedef struct	s_process
 {
 	size_t		offset;
 	size_t		cycle;
 	uint16_t	registre[16];
+	uint8_t		opcode;
 //	void(*fcnt)(int tab[4], int ocp);
 }				t_process;
 
@@ -69,7 +61,17 @@ typedef struct	s_vec
 {
 	size_t		len;
 	size_t		capacity;
-	t_process	process[];
+	t_process	processes[];
 }				t_vec;
+
+typedef struct	s_champ
+{
+	char		*name;
+	size_t		fd;
+	size_t		nbr_champ;
+	int			num;
+	t_header	header;
+	t_vec		*processes;
+}				t_champ;
 
 #endif

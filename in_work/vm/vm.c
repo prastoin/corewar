@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/28 17:27:19 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/02 16:38:22 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,12 +100,18 @@ static int	get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2])
 	{
 		value = NULL;
 		if (!*arg)
-		{
 			value = argv[++i[0]];
-			if (!value)
-				return (NO_ARG);
-			*(t_arg *)opt->value.
-		}
+		else
+			return(UNKNOWN_OPTION);
+		if (!value)
+			return (NO_ARG);
+		*((t_datan *)opt->value) = (t_datan) {
+			.num = atoi(value),
+				.name = argv[++i[0]]
+		};
+		if (((t_datan *)opt->value)->name == NULL)
+			return (NO_ARG);
+		//			*(t_arg *)opt->value; //TODO fill struct
 	}
 	return (0);
 }
@@ -156,7 +162,35 @@ bool	parse_short(const t_arg opt[], char **arg, char *argv[], size_t *i)
 	return (show_err(UNKNOWN_OPTION, argv[0], *arg, 1));
 }
 
-size_t		parse_args(const t_arg args[], int argc, char *argv[])
+bool		ft_check_is_struct(const t_arg opt[], t_champ champ[])
+{
+	int curr;
+	int fd;
+
+	curr = champ->nbr_champ;
+	if (((t_datan *)opt->value)->name != NULL)
+	{
+		if (curr >= MAX_PLAYERS)
+			return (false);
+		else
+		{
+			champ[curr] = (t_champ) {
+				.name = ((t_datan *)opt->value)->name,
+				.num = ((t_datan *)opt->value)->num
+			};
+			if (sizeof(champ[curr].name) > PATH_MAX)
+				return (false);
+			if ((fd = open(champ[curr].name, O_RDONLY)) < 0)
+				return (false);
+			champ[curr].fd = fd;
+		}
+		curr++;
+	}
+	champ->nbr_champ = curr;
+	return (true);
+}
+
+ssize_t		parse_args(const t_arg args[], int argc, char *argv[], t_champ champ[])
 {
 	size_t	i;
 	size_t err;
@@ -164,7 +198,7 @@ size_t		parse_args(const t_arg args[], int argc, char *argv[])
 
 	i = 0;
 	err = 0;
-	while (i < argc)
+	while (++i < argc)
 	{
 		arg = argv[i];
 		if (arg[0] != '-' || !arg[1])
@@ -181,18 +215,32 @@ size_t		parse_args(const t_arg args[], int argc, char *argv[])
 			arg += 2;
 			err |= parse_long(args, &arg, argv, &i);
 		}
+		if (!ft_check_is_struct(args, champ))
+//TODO			return ("max champ depasse");
+			return (-1);
 	}
 	return (err ? -1 : i);
 }
 
+/*	void		ft_exec(size_t nbr_player)
+	{
+	uint8_t		mem[MEM_SIZE];
+	size_t		i;
+
+	if (read(champ[i].fd, mem + (TODO), champ[i].header.size) != champ[i].header.size)
+	return (0);
+	}
+	*/
 int main(int argc, char *argv[])
 {
-	uint8_t		mem[MEM_SIZE];
 	t_champ		champ[MAX_PLAYERS];
-	size_t		i;
-	size_t		nbr_player;
 	t_flags		flags;
+	ssize_t		ret;
 
+	*champ = (t_champ) {
+	};
+	flags = (t_flags) {
+	};
 	const t_arg args[] = {
 		{ARG_STRUCT, 'n', "number", &flags.num, "Choose the number for a player"},
 		{ARG_INT, 'd', "dump", &flags.dump_c, "On sait pas on parse"},
@@ -201,15 +249,12 @@ int main(int argc, char *argv[])
 		{ARG_BOOLEAN, 'c', "ncurse_aff", &flags.ncurse_o, "Affichage Ncurse"},
 		{ARG_END, 0, 0, 0, 0}
 	};
-	i = 0;
-	parse_args(args, argc, argv);
-	while (i < nbr_player)
+	ret = parse_args(args, argc, argv, champ);
+	/*while (i < nbr_player)
 	{
 		champ[i].fd = open((const char *)champ[i].name, O_RDONLY);
 		bin_parse_header(champ[i].fd, &(champ[i].header));
-		if (read(champ[i].fd, mem + (2), champ[i].header.size) != champ[i].header.size)
-			return (0);
 		i++;
-	}
+	}*/
 	return (0);
 }
