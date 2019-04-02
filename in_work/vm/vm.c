@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/02 16:38:22 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/02 17:22:58 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,28 +162,33 @@ bool	parse_short(const t_arg opt[], char **arg, char *argv[], size_t *i)
 	return (show_err(UNKNOWN_OPTION, argv[0], *arg, 1));
 }
 
-bool		ft_check_is_struct(const t_arg opt[], t_champ champ[])
+bool		ft_check_is_struct(t_champ champ[], char *name, int n, bool flag)
 {
-	int curr;
-	int fd;
+	int			curr;
+	int			fd;
+	static bool	player[MAX_PLAYERS];
 
 	curr = champ->nbr_champ;
-	if (((t_datan *)opt->value)->name != NULL)
+	if (name)
 	{
-		if (curr >= MAX_PLAYERS)
+		if (curr >= MAX_PLAYERS || ft_strlen(name) > PATH_MAX)
+			return (false);
+		if ((fd = open(name, O_RDONLY)) < 0)
+			return (false);
+		if (!flag)
+			while (n <= MAX_PLAYERS && player[n - 1] == true)
+				n++;
+		if (n > MAX_PLAYERS || n <= 0)
+			return (false);
+		if (player[n - 1] == true)
 			return (false);
 		else
-		{
-			champ[curr] = (t_champ) {
-				.name = ((t_datan *)opt->value)->name,
-				.num = ((t_datan *)opt->value)->num
-			};
-			if (sizeof(champ[curr].name) > PATH_MAX)
-				return (false);
-			if ((fd = open(champ[curr].name, O_RDONLY)) < 0)
-				return (false);
-			champ[curr].fd = fd;
-		}
+			player[n - 1] = true;
+		champ[curr] = (t_champ) {
+			.name = name,
+			.num = n,
+			.fd = fd
+		};
 		curr++;
 	}
 	champ->nbr_champ = curr;
@@ -215,9 +220,9 @@ ssize_t		parse_args(const t_arg args[], int argc, char *argv[], t_champ champ[])
 			arg += 2;
 			err |= parse_long(args, &arg, argv, &i);
 		}
-		if (!ft_check_is_struct(args, champ))
-//TODO			return ("max champ depasse");
+		if (!ft_check_is_struct(champ, ((t_datan *)args->value)->name, ((t_datan *)args->value)->num, true))
 			return (-1);
+//TODO			return ("max champ depasse");
 	}
 	return (err ? -1 : i);
 }
@@ -249,7 +254,20 @@ int main(int argc, char *argv[])
 		{ARG_BOOLEAN, 'c', "ncurse_aff", &flags.ncurse_o, "Affichage Ncurse"},
 		{ARG_END, 0, 0, 0, 0}
 	};
-	ret = parse_args(args, argc, argv, champ);
+	if ((ret = parse_args(args, argc, argv, champ)) < 0)
+	{
+		printf("error, DAVID needs to WORK\n");
+		return (0);
+	}
+	while (ret < argc)
+	{
+		if (!ft_check_is_struct(champ, argv[ret], 1, false))
+		{
+			printf("error2\n");
+			return (0);
+		}
+		ret++;
+	}
 	/*while (i < nbr_player)
 	{
 		champ[i].fd = open((const char *)champ[i].name, O_RDONLY);
