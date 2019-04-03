@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/03 09:09:30 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/04/03 10:56:02 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,6 @@ typedef struct	s_datan
 	char	*name;
 }				t_datan;
 
-typedef struct	s_core_fcnt
-{
-	size_t			opcode;
-	void (*fcnt)(void *, void *, void *, void *);
-}				t_core_fcnt;
-
 typedef	struct	s_arg
 {
 	t_type	type;
@@ -56,10 +50,13 @@ typedef struct	s_flags
 
 typedef struct	s_process
 {
+	uintmax_t	nb_player;
+	bool		carry;
 	size_t		offset;
-	size_t		cycle;
+	size_t		cycle_to_do;
 	uint16_t	registre[16];
-	uint8_t		opcode;
+	uintmax_t	last_cycle_live;
+	uint8_t		is_alive;
 //	void(*fcnt)(int tab[4], int ocp);
 }				t_process;
 
@@ -79,5 +76,13 @@ typedef struct	s_champ
 	t_header	header;
 	t_vec		*processes;
 }				t_champ;
+
+typedef struct	s_vm
+{
+	uintmax_t cycle;
+	uintmax_t cycle_to_die;
+}				t_vm;
+
+typedef	bool (*t_core_fcnt)(t_vm *, t_process *, size_t *, uint8_t);
 
 #endif
