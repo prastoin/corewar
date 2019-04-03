@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/03 09:39:47 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/03 13:06:15 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,7 @@ void		bin_resolve_label(t_write *out, size_t offset)
 	{
 		io_seek(out, offset, true);
 		io_write_read(out, &opcode, 1);
-		if (g_ops[opcode].params[1])
+		if (g_ops[opcode].ocp == true)
 		{
 			io_write_read(out, &ocp, 1);
 			bin_padding_ocp(ocp, out, &size, opcode);
