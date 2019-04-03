@@ -6,14 +6,15 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 14:32:56 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/03 09:23:53 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/04/03 09:28:36 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-void		live(int *i)
+void		live(t_process *process, size_t *i)
 {
+	
 }
 
 t_core_fcnt g_fcnt[17] = {

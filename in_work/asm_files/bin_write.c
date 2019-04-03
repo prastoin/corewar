@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/28 09:28:12 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/03 09:39:47 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void		bin_write_inst(t_write *out, t_instruction *inst, uint8_t last_label)
 			ocp |= 0b01 << ((3 - i) * 2);
 		i++;
 	}
-	if (i > 1)
+	if (g_ops[inst->opcode].ocp == true)
 		io_write_int(out, ocp, 1);
 	i = 0;
 	while (g_ops[inst->opcode].params[i])
