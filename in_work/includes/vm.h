@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/02 16:30:56 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/03 09:09:30 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@ typedef struct	s_datan
 	size_t	num;
 	char	*name;
 }				t_datan;
+
+typedef struct	s_core_fcnt
+{
+	size_t			opcode;
+	void (*fcnt)(void *, void *, void *, void *);
+}				t_core_fcnt;
 
 typedef	struct	s_arg
 {
