@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/04 16:55:41 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/04 18:38:52 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,12 @@ typedef struct	s_process
 {
 	bool		carry;
 	size_t		offset;
+	bool		has_read;
 	size_t		cycle_to_do;
 	uint8_t		registre[16][REG_SIZE];
 	uint8_t		tampon[REG_SIZE];
-	uintmax_t	last_cycle_live;
 	bool		is_alive;
+	bool		said_live;
 }				t_process;
 
 typedef struct	s_vec
@@ -87,7 +88,9 @@ typedef struct	s_vm
 	uintmax_t	cycle_to_die;
 	bool		live[MAX_PLAYERS];
 	size_t		nbr_champ;
+	size_t		nbr_live;
 	bool		continu;
+	size_t		check;
 	t_champ		champ[MAX_PLAYERS];
 	t_vec		*vec;
 }				t_vm;
@@ -119,6 +122,7 @@ bool		bin_and(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE
 bool		bin_or(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]);
 bool		bin_xor(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]);
 uint32_t	conv_bin_num(uint8_t *str, uint8_t len);
+void		conv_int_to_bin(uint32_t nbr, uint8_t[REG_SIZE]);
 void		copy_process(t_process *dest, t_process *src);
 
 

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/04 16:29:28 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/04 18:38:49 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,105 @@ bool	bin_parse_header(size_t fd, t_champ *header)
 	return (true);
 }
 
+bool	ft_winner(t_champ champ[MAX_PLAYERS])
+{
+	ssize_t		min;
+	size_t		i;
+	size_t		winner;
+
+	i = 0;
+	min = -1;
+	while (i < MAX_PLAYERS)
+	{
+		if (min > champ[i].last_cycle_live || min == -1)
+		{
+			min = champ[i].last_cycle_live;
+			winner = i;
+		}
+		i++;
+	}
+	printf("%s a gagne avec le num %zu\n", champ[i].name, i);
+	return (false);
+}
+
+bool	cycle_decremente_die(t_vm *vm)
+{
+	if (vm->nbr_live == NBR_LIVE || vm->check == MAX_CHECKS)
+	{
+		vm->cycle_to_die -= CYCLE_DELTA;
+		vm->check = 0;
+		vm->nbr_live = 0;
+	}
+	else
+		vm->check++;
+	if (vm->cycle_to_die <= 0)
+		return (ft_winner(vm->champ));
+	return (true);
+}
+
+bool	vm_cycle_to_die(t_vm *vm)
+{
+	size_t i;
+	size_t dead;
+
+	if (vm->cycle == vm->cycle_to_die)
+	{
+		dead = 0;
+		i = 0;
+		while (i < MAX_PLAYERS)
+		{
+			if (vm->live[i] == true)
+				vm->live[i] = false;
+			else
+				dead++;
+			if (dead == MAX_PLAYERS)
+				return (ft_winner(vm->champ));
+		}
+		i = 0;
+		while (i < vm->vec->len)
+		{
+			if (vm->vec->processes[i].said_live == true)
+				vm->vec->processes[i].said_live = false;
+			else
+				vm->vec->processes[i].is_alive = false;
+		}
+		if (!cycle_decremente_die(vm))
+			return (false);
+	}
+	vm->cycle++;
+	return (true);
+}
+
+void	david_needs_to_work(t_vm vm)
+{
+	size_t i;
+	t_process process;
+
+	vm.continu = true;
+	while (vm.continu)
+	{
+		i = 0;
+		while (i < vm.vec->len)
+		{
+			process = vm.vec->processes[i];
+			if (process.is_alive)
+			{
+				if (process.cycle_to_do == 0 && process.has_read == false)
+					read_opcode_params();
+				if (process.cycle_to_do == 0)
+					ft_pass(process, vm);
+				if (process.cycle_to_do)
+					process.cycle_to_do--;
+			}
+			i++;
+		}
+		vm.continu = vm_cycle_to_die(&vm);
+	}
+	return ;
+}
+
+//TODO CLOSE TOUT LES FD
+
 bool	ft_play(t_vm vm)
 {
 	size_t i;
@@ -65,19 +164,9 @@ bool	ft_play(t_vm vm)
 	{
 		ft_memcpy(vm.mem + ((MEM_SIZE / vm.nbr_champ) * i), vm.champ[i].prog, vm.champ[i].size);
 		vm.vec->processes[i] = add_process(&(vm.vec), (MEM_SIZE / vm.nbr_champ) * i);
+		conv_int_to_bin(i, vm.vec->processes[i].registre[1]);
 		i++;
 	}
-	i = 0;
-	vm.continu = true;
-	while (vm.continu)
-	{
-		i = 0;
-		while (i < vm.vec->len)
-		{
-			
-			i++;
-		}
-		vm.cycle++;
-	}
+	david_needs_to_work(vm);
 	return (true);
 }
