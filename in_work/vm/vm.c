@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/03 09:54:18 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/04 17:03:34 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,40 +17,6 @@
 #define UNKNOWN_OPTION (-1)
 #define NO_ARG (-2)
 
-uint32_t		conv_bin_num(uint8_t *str, uint8_t len)
-{
-	uint8_t		i;
-	uint32_t	nb;
-
-	nb = 0;
-	while (i < len)
-	{
-		nb += nb * 0x100 + str[i];
-		i++;
-	}
-	return (nb);
-}
-
-bool	bin_parse_header(size_t fd, t_header *header)
-{
-	t_span	begin;
-	uint8_t	magic_len[4];
-
-	if (read(fd, magic_len, 4) != 4)
-		return (false);
-	if (conv_bin_num(magic_len, 4) != COREWAR_EXEC_MAGIC)
-		return (false);
-	if (read(fd, header->name, PROG_NAME_LENGTH) != PROG_NAME_LENGTH)
-		return (false);
-	lseek(fd, 4 - sizeof(header->name) % 4, SEEK_CUR);
-	if (read(fd, magic_len, 4) != 4)
-		return (false);
-	header->size = conv_bin_num(magic_len, 4);
-	if (read(fd, header->comment, COMMENT_LENGTH) != COMMENT_LENGTH)
-		return (false);
-	lseek(fd, 4 - sizeof(header->comment) % 4, SEEK_CUR);
-	return (true);
-}
 
 static int	show_err(int err, char *name, char *option, size_t len	)
 {
@@ -162,16 +128,14 @@ bool	parse_short(const t_arg opt[], char **arg, char *argv[], size_t *i)
 	return (show_err(UNKNOWN_OPTION, argv[0], *arg, 1));
 }
 
-bool		ft_check_is_struct(t_champ champ[], char *name, int n, bool flag)
+bool		ft_check_is_struct(t_vm *vm, char *name, int n, bool flag)
 {
-	int			curr;
 	int			fd;
 	static bool	player[MAX_PLAYERS];
 
-	curr = champ->nbr_champ;
 	if (name)
 	{
-		if (curr >= MAX_PLAYERS || ft_strlen(name) > PATH_MAX)
+		if (n >= MAX_PLAYERS || ft_strlen(name) > PATH_MAX)
 			return (false);
 		if ((fd = open(name, O_RDONLY)) < 0)
 			return (false);
@@ -184,18 +148,13 @@ bool		ft_check_is_struct(t_champ champ[], char *name, int n, bool flag)
 			return (false);
 		else
 			player[n - 1] = true;
-		champ[curr] = (t_champ) {
-			.name = name,
-			.num = n,
-			.fd = fd
-		};
-		curr++;
+		vm->champ[n].fd = fd;
+		vm->nbr_champ++;
 	}
-	champ->nbr_champ = curr;
 	return (true);
 }
 
-ssize_t		parse_args(const t_arg args[], int argc, char *argv[], t_champ champ[])
+ssize_t		parse_args(const t_arg args[], int argc, char *argv[], t_vm *vm)
 {
 	size_t	i;
 	size_t err;
@@ -220,7 +179,7 @@ ssize_t		parse_args(const t_arg args[], int argc, char *argv[], t_champ champ[])
 			arg += 2;
 			err |= parse_long(args, &arg, argv, &i);
 		}
-		if (!ft_check_is_struct(champ, ((t_datan *)args->value)->name, ((t_datan *)args->value)->num, true))
+		if (!ft_check_is_struct(vm, ((t_datan *)args->value)->name, ((t_datan *)args->value)->num, true))
 			return (-1);
 //TODO			return ("max champ depasse");
 	}
@@ -236,13 +195,15 @@ ssize_t		parse_args(const t_arg args[], int argc, char *argv[], t_champ champ[])
 	return (0);
 	}
 	*/
+
 int main(int argc, char *argv[])
 {
 	t_champ		champ[MAX_PLAYERS];
 	t_flags		flags;
+	t_vm		vm;
 	ssize_t		ret;
 
-	*champ = (t_champ) {
+	vm = (t_vm) {
 	};
 	flags = (t_flags) {
 	};
@@ -254,25 +215,14 @@ int main(int argc, char *argv[])
 		{ARG_BOOLEAN, 'c', "ncurse_aff", &flags.ncurse_o, "Affichage Ncurse"},
 		{ARG_END, 0, 0, 0, 0}
 	};
-	if ((ret = parse_args(args, argc, argv, champ)) < 0)
-	{
-		printf("error, DAVID needs to WORK\n");
+	if ((ret = parse_args(args, argc, argv, &vm)) < 0)
 		return (0);
-	}
 	while (ret < argc)
 	{
-		if (!ft_check_is_struct(champ, argv[ret], 1, false))
-		{
-			printf("error2\n");
+		if (!ft_check_is_struct(&vm, argv[ret], 1, false))
 			return (0);
-		}
 		ret++;
 	}
-	/*while (i < nbr_player)
-	{
-		champ[i].fd = open((const char *)champ[i].name, O_RDONLY);
-		bin_parse_header(champ[i].fd, &(champ[i].header));
-		i++;
-	}*/
+	ft_play(vm);
 	return (0);
 }

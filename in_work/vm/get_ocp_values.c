@@ -6,11 +6,24 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 15:21:34 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/03 16:53:16 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/04 15:07:08 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
+
+void		conv_int_to_bin(size_t nbr, uint8_t value[REG_SIZE])
+{
+	ssize_t i;
+
+	i = REG_SIZE - 1;
+	while (i >= 0)
+	{
+		value[i] = nbr % 0x100;
+		nbr /= 0x100;
+		i--;
+	}
+}
 
 bool		ft_check_ocp(uint8_t ocp, uint8_t opcode)
 {
@@ -28,46 +41,38 @@ bool		ft_check_ocp(uint8_t ocp, uint8_t opcode)
 	return (true);
 }
 
-ssize_t		ft_get_value(ssize_t nbr, uint8_t type, t_process *process, t_vm *vm)
+bool		ft_get_value(ssize_t nbr, uint8_t type, t_process *process, t_vm *vm)
 {
-	ssize_t value;
-	uint8_t str[8];
-
-	process->success = true;
 	if (type == OCP_REG)
 	{
 		if (nbr >= 16)
-			process->success = false;
+			return (false);
 		else
-			value = process->registre[nbr];
+			ft_memcpy(process->tampon, process->registre[nbr], REG_SIZE);
 	}
 	else if (type == OCP_DIR)
-		value = nbr;
+		conv_int_to_bin(nbr, process->tampon);
 	else if (type == OCP_IND)
-		value = (int16_t)mem_read(vm->mem, str, (process->offset + nbr) % MEM_SIZE, 2);
+		mem_read(vm->mem, process->tampon, (process->offset + nbr) % MEM_SIZE, 2);
 	else
-		process->success = false;
-	return (value);
+		return (false);
+	return (true);
 }
 
-ssize_t		ft_get_value_mod(ssize_t nbr, uint8_t type, t_process *process, t_vm *vm)
+bool		ft_get_value_mod(ssize_t nbr, uint8_t type, t_process *process, t_vm *vm)
 {
-	ssize_t value;
-	uint8_t str[8];
-
-	process->success = true;
 	if (type == OCP_REG)
 	{
 		if (nbr >= 16)
-			process->success = false;
+			return (false);
 		else
-			value = (int16_t)process->registre[nbr];
+			ft_memcpy(process->tampon, process->registre[nbr], REG_SIZE);
 	}
 	else if (type == OCP_DIR)
-		value = nbr;
+		conv_int_to_bin(nbr, process->tampon);
 	else if (type == OCP_IND)
-		value = (int16_t)mem_read(vm->mem, str, (process->offset + nbr % IDX_MOD) % MEM_SIZE, 2);
+		mem_read(vm->mem, process->tampon, (process->offset + nbr % IDX_MOD) % MEM_SIZE, 2);
 	else
-		process->success = false;
-	return (value);
+		return (false);
+	return (true);
 }

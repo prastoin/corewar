@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/02 14:20:14 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/02 14:56:08 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/04 15:55:32 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ t_vec		*create_process(size_t capacity)
 	return (list);
 }
 
-t_process	*add_process(t_vec **list, size_t offset)
+t_process	add_process(t_vec **list, size_t offset)
 {
 	size_t	new_capacity;
 
@@ -36,6 +36,21 @@ t_process	*add_process(t_vec **list, size_t offset)
 	}
 	(*list)->processes[(*list)->len++] = (t_process) {
 		.offset = offset,
+		.is_alive = true
 	};
-	return (*list)->processes + (*list)->len;
+	return ((*list)->processes[(*list)->len]);
+}
+
+void		copy_process(t_process *dest, t_process *src)
+{
+	size_t i;
+
+	i = 0;
+	dest->carry = src->carry;
+	dest->last_cycle_live = src->last_cycle_live;
+	while (i < REG_NUMBER)
+	{
+		ft_memcpy(dest->registre + i, src->registre + i, REG_SIZE);
+		i++;
+	}
 }
