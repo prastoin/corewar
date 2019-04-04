@@ -6,7 +6,11 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 14:32:56 by prastoin          #+#    #+#             */
+<<<<<<< Updated upstream
 /*   Updated: 2019/04/03 11:20:14 by fbecerri         ###   ########.fr       */
+=======
+/*   Updated: 2019/04/03 11:19:19 by prastoin         ###   ########.fr       */
+>>>>>>> Stashed changes
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,23 +52,3 @@ t_core_fcnt g_fcnt[17] = {
 	[0x10] = aff
 };
 
-bool		live(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
-{
-	if (process->cycle_to_do < 10)
-		return (false);
-	else if (param[0] == process->nb_player)
-	{
-		process->cycle_to_do = 0;
-		process->last_cycle_live = game->cycle;
-		process->is_alive = 1;
-	}
-	return (true);
-}
-
-bool		ld(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
-{
-	if (param[1] < 16)
-		return (false);
-	process->registre[param[0]] = param[1];
-	return (true);
-}

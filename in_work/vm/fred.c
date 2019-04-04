@@ -6,29 +6,12 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 11:19:49 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/04/03 14:07:26 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/04/03 15:57:16 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 #include "op.h"
-#define OCP_DIR 0b10
-#define OCP_REG 0b01
-#define OCP_IND 0b11
-
-void		mem_write_one(char *mem, char c, size_t offset)
-{
-	ft_memcpy(mem + offset, &c, 1);
-}
-
-void		mem_write_int(char *mem, size_t nb, size_t len, size_t offset)
-{
-	while (len != 0)
-	{
-		len--;
-		mem_write_one(mem, (nb >> (len * 8)) & 0xFF, offset);
-	}
-}
 
 bool		sub(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 {
@@ -40,7 +23,6 @@ bool		sub(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 bool		st(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 {
 	int8_t	value;
-	char	*mem; //TODO
 
 	if (process->cycle_to_do < 5)
 		return (false);

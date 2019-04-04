@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/03 10:56:02 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/03 16:53:03 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 #include "op.h"
 #include "asm.h"
+#define OCP_DIR 0b10
+#define OCP_REG 0b01
+#define OCP_IND 0b11
 
 typedef enum	e_arg_type
 {
@@ -50,6 +53,7 @@ typedef struct	s_flags
 
 typedef struct	s_process
 {
+	bool		success;
 	uintmax_t	nb_player;
 	bool		carry;
 	size_t		offset;
@@ -79,10 +83,20 @@ typedef struct	s_champ
 
 typedef struct	s_vm
 {
-	uintmax_t cycle;
-	uintmax_t cycle_to_die;
+	char		mem[MEM_SIZE];
+	uintmax_t	cycle;
+	uintmax_t	cycle_to_die;
+	bool		live[MAX_PLAYERS];
 }				t_vm;
 
 typedef	bool (*t_core_fcnt)(t_vm *, t_process *, size_t *, uint8_t);
+
+bool	ft_check_ocp(uint8_t ocp, uint8_t opcode);
+ssize_t	ft_get_value(ssize_t nbr, uint8_t type, t_process *processes, t_vm *vm);
+ssize_t	ft_get_value_mod(ssize_t nbr, uint8_t type, t_process *processes, t_vm *vm);
+void	mem_write(char mem[], char *value, size_t offset, size_t size);
+size_t	mem_read(char mem[], uint8_t str[], size_t offset, size_t size);
+void	mem_write_one(char mem[], char c, size_t offset);
+void	mem_write_int(char mem[], size_t nb, size_t len, size_t offset);
 
 #endif
