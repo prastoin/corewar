@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/04 18:38:49 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/05 16:54:50 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,11 +133,10 @@ void	david_needs_to_work(t_vm vm)
 			if (process.is_alive)
 			{
 				if (process.cycle_to_do == 0 && process.has_read == false)
-					read_opcode_params();
+					read_opcode(&vm, vm.vec->processes + i);
 				if (process.cycle_to_do == 0)
-					ft_pass(process, vm);
-				if (process.cycle_to_do)
-					process.cycle_to_do--;
+					ft_pass(&vm, vm.vec->processes + i);
+				process.cycle_to_do--;
 			}
 			i++;
 		}

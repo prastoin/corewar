@@ -1,0 +1,13 @@
+VMSRC += bin_math.c
+VMSRC += exec.c
+VMSRC += fcnt_01_04.c
+VMSRC += fcnt_05_08.c
+VMSRC += fcnt_09_12.c
+VMSRC += fcnt_13_16.c
+VMSRC += get_ocp_values.c
+VMSRC += io_mem.c
+VMSRC += op.c
+VMSRC += pass_opcode.c
+VMSRC += play.c
+VMSRC += tools_fcnt.c
+VMSRC += vm.c

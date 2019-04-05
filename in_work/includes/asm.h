@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/04 09:48:12 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/05 14:27:53 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct	s_core_tab
 	size_t			opcode;
 	char			*name;
 	bool			ocp;
+	size_t			cycle;
 	t_core_param	params[MAX_PARAM];
 }				t_core_tab;
 

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:27:13 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/04 17:02:03 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/05 16:42:47 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ bool		ldi(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 	uint8_t		adr[REG_SIZE];
 	uint64_t	adress;
 
-	if (!ft_check_ocp(ocp, 10) || param[2] >= 16)
+	if (param[2] >= 16)
 		return (invalid(process));
 	if (!ft_get_value_mod(param[0], (ocp >> 6 & 0b11), process, game))
 		return (invalid(process));
@@ -45,7 +45,7 @@ bool		sti(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 	uint8_t		adr[REG_SIZE];
 	uint64_t	adress;
 
-	if (!ft_check_ocp(ocp, 11) || param[0] >= 16)
+	if (param[0] >= 16)
 		return (carry_down(process));
 	if (!ft_get_value_mod(param[1], (ocp >> 4 & 0b11), process, game))
 		return (carry_down(process));

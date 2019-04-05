@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 11:18:42 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/04 16:46:51 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/05 15:30:20 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,20 +43,20 @@ bool	carry_up(t_process *process, uint8_t ocp, int opcode)
 
 	process->carry = 1;
 	decale = get_decale(ocp, opcode);
-	process->offset += decale;
+	inc_process_off_mod(process, decale, false);
 	return (true);
 }
 
 bool	carry_down(t_process *process)
 {
 	process->carry = -1;
-	process->offset++;
+	inc_process_off_mod(process, 1, false);
 	return (false);
 }
 
 bool	invalid(t_process *process)
 {
-	process->offset++;
+	inc_process_off_mod(process, 1, false);
 	return (false);
 }
 
@@ -65,6 +65,17 @@ bool	valid(t_process *process, uint8_t ocp, int opcode)
 	size_t decale;
 
 	decale = get_decale(ocp, opcode);
-	process->offset += decale;
+	inc_process_off_mod(process, decale, false);
 	return (true);
+}
+
+void	inc_process_off_mod(t_process *process, size_t size, bool mod)
+{
+	if (mod == false)
+		process->offset = (process->offset + size) % MEM_SIZE;
+	else
+	{
+		process->offset += size % IDX_MOD;
+		process->offset = process->offset % MEM_SIZE;
+	}
 }

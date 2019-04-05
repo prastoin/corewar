@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/04 17:01:32 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/05 16:43:18 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 bool		lld(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 {
-	if (!ft_check_ocp(ocp, 13))
-		return (carry_down(process));
 	if (param[1] >= 16)
 		return (carry_down(process));
 	if (!ft_get_value(param[0], ocp >> 6 & 0b11, process, game))
@@ -30,7 +28,7 @@ bool		lldi(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 	uint8_t		adr[REG_SIZE];
 	uint64_t	adress;
 
-	if (!ft_check_ocp(ocp, 14) || param[2] >= 16)
+	if (param[2] >= 16)
 		return (carry_down(process));
 	if (!ft_get_value(param[0], (ocp >> 6 & 0b11), process, game))
 		return (carry_down(process));
@@ -57,7 +55,7 @@ bool		aff(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 	size_t		i;
 	uint8_t		c;
 
-	if (!ft_check_ocp(ocp, 16) || param[0] >= 16)
+	if (param[0] >= 16)
 		return (invalid(process));
 	i = 0;
 	while (i < REG_SIZE)

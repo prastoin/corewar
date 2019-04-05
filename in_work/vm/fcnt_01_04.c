@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:22:08 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/04 17:03:22 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/05 17:22:09 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,18 @@
 
 bool		live(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 {
-	process->last_cycle_live = game->cycle;
-	process->is_alive = 1;
+
+	process->said_live = true;
 	if (param[0] >= 1 && param[0] <= MAX_PLAYERS)
 		game->live[param[0] - 1] = true;
+	game->nbr_live++;
+	game->champ[param[0]].last_cycle_live = game->cycle;
 	return (valid(process, 0b10, 1));
 }
 
 bool		ld(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 {
-	if (!ft_check_ocp(ocp, 2) || param[1] >= 16)
+	if (param[1] >= 16)
 		return (carry_down(process));
 	if (!ft_get_value_mod(param[0], ocp >> 6 & 0b11, process, game))
 		return (carry_down(process));
@@ -33,7 +35,7 @@ bool		ld(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 
 bool		st(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 {
-	if (!ft_check_ocp(ocp, 3) || param[0] >= 16)
+	if (param[0] >= 16)
 		return (carry_down(process));
 	if ((ocp >> 4 & 0b11) == OCP_REG)
 	{
@@ -53,7 +55,7 @@ bool		add(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 {
 	uint8_t op1[REG_SIZE];
 
-	if (!ft_check_ocp(ocp, 4) || param[2] >= 16)
+	if (param[2] >= 16)
 		return (carry_down(process));
 	if (!(ft_get_value_mod(param[0], (ocp >> 6 & 0b11), process, game)))
 		return (carry_down(process));

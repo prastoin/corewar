@@ -6,28 +6,11 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 14:32:56 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/04 17:04:16 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/05 14:55:03 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
-
-bool		live(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool		ld(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool		st(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool		add(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool		sub(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool		and(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool		or(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool		xor(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool		zjmp(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool		ldi(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool		sti(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool		ft_fork(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool		lld(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool		lldi(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool		lfork(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool		aff(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
 
 t_core_fcnt g_fcnt[17] = {
 	[0x01] = live,
