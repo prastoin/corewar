@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/04 17:03:34 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/08 14:47:52 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ static int	get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2])
 {
 	char	*arg;
 	char	*value;
-	char	*name;
 
 	arg = *c_arg + i[1];
 	if (opt->type == ARG_BOOLEAN)
@@ -78,7 +77,7 @@ static int	get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2])
 		if (((t_datan *)opt->value)->name == NULL)
 			return (NO_ARG);
 		//			*(t_arg *)opt->value; //TODO fill struct
-	}
+	};
 	return (0);
 }
 
@@ -148,7 +147,7 @@ bool		ft_check_is_struct(t_vm *vm, char *name, int n, bool flag)
 			return (false);
 		else
 			player[n - 1] = true;
-		vm->champ[n].fd = fd;
+		vm->champ[n - 1].fd = fd;
 		vm->nbr_champ++;
 	}
 	return (true);
@@ -157,12 +156,12 @@ bool		ft_check_is_struct(t_vm *vm, char *name, int n, bool flag)
 ssize_t		parse_args(const t_arg args[], int argc, char *argv[], t_vm *vm)
 {
 	size_t	i;
-	size_t err;
+	size_t	err;
 	char	*arg;
 
 	i = 0;
 	err = 0;
-	while (++i < argc)
+	while ((int)++i < argc)
 	{
 		arg = argv[i];
 		if (arg[0] != '-' || !arg[1])
@@ -198,12 +197,12 @@ ssize_t		parse_args(const t_arg args[], int argc, char *argv[], t_vm *vm)
 
 int main(int argc, char *argv[])
 {
-	t_champ		champ[MAX_PLAYERS];
 	t_flags		flags;
 	t_vm		vm;
 	ssize_t		ret;
 
 	vm = (t_vm) {
+		.cycle_to_die = CYCLE_TO_DIE
 	};
 	flags = (t_flags) {
 	};

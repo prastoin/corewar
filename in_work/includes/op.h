@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 16:49:30 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/04 10:37:02 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/08 10:30:11 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@
 
 # define REG_NUMBER 16
 
-# define CYCLE_TO_DIE153 6
+# define CYCLE_TO_DIE 1536
 # define CYCLE_DELTA 50
 # define NBR_LIVE 21
 # define MAX_CHECKS 10

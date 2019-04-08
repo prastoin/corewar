@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/05 16:54:50 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/08 16:27:23 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,14 @@
 
 uint32_t		conv_bin_num(uint8_t *str, uint8_t len)
 {
-	uint8_t		i;
-	uint32_t	nb;
+	size_t		i;
+	size_t		nb;
 
 	nb = 0;
+	i = 0;
 	while (i < len)
 	{
-		nb += nb * 0x100 + str[i];
+		nb = nb * 0x100 + str[i];
 		i++;
 	}
 	return (nb);
@@ -28,7 +29,7 @@ uint32_t		conv_bin_num(uint8_t *str, uint8_t len)
 
 bool	bin_parse_header(size_t fd, t_champ *header)
 {
-	t_span	begin;
+//	t_span	begin; a implementer
 	uint8_t	magic_len[4];
 
 	if (read(fd, magic_len, 4) != 4)
@@ -40,11 +41,12 @@ bool	bin_parse_header(size_t fd, t_champ *header)
 	lseek(fd, 4 - sizeof(header->name) % 4, SEEK_CUR);
 	if (read(fd, magic_len, 4) != 4)
 		return (false);
-	header->size = conv_bin_num(magic_len, 4);
+	if ((header->size = conv_bin_num(magic_len, 4)) > CHAMP_MAX_SIZE)
+		return (false);
 	if (read(fd, header->comment, COMMENT_LENGTH) != COMMENT_LENGTH)
 		return (false);
 	lseek(fd, 4 - sizeof(header->comment) % 4, SEEK_CUR);
-	if (read(fd, header->prog, header->size) != header->size)
+	if (read(fd, header->prog, header->size) != (ssize_t)header->size)
 		return (false);
 	return (true);
 }
@@ -59,7 +61,7 @@ bool	ft_winner(t_champ champ[MAX_PLAYERS])
 	min = -1;
 	while (i < MAX_PLAYERS)
 	{
-		if (min > champ[i].last_cycle_live || min == -1)
+		if (min > (ssize_t)champ[i].last_cycle_live || min == -1)
 		{
 			min = champ[i].last_cycle_live;
 			winner = i;
@@ -90,8 +92,9 @@ bool	vm_cycle_to_die(t_vm *vm)
 	size_t i;
 	size_t dead;
 
-	if (vm->cycle == vm->cycle_to_die)
+	if (vm->cycle % vm->cycle_to_die == 0 && vm->cycle != 0)
 	{
+		printf("DIE UPDATE | au cycle = %zu\n", vm->cycle);
 		dead = 0;
 		i = 0;
 		while (i < MAX_PLAYERS)
@@ -121,27 +124,59 @@ bool	vm_cycle_to_die(t_vm *vm)
 void	david_needs_to_work(t_vm vm)
 {
 	size_t i;
-	t_process process;
+	t_process *process;
 
 	vm.continu = true;
 	while (vm.continu)
 	{
+//		printf("FEU D'ARTIFICE\n");
 		i = 0;
 		while (i < vm.vec->len)
 		{
-			process = vm.vec->processes[i];
-			if (process.is_alive)
+			process = vm.vec->processes + i;
+			printf("process[\033[32;01m%zu\033[0m] working at mem[\033[33;01m%4zu\033[0m]  \033[31m%.3zu\033[0m | \033[37;01m%.4zu\033[0m | \033[34;01m%d\033[0m \n", i, process->offset, process->cycle_to_do, vm.cycle, process->is_alive ? 1 : 0);
+			if ((*process).is_alive)
 			{
-				if (process.cycle_to_do == 0 && process.has_read == false)
-					read_opcode(&vm, vm.vec->processes + i);
-				if (process.cycle_to_do == 0)
-					ft_pass(&vm, vm.vec->processes + i);
-				process.cycle_to_do--;
+				if ((*process).cycle_to_do == 0 && (*process).has_read == false)
+				{
+					printf("\033[37;01mRead_opcode\n\033[0m");
+					read_opcode(&vm, process);
+					printf("\n");
+				}
+				else if ((*process).cycle_to_do == 0 && (*process).has_read == true)
+				{
+					printf("\033[37;01mFt_pass => Cycle_to_do = 0\n\033[0m");
+					ft_pass(&vm, process);
+					printf("\n");
+				}
+				else
+					(*process).cycle_to_do--;
 			}
 			i++;
 		}
 		vm.continu = vm_cycle_to_die(&vm);
 	}
+	size_t line = 0;
+	i = 0;
+
+	while (i < MEM_SIZE)
+	{
+		if (i % 32 == 0)
+		{
+			if (i != 0)
+				printf("\n");
+			printf ("%.4lx\t", line);
+			line += 32;
+		}
+		else if (i % 8 == 0 && i != 0)
+			printf ("\t");
+		if (vm.mem[i] <= 0xF)
+			printf ("0");
+		printf("%x", vm.mem[i]);
+		printf (" ");
+		i++;
+	}
+	printf("\n");
 	return ;
 }
 
@@ -149,23 +184,38 @@ void	david_needs_to_work(t_vm vm)
 
 bool	ft_play(t_vm vm)
 {
-	size_t i;
+	size_t	i;
+	size_t	nbr_champ;
 
 	i = 0;
-	while (i < vm.nbr_champ)
+	nbr_champ = 0;
+//	printf("%zu\n", vm.nbr_champ);
+	while (nbr_champ < vm.nbr_champ)
 	{
-		bin_parse_header(vm.champ[i].fd, &(vm.champ[i]));
+//		printf("vm.champ[i].fd = %zu\n", vm.champ[i].fd);
+		if (vm.champ[i].fd)
+		{
+			if (!bin_parse_header(vm.champ[i].fd, vm.champ + i))
+				return (false);
+			nbr_champ++;
+		}
 		i++;
 	}
 	i = 0;
+	nbr_champ = 0;
 	vm.vec = create_process(MAX_PLAYERS);
-	while (i < vm.nbr_champ)
+	while (nbr_champ < vm.nbr_champ)
 	{
-		ft_memcpy(vm.mem + ((MEM_SIZE / vm.nbr_champ) * i), vm.champ[i].prog, vm.champ[i].size);
-		vm.vec->processes[i] = add_process(&(vm.vec), (MEM_SIZE / vm.nbr_champ) * i);
-		conv_int_to_bin(i, vm.vec->processes[i].registre[1]);
+		if (vm.champ[i].fd)
+		{
+			ft_memcpy(vm.mem + ((MEM_SIZE / vm.nbr_champ) * i), vm.champ[i].prog, vm.champ[i].size);
+			add_process(&(vm.vec), (MEM_SIZE / vm.nbr_champ) * i);
+			conv_int_to_bin(i, vm.vec->processes[i].registre[1]);
+			nbr_champ++;
+		}
 		i++;
 	}
+	i = 0;
 	david_needs_to_work(vm);
 	return (true);
 }

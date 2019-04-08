@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:24:34 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/05 16:42:25 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/08 09:35:42 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ bool		sub(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 	return (carry_up(process, ocp, 5));
 }
 
-bool		and(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
+bool		ft_and(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 {
 	uint8_t op1[REG_SIZE];
 
@@ -39,12 +39,11 @@ bool		and(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 	ft_memcpy(op1, process->tampon, REG_SIZE);
 	if (!(ft_get_value_mod(param[1], (ocp >> 4 & 0b11), process, game)))
 		return (carry_down(process));
-	if (!(bin_and(op1, process->tampon, process->registre[param[2]])))
-		return (carry_down(process));
+	bin_and(op1, process->tampon, process->registre[param[2]]);
 	return (carry_up(process, ocp, 6));
 }
 
-bool		or(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
+bool		ft_or(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 {
 	uint8_t op1[REG_SIZE];
 
@@ -55,12 +54,11 @@ bool		or(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 	ft_memcpy(op1, process->tampon, REG_SIZE);
 	if (!(ft_get_value_mod(param[1], (ocp >> 4 & 0b11), process, game)))
 		return (carry_down(process));
-	if (!(bin_or(op1, process->tampon, process->registre[param[2]])))
-		return (carry_down(process));
+	bin_or(op1, process->tampon, process->registre[param[2]]);
 	return (carry_up(process, ocp, 7));
 }
 
-bool		xor(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
+bool		ft_xor(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 {
 	uint8_t op1[REG_SIZE];
 
@@ -71,7 +69,6 @@ bool		xor(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 	ft_memcpy(op1, process->tampon, REG_SIZE);
 	if (!(ft_get_value_mod(param[1], (ocp >> 4 & 0b11), process, game)))
 		return (carry_down(process));
-	if (!(bin_xor(op1, process->tampon, process->registre[param[2]])))
-		return (carry_down(process));
+	bin_xor(op1, process->tampon, process->registre[param[2]]);
 	return (carry_up(process, ocp, 8));
 }

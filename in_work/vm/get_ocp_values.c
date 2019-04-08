@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 15:21:34 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/05 16:39:59 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/08 16:13:34 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ void		conv_int_to_bin(size_t nbr, uint8_t value[REG_SIZE])
 	i = REG_SIZE - 1;
 	while (i >= 0)
 	{
-		value[i] = nbr % 0x100;
-		nbr /= 0x100;
+		value[i] = nbr % 255;
+		nbr /= 255;
 		i--;
 	}
 }
@@ -34,8 +34,31 @@ bool		ft_check_ocp(uint8_t ocp, uint8_t opcode)
 	while (g_ops[opcode].params[i])
 	{
 		type = (ocp >> (3 - i) * 2) & 0b11;
-		if (!(type & g_ops[opcode].params[i]))
+		if (type == 0b11)
+		{
+			if (!(g_ops[opcode].params[i] & 0b10))
+			{
+				return (false);
+			}
+		}
+		else if (type == 0b10)
+		{
+			if (!(g_ops[opcode].params[i] & 0b1))
+			{
+				return (false);
+			}
+		}
+		else if (type == 0b01)
+		{
+			if (!(g_ops[opcode].params[i] & 0b100))
+			{
+				return (false);
+			}
+		}
+		else
+		{
 			return (false);
+		}
 		i++;
 	}
 	return (true);
@@ -64,7 +87,10 @@ bool		ft_get_value_mod(ssize_t nbr, uint8_t type, t_process *process, t_vm *vm)
 	if (type == OCP_REG)
 	{
 		if (nbr >= 16)
+		{
+			printf("\033[31m get value failed bad register\033[0m ");
 			return (false);
+		}
 		else
 			ft_memcpy(process->tampon, process->registre[nbr], REG_SIZE);
 	}

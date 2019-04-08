@@ -1,7 +1,7 @@
 ASMSRC += asm_files/asm_read.c
 ASMSRC += asm_files/bin_write.c
 ASMSRC += asm_files/hashtable.c
-FTSRC += fcnt/error.c
+ASMSRC += asm_files/error.c
 FTSRC += fcnt/ft_memcpy.c
 FTSRC += fcnt/ft_putf.c
 FTSRC += fcnt/io.c

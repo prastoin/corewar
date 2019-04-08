@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 11:18:42 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/05 15:30:20 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/08 16:11:17 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,20 @@ size_t		get_decale(uint8_t ocp, int opcode)
 	size_t type;
 	size_t i;
 
+	size = 0;
 	i = 0;
 	while (i < 3)
 	{
 		type = (ocp >> ((3 - i) * 2)) & 0b11;
 		if (type == 0b01)
-			(size) += 1;
+			size += 1;
 		else if (type == 0b10)
-			(size) += g_ops[opcode].params[i] & PARAM_INDEX ? 2 : 4;
+			size += g_ops[opcode].params[i] & PARAM_INDEX ? 2 : 4;
 		else if (type == 0b11)
-			(size) += 2;
+			size += 2;
 		i++;
 	}
+	printf("\033[32;01mand go through %zu bytes\033[0m\n", size);
 	return(size);
 }
 
@@ -50,12 +52,14 @@ bool	carry_up(t_process *process, uint8_t ocp, int opcode)
 bool	carry_down(t_process *process)
 {
 	process->carry = -1;
+	printf("\033[31m and has failed\033[0m\n");
 	inc_process_off_mod(process, 1, false);
 	return (false);
 }
 
 bool	invalid(t_process *process)
 {
+	printf("\033[31m and has failed\033[0m\n");
 	inc_process_off_mod(process, 1, false);
 	return (false);
 }

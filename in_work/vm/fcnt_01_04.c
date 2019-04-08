@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:22:08 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/05 17:22:09 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/08 14:17:27 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,16 @@
 
 bool		live(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 {
-
+	(void)ocp;
+	printf("live de %zu cycle to die = %zu\n", param[0], game->cycle_to_die);
 	process->said_live = true;
 	if (param[0] >= 1 && param[0] <= MAX_PLAYERS)
+	{
+		game->champ[param[0]].last_cycle_live = game->cycle;
 		game->live[param[0] - 1] = true;
+	}
 	game->nbr_live++;
-	game->champ[param[0]].last_cycle_live = game->cycle;
-	return (valid(process, 0b10, 1));
+	return (valid(process, 0b1000, 1));
 }
 
 bool		ld(t_vm *game, t_process *process, size_t *param, uint8_t ocp)

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/05 17:19:28 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/08 11:58:47 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #define OCP_DIR 0b10
 #define OCP_REG 0b01
 #define OCP_IND 0b11
+
 
 typedef enum	e_arg_type
 {
@@ -82,10 +83,9 @@ typedef struct	s_champ
 	size_t	last_cycle_live;
 }				t_champ;
 
-
 typedef struct	s_vm
 {
-	char		mem[MEM_SIZE];
+	unsigned char		mem[MEM_SIZE];
 	uintmax_t	cycle;
 	uintmax_t	cycle_to_die;
 	bool		live[MAX_PLAYERS];
@@ -96,6 +96,8 @@ typedef struct	s_vm
 	t_champ		champ[MAX_PLAYERS];
 	t_vec		*vec;
 }				t_vm;
+
+
 
 
 typedef	bool (*t_core_fcnt)(t_vm *, t_process *, size_t *, uint8_t);
@@ -126,9 +128,9 @@ bool		read_opcode(t_vm *vm, t_process *process);
 
 bool		bin_add(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]);
 bool		bin_sub(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]);
-bool		bin_and(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]);
-bool		bin_or(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]);
-bool		bin_xor(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]);
+void		bin_and(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]);
+void		bin_or(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]);
+void		bin_xor(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]);
 uint32_t	conv_bin_num(uint8_t *str, uint8_t len);
 void		conv_int_to_bin(size_t nbr, uint8_t[REG_SIZE]);
 void		copy_process(t_process *dest, t_process *src);
@@ -142,9 +144,9 @@ bool	ld(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
 bool	st(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
 bool	add(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
 bool	sub(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool	and(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool	or(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
-bool	xor(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
+bool	ft_and(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
+bool	ft_or(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
+bool	ft_xor(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
 bool	zjmp(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
 bool	ldi(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
 bool	sti(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
@@ -153,5 +155,7 @@ bool	lld(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
 bool	lldi(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
 bool	lfork(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
 bool	aff(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
+
+
 
 #endif

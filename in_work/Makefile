@@ -6,7 +6,7 @@
 #    By: prastoin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/07 11:13:09 by prastoin          #+#    #+#              #
-#    Updated: 2019/04/05 17:23:24 by prastoin         ###   ########.fr        #
+#    Updated: 2019/04/08 09:27:15 by prastoin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,10 +33,10 @@ all: $(NAMEVM) $(NAMEASM)
 $(OBJ) : Makefile srcs.mk
 
 $(NAMEASM): $(OBJASM) $(OBJFT)
-		gcc $(FLAG) $(INC) -o $(NAMEASM) $(OBJASM) $(OBJFT)
+		gcc $(FLAG) $(INC) -o $(NAMEASM) $(OBJFT) $(OBJASM)
 
 $(NAMEVM): $(OBJVM) $(OBJFT)
-		gcc $(FLAG) $(INC) -o $(NAMEVM) $(OBJVM) $(OBJFT)
+		gcc $(FLAG) $(INC) -o $(NAMEVM) $(OBJFT) $(OBJVM)
 
 $(NAMES): re $(OBJ)
 		gcc $(FLAG) $(INC) -o $(NAME) $(OBJ)
@@ -45,12 +45,14 @@ $(NAMES): re $(OBJ)
 		gcc $(FLAG) $(INC) -o $@ -c $<
 
 clean:
-			rm  $(OBJVM)
-			rm  $(OBJASM)
+			rm  -rf $(OBJVM)
+			rm  -rf $(OBJASM)
+			rm  -rf $(OBJFT)
 
 fclean: clean
-			rm  $(NAMEVM)
-			rm  $(NAMEASM)
+			rm  -rf $(NAMEVM)
+			rm  -rf $(NAMEASM)
+			rm  -rf $(OBJFT)
 
 re: fclean all
 

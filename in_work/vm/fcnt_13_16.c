@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/05 16:43:18 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/08 09:41:37 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ bool		lfork(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 {
 	t_process new_process;
 
+	(void)ocp;
 	new_process = add_process(&(game->vec), (process->offset + param[1] % MEM_SIZE));
 	copy_process(&new_process, process);
 	return (valid(process, 0b11, 15));
@@ -55,6 +56,7 @@ bool		aff(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 	size_t		i;
 	uint8_t		c;
 
+	(void)game;
 	if (param[0] >= 16)
 		return (invalid(process));
 	i = 0;
