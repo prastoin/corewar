@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/09 15:32:14 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/09 16:24:01 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,17 +53,17 @@ bool	bin_parse_header(size_t fd, t_champ *header)
 
 bool	ft_winner(t_champ champ[MAX_PLAYERS])
 {
-	ssize_t		min;
+	ssize_t		max;
 	size_t		i;
 	size_t		winner;
 
 	i = 0;
-	min = -1;
+	max = -1;
 	while (i < MAX_PLAYERS)
 	{
-		if (min > (ssize_t)champ[i].last_cycle_live || min == -1)
+		if (max < (ssize_t)champ[i].last_cycle_live)
 		{
-			min = champ[i].last_cycle_live;
+			max = champ[i].last_cycle_live;
 			winner = i;
 		}
 		i++;
@@ -74,7 +74,8 @@ bool	ft_winner(t_champ champ[MAX_PLAYERS])
 
 bool	cycle_decremente_die(t_vm *vm)
 {
-	if (vm->nbr_live == NBR_LIVE || vm->check == MAX_CHECKS)
+	printf("Decremente NBR_LIVE = %zu\n", vm->nbr_live);
+	if (vm->nbr_live >= NBR_LIVE || vm->check == MAX_CHECKS)
 	{
 		vm->cycle_to_die -= CYCLE_DELTA;
 		vm->check = 0;

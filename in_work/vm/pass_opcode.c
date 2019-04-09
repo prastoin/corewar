@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/05 13:47:57 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/09 15:00:25 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/09 15:46:17 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,8 @@ bool	ft_pass(t_vm *vm, t_process *process)
 		return (false);
 	}
 	printf ("\033[32;01m	└─Executing the instruction %s \033[0m", g_ops[process->actual_opcode].name);
-	g_fcnt[process->actual_opcode](vm, process, params, ocp);
 	process->cycle_to_do = 0;
+	g_fcnt[process->actual_opcode](vm, process, params, ocp);
 	return (true);
 }
 

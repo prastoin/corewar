@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/09 14:48:46 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/09 15:54:41 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,14 @@ bool		lldi(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 
 bool		lfork(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 {
-	t_process new_process;
-	t_process old_process;
+	t_process	new_process;
+	size_t		old;
 
 	(void)ocp;
-	old_process = *process;
+	old = process->curr;
 	new_process = add_process(&(game->vec), (process->offset + param[1] % MEM_SIZE));
-	copy_process(&new_process, &old_process);
+	process = game->vec->processes + old;
+	copy_process(&new_process, process);
 	return (valid(process, 0b11, 15));
 }
 
