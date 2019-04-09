@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 11:23:08 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/08 16:42:59 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/09 11:14:33 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ bool	bin_add(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]
 
 	carry = false;
 	i = REG_SIZE - 1;
-	printf("\n");
-	printf("OP1 = %d %d %d %d, OP2 = %d %d %d %d\n", op1[0], op1[1], op1[2], op1[3], op2[0], op2[1], op2[2], op2[3]);
 	while (i >= 0)
 	{
 		save = op1[i] + op2[i];
@@ -33,7 +31,6 @@ bool	bin_add(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]
 		if (save >= 256)
 			carry = true;
 		res[i] = (uint8_t)save;
-		printf("save = %d\n", save);
 		i--;
 	}
 	return (!carry);

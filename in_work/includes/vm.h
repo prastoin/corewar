@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/08 11:58:47 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/09 14:52:35 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ typedef struct	s_process
 {
 	uint8_t actual_opcode;
 	//au dessus need avis
+	size_t		curr;
 	bool		carry;
 	size_t		offset;
 	bool		has_read;
@@ -87,7 +88,9 @@ typedef struct	s_vm
 {
 	unsigned char		mem[MEM_SIZE];
 	uintmax_t	cycle;
-	uintmax_t	cycle_to_die;
+	uintmax_t	i_to_die;
+	intmax_t	cycle_to_die;
+	bool		said_live[MAX_PLAYERS];
 	bool		live[MAX_PLAYERS];
 	size_t		nbr_champ;
 	size_t		nbr_live;
@@ -131,7 +134,7 @@ bool		bin_sub(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE
 void		bin_and(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]);
 void		bin_or(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]);
 void		bin_xor(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]);
-uint32_t	conv_bin_num(uint8_t *str, uint8_t len);
+size_t		conv_bin_num(uint8_t *str, uint8_t len);
 void		conv_int_to_bin(size_t nbr, uint8_t[REG_SIZE]);
 void		copy_process(t_process *dest, t_process *src);
 
@@ -157,5 +160,6 @@ bool	lfork(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
 bool	aff(t_vm *game, t_process *process, size_t *param, uint8_t ocp);
 
 
+void	ft_dump_mem(t_vm vm, bool ex);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/05 13:47:57 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/08 16:19:22 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/09 15:00:25 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,11 @@ void	get_params_ocp(t_vm *vm, t_process *process, uint8_t ocp, size_t params[])
 	size_t		i;
 	size_t		size;
 	uint8_t		stck[4];
+	size_t		tmp;
 
 	i = 0;
 	size = 0;
+	tmp = 0;
 	while (g_ops[opcode].params[i])
 	{
 		if (ocp >> ((3 - i) *  2) & 0b01)
@@ -29,8 +31,10 @@ void	get_params_ocp(t_vm *vm, t_process *process, uint8_t ocp, size_t params[])
 			size = g_ops[opcode].params[i] & PARAM_INDEX ? 2 : 4;
 		else if (ocp >> ((3 - i) *  2) & 0b11)
 			size = 2;
-		mem_read(vm->mem, stck, process->offset, size);
+		mem_read(vm->mem, stck, process->offset + tmp, size);
+		printf ("\nReceive in param[%zu] %.2x - %.2x - %.2x - %.2x\n", i, stck[0], stck[1], stck[2], stck[3]);
 		params[i] = conv_bin_num(stck, size);
+		tmp += size;
 //		inc_process_off_mod(process, size, false); DAVID NEED TO WORKS TODO
 		i++;
 	}
@@ -49,6 +53,7 @@ void	get_params_no_ocp(t_vm *vm, t_process *process, size_t opcode, size_t param
 	else if (g_ops[opcode].params[0] & PARAM_INDIRECT)
 		size = 2;
 	mem_read(vm->mem, stck, process->offset, size);
+	printf ("\nReceive %.2x - %.2x - %.2x - %.2x\n", stck[0], stck[1], stck[2], stck[3]);
 	params[0] = conv_bin_num(stck, size);
 //	inc_process_off_mod(process, size, false); DAVID NEED TO WORKS TODO
 }

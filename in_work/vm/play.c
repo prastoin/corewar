@@ -6,13 +6,13 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/08 16:27:23 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/09 15:32:14 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-uint32_t		conv_bin_num(uint8_t *str, uint8_t len)
+size_t		conv_bin_num(uint8_t *str, uint8_t len)
 {
 	size_t		i;
 	size_t		nb;
@@ -68,7 +68,7 @@ bool	ft_winner(t_champ champ[MAX_PLAYERS])
 		}
 		i++;
 	}
-	printf("%s a gagne avec le num %zu\n", champ[i].name, i);
+	printf("%s a gagne avec le num %zu\n", champ[winner].name, winner);
 	return (false);
 }
 
@@ -83,7 +83,10 @@ bool	cycle_decremente_die(t_vm *vm)
 	else
 		vm->check++;
 	if (vm->cycle_to_die <= 0)
+	{
+		printf("cycle to die = 0\n");
 		return (ft_winner(vm->champ));
+	}
 	return (true);
 }
 
@@ -92,19 +95,18 @@ bool	vm_cycle_to_die(t_vm *vm)
 	size_t i;
 	size_t dead;
 
-	if (vm->cycle % vm->cycle_to_die == 0 && vm->cycle != 0)
+	if (vm->i_to_die >= vm->cycle_to_die)
 	{
 		printf("DIE UPDATE | au cycle = %zu\n", vm->cycle);
 		dead = 0;
 		i = 0;
 		while (i < MAX_PLAYERS)
 		{
-			if (vm->live[i] == true)
-				vm->live[i] = false;
+			if (vm->said_live[i] == true)
+				vm->said_live[i] = false;
 			else
-				dead++;
-			if (dead == MAX_PLAYERS)
-				return (ft_winner(vm->champ));
+				vm->live[i] = false;
+		i++;
 		}
 		i = 0;
 		while (i < vm->vec->len)
@@ -113,12 +115,50 @@ bool	vm_cycle_to_die(t_vm *vm)
 				vm->vec->processes[i].said_live = false;
 			else
 				vm->vec->processes[i].is_alive = false;
+			if (vm->vec->processes[i].is_alive == false)
+				dead++;
+			if (dead == vm->vec->len)
+				return (ft_winner(vm->champ));
+			i++;
 		}
 		if (!cycle_decremente_die(vm))
 			return (false);
+	vm->i_to_die = 0;
 	}
+	vm->i_to_die++;
 	vm->cycle++;
 	return (true);
+}
+
+void	ft_dump_mem(t_vm vm, bool ex)
+{
+	size_t line;
+	size_t i;
+
+	line = 0;
+	i = 0;
+	printf("\n");
+	while (i < MEM_SIZE)
+	{
+		if (i % 32 == 0)
+		{
+			if (i != 0)
+				printf("\n");
+			printf ("%.4lx\t", line);
+			line += 32;
+		}
+		else if (i % 8 == 0 && i != 0)
+			printf ("\t");
+		if (vm.mem[i] == 0)
+			printf("%.2x", vm.mem[i]);
+		else
+			printf("\033[32;01m%.2x\033[0m", vm.mem[i]);
+		printf (" ");
+		i++;
+	}
+	printf("\n");
+	if (ex == true)
+		exit (0);
 }
 
 void	david_needs_to_work(t_vm vm)
@@ -131,10 +171,12 @@ void	david_needs_to_work(t_vm vm)
 	{
 //		printf("FEU D'ARTIFICE\n");
 		i = 0;
+		printf("│champion[0] %s\n", vm.live[0] ? "is_alive" : "is_dead");
+		printf("│champion[1] %s\n", vm.live[1] ? "is_alive" : "is_dead");
 		while (i < vm.vec->len)
 		{
 			process = vm.vec->processes + i;
-			printf("process[\033[32;01m%zu\033[0m] working at mem[\033[33;01m%4zu\033[0m]  \033[31m%.3zu\033[0m | \033[37;01m%.4zu\033[0m | \033[34;01m%d\033[0m \n", i, process->offset, process->cycle_to_do, vm.cycle, process->is_alive ? 1 : 0);
+			printf("process[\033[32;01m%zu\033[0m] working at mem[\033[33;01m%4zu\033[0m]  \033[31m%.3zu\033[0m | \033[37;01m%.4zu / %.4zu\033[0m | \033[34;01m%d\033[0m \n", i, process->offset, process->cycle_to_do, vm.i_to_die, vm.cycle_to_die, process->is_alive ? 1 : 0);
 			if ((*process).is_alive)
 			{
 				if ((*process).cycle_to_do == 0 && (*process).has_read == false)
@@ -156,27 +198,6 @@ void	david_needs_to_work(t_vm vm)
 		}
 		vm.continu = vm_cycle_to_die(&vm);
 	}
-	size_t line = 0;
-	i = 0;
-
-	while (i < MEM_SIZE)
-	{
-		if (i % 32 == 0)
-		{
-			if (i != 0)
-				printf("\n");
-			printf ("%.4lx\t", line);
-			line += 32;
-		}
-		else if (i % 8 == 0 && i != 0)
-			printf ("\t");
-		if (vm.mem[i] <= 0xF)
-			printf ("0");
-		printf("%x", vm.mem[i]);
-		printf (" ");
-		i++;
-	}
-	printf("\n");
 	return ;
 }
 

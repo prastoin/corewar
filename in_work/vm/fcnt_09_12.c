@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:27:13 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/08 16:47:12 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/09 15:03:50 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ bool		zjmp(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 	(void)game;
 	if (process->carry == false)
 		return (invalid(process)); //decaler seulement de un ?????? car pas un pb de parse #DAVID NEEDS TO WORKS
-	process->offset = (process->offset + param[0]) % MEM_SIZE;
+	process->offset = (process->offset + param[0] - 1) % MEM_SIZE;
 	printf ("the new offset is %zu", process->offset);
 	return (true); //TODO IDX MOD ICI ?
 }
@@ -60,18 +60,23 @@ bool		sti(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 		return (carry_down(process));
 	bin_add(op1, process->tampon, adr);
 	adress = (conv_bin_num(adr, REG_SIZE));
-	printf("\033[32m copy to %zu\n\033[0m ", adress);
-	mem_write(game->mem, process->registre[param[0]], (process->offset + adress) % MEM_SIZE, REG_SIZE);
+	printf("\n\t\t \033[32m └─copy to %zu registre = %.2x - %.2x - %.2x - %.2x\033[0m", adress, process->registre[param[0]][0], process->registre[param[0]][1], process->registre[param[0]][2], process->registre[param[0]][3]);
+	mem_write(game->mem, process->registre[param[0]], (process->offset + adress - 2) % MEM_SIZE, REG_SIZE);
+	ft_dump_mem(*game, false);
 	return (carry_up(process, ocp, 11));
 }
 
 bool		ft_fork(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 {
-	t_process new_process;
+	t_process	new_process;
+	size_t		old;
 
 	(void)ocp;
+	old = process->curr;
 	printf("param[0] = %d\n", param[0]);
 	new_process = add_process(&(game->vec), (process->offset + (param[0] % IDX_MOD)) % MEM_SIZE);
+	process = game->vec->processes + old;
 	copy_process(&new_process, process);
+	printf("old = %d capacity = %d\n", old, game->vec->capacity);
 	return (valid(process, 0b11000000, 12));
 }

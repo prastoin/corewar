@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/08 14:47:52 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/09 14:05:49 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,6 +214,9 @@ int main(int argc, char *argv[])
 		{ARG_BOOLEAN, 'c', "ncurse_aff", &flags.ncurse_o, "Affichage Ncurse"},
 		{ARG_END, 0, 0, 0, 0}
 	};
+	ret = -1;
+	while (++ret < MAX_PLAYERS)
+		vm.live[ret] = true;
 	if ((ret = parse_args(args, argc, argv, &vm)) < 0)
 		return (0);
 	while (ret < argc)

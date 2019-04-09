@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/02 14:20:14 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/08 12:51:14 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/09 14:55:30 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ t_process	add_process(t_vec **list, size_t offset)
 	}
 	(*list)->processes[(*list)->len++] = (t_process) {
 		.offset = offset,
-		.is_alive = true
+		.is_alive = true,
+		.curr = (*list)->len - 1
 	};
 return ((*list)->processes[(*list)->len - 1]);
 }

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 11:18:42 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/08 16:11:17 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/09 11:18:17 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ size_t		get_decale(uint8_t ocp, int opcode)
 			size += 2;
 		i++;
 	}
-	printf("\033[32;01mand go through %zu bytes\033[0m\n", size);
+	printf("\n\033[32;01mand go through %zu bytes\033[0m\n", size);
 	return(size);
 }
 
@@ -52,14 +52,14 @@ bool	carry_up(t_process *process, uint8_t ocp, int opcode)
 bool	carry_down(t_process *process)
 {
 	process->carry = -1;
-	printf("\033[31m and has failed\033[0m\n");
+	printf("\n\033[31m and has failed\033[0m\n");
 	inc_process_off_mod(process, 1, false);
 	return (false);
 }
 
 bool	invalid(t_process *process)
 {
-	printf("\033[31m and has failed\033[0m\n");
+	printf("\n\033[31m and has failed\033[0m\n");
 	inc_process_off_mod(process, 1, false);
 	return (false);
 }
