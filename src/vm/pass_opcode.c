@@ -6,13 +6,13 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/05 13:47:57 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/09 15:46:17 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/19 17:11:52 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-void	get_params_ocp(t_vm *vm, t_process *process, uint8_t ocp, size_t params[])
+void	get_params_ocp(t_vm *vm, t_process *process, uint8_t ocp, uint32_t params[])
 {
 	const int	opcode = process->actual_opcode;
 	size_t		i;
@@ -25,22 +25,23 @@ void	get_params_ocp(t_vm *vm, t_process *process, uint8_t ocp, size_t params[])
 	tmp = 0;
 	while (g_ops[opcode].params[i])
 	{
-		if (ocp >> ((3 - i) *  2) & 0b01)
+		if ((ocp >> ((3 - i) *  2) & 0b11) == 0b01)
 			size = 1;
-		else if (ocp >> ((3 - i) *  2) & 0b10)
+		else if ((ocp >> ((3 - i) *  2) & 0b11) == 0b10)
 			size = g_ops[opcode].params[i] & PARAM_INDEX ? 2 : 4;
-		else if (ocp >> ((3 - i) *  2) & 0b11)
+		else if ((ocp >> ((3 - i) *  2) & 0b11) == 0b11)
 			size = 2;
+		printf("Param size: %zu\n", size);
 		mem_read(vm->mem, stck, process->offset + tmp, size);
-		printf ("\nReceive in param[%zu] %.2x - %.2x - %.2x - %.2x\n", i, stck[0], stck[1], stck[2], stck[3]);
 		params[i] = conv_bin_num(stck, size);
+		printf ("\nReceive in param[%zu] %d (or 0x%x)\n", i, params[i], params[i]);
 		tmp += size;
 //		inc_process_off_mod(process, size, false); DAVID NEED TO WORKS TODO
 		i++;
 	}
 }
 
-void	get_params_no_ocp(t_vm *vm, t_process *process, size_t opcode, size_t params[])
+void	get_params_no_ocp(t_vm *vm, t_process *process, size_t opcode, uint32_t params[])
 {
 	size_t	size;
 	uint8_t	stck[4];
@@ -58,7 +59,7 @@ void	get_params_no_ocp(t_vm *vm, t_process *process, size_t opcode, size_t param
 //	inc_process_off_mod(process, size, false); DAVID NEED TO WORKS TODO
 }
 
-bool	read_params_and_ocp(t_vm *vm, t_process *process, size_t params[4], uint8_t *ocp)
+bool	read_params_and_ocp(t_vm *vm, t_process *process, uint32_t params[4], uint8_t *ocp)
 {
 	const int	opcode = process->actual_opcode;
 	uint8_t		tampom[1];
@@ -80,7 +81,7 @@ bool	read_params_and_ocp(t_vm *vm, t_process *process, size_t params[4], uint8_t
 bool	ft_pass(t_vm *vm, t_process *process)
 {
 	uint8_t ocp;
-	size_t params[4];
+	uint32_t params[4];
 
 	process->has_read = false;
 	printf("\033[37;01m└─Read_params_and_ocp\033[0m\n");
@@ -109,7 +110,7 @@ bool	read_opcode(t_vm *game, t_process *process)
 		return (false);
 	}
 	process->has_read = true;
-	process->cycle_to_do = g_ops[stck[0]].cycle;
+	process->cycle_to_do = g_ops[stck[0]].cycle - 1;
 	printf ("\033[32;01m└─Process actual_opcode %d\033[0m\n", process->actual_opcode);
 	return (true);
 }

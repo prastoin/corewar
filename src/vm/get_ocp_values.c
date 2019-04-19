@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 15:21:34 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/09 12:02:41 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/19 19:19:01 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,11 +100,15 @@ bool		ft_get_value_mod(ssize_t nbr, uint8_t type, t_process *process, t_vm *vm)
 	}
 	else if (type == OCP_DIR)
 	{
+		printf("%d\n", nbr);
 		conv_int_to_bin(nbr, process->tampon);
-		printf("\033[32m Process tampon get %.2x-%.2x-%.2x-%.2x with a direct with a nbr = %ld \033[0m ", process->tampon[0], process->tampon[1], process->tampon[2], process->tampon[3], nbr);
+		printf("\033[32m Process tampon get %.2x-%.2x-%.2x-%.2x with a direct with a nbr = %d \033[0m ", process->tampon[0], process->tampon[1], process->tampon[2], process->tampon[3], nbr);
 	}
 	else if (type == OCP_IND)
 	{
+		printf("Nbr: %d\n", nbr);
+		while (nbr < 0)
+			nbr += IDX_MOD;
 		mem_read(vm->mem, process->tampon, (process->offset + nbr % IDX_MOD) % MEM_SIZE, 2);
 		printf("\033[32m Process tampon get %.2x-%.2x-%.2x-%.2x with a indirect at the adress %.2x\033[0m ", process->tampon[0], process->tampon[1], process->tampon[2], process->tampon[3], nbr);
 	}

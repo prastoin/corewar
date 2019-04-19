@@ -6,25 +6,33 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/09 16:24:01 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/19 18:00:59 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-size_t		conv_bin_num(uint8_t *str, uint8_t len)
+intmax_t	conv_bin_num(uint8_t *mem, size_t len) //TODO gestion bit de signe pour faire des lives de negatif
 {
+	uintmax_t	num;
 	size_t		i;
-	size_t		nb;
 
-	nb = 0;
 	i = 0;
+	num = 0;
 	while (i < len)
 	{
-		nb = nb * 0x100 + str[i];
+		num <<= 8;
+		num |= mem[i];
 		i++;
 	}
-	return (nb);
+	if (mem[0] & 0x80) {
+		while (i < sizeof(num))
+		{
+			num |= ((uintmax_t)0xFF << (i * 8));
+			i++;
+		}
+	}
+	return (num);
 }
 
 bool	bin_parse_header(size_t fd, t_champ *header)
@@ -178,24 +186,39 @@ void	david_needs_to_work(t_vm vm)
 		{
 			process = vm.vec->processes + i;
 			printf("process[\033[32;01m%zu\033[0m] working at mem[\033[33;01m%4zu\033[0m]  \033[31m%.3zu\033[0m | \033[37;01m%.4zu / %.4zu\033[0m | \033[34;01m%d\033[0m \n", i, process->offset, process->cycle_to_do, vm.i_to_die, vm.cycle_to_die, process->is_alive ? 1 : 0);
-			if ((*process).is_alive)
+			if (process->is_alive)
 			{
-				if ((*process).cycle_to_do == 0 && (*process).has_read == false)
+				if (process->cycle_to_do == 0)
 				{
+					if (process->has_read)
+					{
+						printf("\033[37;01mFt_pass => Cycle_to_do = 0\n\033[0m");
+						ft_pass(&vm, process);
+						process = vm.vec->processes + i;
+						printf("\n");
+					}
 					printf("\033[37;01mRead_opcode\n\033[0m");
 					read_opcode(&vm, process);
 					printf("\n");
 				}
-				else if ((*process).cycle_to_do == 0 && (*process).has_read == true)
-				{
-					printf("\033[37;01mFt_pass => Cycle_to_do = 0\n\033[0m");
-					ft_pass(&vm, process);
-					printf("\n");
-				}
 				else
-					(*process).cycle_to_do--;
+					process->cycle_to_do--;
 			}
 			i++;
+		}
+		if (vm.cycle == vm.flags.dump_c) {
+			size_t i = 0;
+			while (i < MEM_SIZE)
+			{
+				fprintf(stderr, "%02x", vm.mem[i]);
+				i++;
+				if (i != MEM_SIZE)
+					fprintf(stderr, " ");
+			}
+			printf("\n");
+			for (int i = 0; i < vm.vec->len; i++)
+				printf("%d\n", vm.vec->processes[i].is_alive);
+			exit(0);
 		}
 		vm.continu = vm_cycle_to_die(&vm);
 	}
@@ -208,6 +231,7 @@ bool	ft_play(t_vm vm)
 {
 	size_t	i;
 	size_t	nbr_champ;
+	t_process	*process;
 
 	i = 0;
 	nbr_champ = 0;
@@ -228,11 +252,20 @@ bool	ft_play(t_vm vm)
 	vm.vec = create_process(MAX_PLAYERS);
 	while (nbr_champ < vm.nbr_champ)
 	{
+		printf("%d < %d\n", nbr_champ, vm.nbr_champ);
 		if (vm.champ[i].fd)
 		{
-			ft_memcpy(vm.mem + ((MEM_SIZE / vm.nbr_champ) * i), vm.champ[i].prog, vm.champ[i].size);
-			add_process(&(vm.vec), (MEM_SIZE / vm.nbr_champ) * i);
-			conv_int_to_bin(i, vm.vec->processes[i].registre[1]);
+			//chargement mem(MEM_SIZE / vm.nbr_champ) * nbr_champ)
+			printf("avant = %d\n", vm.nbr_champ);
+			ft_memcpy((vm.mem) + ((MEM_SIZE / vm.nbr_champ) * nbr_champ), vm.champ[i].prog, vm.champ[i].size);
+			printf("apres = %d\n", vm.nbr_champ);
+			//ajout process data
+			process = add_process(&vm.vec);
+			*process = (t_process) {
+				.offset = (MEM_SIZE / vm.nbr_champ) * nbr_champ,
+				.is_alive = true
+			};
+			conv_int_to_bin(~i, process->registre[1]);
 			nbr_champ++;
 		}
 		i++;

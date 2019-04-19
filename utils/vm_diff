@@ -1,0 +1,78 @@
+#!/usr/bin/env node
+
+const child_process = require('child_process')
+const fs = require('fs')
+const path = require('path')
+
+const ZAZ_COREWAR_PATH = path.join(__dirname, "..", "ressources", "corewar");
+const OUR_COREWAR_PATH = path.join(__dirname, "..", "vm");
+
+function dumpZazMemory(cycle, champs) {
+	const process = child_process.spawn(ZAZ_COREWAR_PATH, ["-d", cycle, ...champs]);
+
+	let output = ''
+
+	process.stdout.on('data', d => output += d.toString())
+	process.stderr.on('data', () => {})
+
+	return new Promise((resolve, reject) => {
+		process.on('close', _ => {
+			resolve(
+				output
+					.split('\n')
+					.slice(1 + champs.length)
+					.filter(l => l.length > 0)
+					.map(l => l.slice(l.indexOf(":") + 1).trim().split(" ").map(n => parseInt(n, 16)))
+					.reduce((c,v) => c.concat(v), [])
+			);
+		});
+		process.on('error', reject);
+	});
+}
+
+function dumpOurMemory(cycle, champs) {
+	const process = child_process.spawn(OUR_COREWAR_PATH, ["-d", cycle, ...champs]);
+
+	let output = ''
+
+	process.stderr.on('data', d => output += d.toString())
+	process.stdout.on('data', () => {})
+
+	return new Promise((resolve, reject) => {
+		process.on('close', _ => {
+			resolve(output.split(" ").map(n => parseInt(n, 16)));
+		});
+		process.on('error', reject);
+	});
+}
+
+const champs = process.argv.slice(2);
+
+const CYCLE_DELTA = 100;
+const CYCLE_DO = 100;
+let cycle = 200;
+
+void async function () {
+	let l = true;
+	while (l) {
+		const memories = await Promise.all(Array.from({ length: CYCLE_DO })
+			.map(async (_, i) => {
+				const [zaz, our] = await Promise.all([
+					dumpZazMemory(cycle + i, champs),
+					dumpOurMemory(cycle + i, champs)
+				]);
+				return { zaz, our };
+			}));
+		for (const [i, { our, zaz }] of memories.entries()) {
+			if (!zaz.every((n, i) => n === our[i])) {
+				fs.writeFileSync('our.dump.' + (cycle + i), Buffer.from(our));
+				fs.writeFileSync('zaz.dump.' + (cycle + i), Buffer.from(zaz));
+				console.log("Diff at cycle", cycle + i, ":(");
+				l = false;
+			}
+		}
+		if (l)
+			console.log('Cycle', cycle, 'to', cycle + CYCLE_DELTA, 'good :)');
+		cycle += CYCLE_DELTA;
+	}
+}()

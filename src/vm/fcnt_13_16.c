@@ -6,13 +6,13 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/09 15:54:41 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/19 18:33:09 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-bool		lld(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
+bool		lld(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	if (param[1] >= 16)
 		return (carry_down(process));
@@ -22,7 +22,7 @@ bool		lld(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 	return (carry_up(process, ocp, 13));
 }
 
-bool		lldi(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
+bool		lldi(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	uint8_t		op1[REG_SIZE];
 	uint8_t		adr[REG_SIZE];
@@ -37,24 +37,27 @@ bool		lldi(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 		return (carry_down(process));
 	bin_add(op1, process->tampon, adr);
 	adress = (conv_bin_num(adr, REG_SIZE));
-	mem_read(game->mem, process->registre[param[2]], (process->offset + adress) % MEM_SIZE, REG_SIZE);
+	mem_read(game->mem, process->registre[param[2]], (process->offset + adress - 2) % MEM_SIZE, REG_SIZE);
 	return (carry_up(process, ocp, 14));
 }
 
-bool		lfork(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
+bool		lfork(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
-	t_process	new_process;
-	size_t		old;
+	t_process	*new_process;
+	size_t		index;
 
-	(void)ocp;
-	old = process->curr;
-	new_process = add_process(&(game->vec), (process->offset + param[1] % MEM_SIZE));
-	process = game->vec->processes + old;
-	copy_process(&new_process, process);
+	index = (process - game->vec->processes);
+	new_process = add_process(&game->vec);
+	process = game->vec->processes + index;
+	*new_process = (t_process) {
+		.offset = (process->offset + param[1] - 1) % MEM_SIZE,
+		.is_alive = true
+	};
+	copy_process(new_process, process);
 	return (valid(process, 0b11, 15));
 }
 
-bool		aff(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
+bool		aff(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	size_t		i;
 	uint8_t		c;

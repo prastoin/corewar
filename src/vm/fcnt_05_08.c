@@ -6,13 +6,13 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:24:34 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/08 09:35:42 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/19 18:33:02 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-bool		sub(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
+bool		sub(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	uint8_t op1[REG_SIZE];
 
@@ -28,7 +28,7 @@ bool		sub(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 	return (carry_up(process, ocp, 5));
 }
 
-bool		ft_and(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
+bool		ft_and(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	uint8_t op1[REG_SIZE];
 
@@ -43,7 +43,7 @@ bool		ft_and(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 	return (carry_up(process, ocp, 6));
 }
 
-bool		ft_or(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
+bool		ft_or(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	uint8_t op1[REG_SIZE];
 
@@ -58,7 +58,7 @@ bool		ft_or(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 	return (carry_up(process, ocp, 7));
 }
 
-bool		ft_xor(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
+bool		ft_xor(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	uint8_t op1[REG_SIZE];
 

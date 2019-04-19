@@ -6,30 +6,34 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:22:08 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/09 14:10:07 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/19 18:32:55 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-bool		live(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
+bool		live(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
+	int32_t		player;
+
 	(void)ocp;
-	printf("live de %zu\n", param[0]);
+	player = (int32_t)param[0];
+	player = -player;
+	printf("live de %zu\n", player);
 	process->said_live = true;
-	if (param[0] >= 0 && param[0] < MAX_PLAYERS)
+	if (player >= 1 && player <= MAX_PLAYERS)
 	{
-		if (game->live[param[0]])
+		if (game->live[player - 1])
 		{
-			game->said_live[param[0]] = true;
-			game->champ[param[0]].last_cycle_live = game->cycle;
+			game->said_live[player - 1] = true;
+			game->champ[player - 1].last_cycle_live = game->cycle;
 		}
 	}
 	game->nbr_live++;
 	return (valid(process, 0b1000, 1));
 }
 
-bool		ld(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
+bool		ld(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	if (param[1] >= 16)
 		return (carry_down(process));
@@ -39,7 +43,7 @@ bool		ld(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 	return (carry_up(process, ocp, 2));
 }
 
-bool		st(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
+bool		st(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	if (param[0] >= 16)
 		return (carry_down(process));
@@ -52,12 +56,17 @@ bool		st(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
 					process->registre[param[0]], REG_SIZE);
 	}
 	else
+	{
+		printf("Offset: %d\n", (process->offset + ((int32_t)param[1] % IDX_MOD) - 2) % MEM_SIZE);
+		printf("Offset: %d\n",((int32_t)param[1] % IDX_MOD));
 		mem_write(game->mem, process->registre[param[0]],
-				(process->offset + (param[1] % IDX_MOD)) % MEM_SIZE, REG_SIZE);
+				(process->offset + ((int32_t)param[1] % IDX_MOD) - 2) % MEM_SIZE, REG_SIZE);
+	}
+	ft_dump_process(process);
 	return (valid(process, ocp, 3));
 }
 
-bool		add(t_vm *game, t_process *process, size_t *param, uint8_t ocp)
+bool		add(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	uint8_t op1[REG_SIZE];
 
