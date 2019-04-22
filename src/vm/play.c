@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/22 15:20:31 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/22 17:29:00 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ bool	vm_cycle_to_die(t_vm *vm)
 	}
 	vm->i_to_die++;
 	vm->cycle++;
+	dprintf(g_fd, "It is now cycle %lu\n", vm->cycle);
 	return (true);
 }
 
@@ -191,6 +192,7 @@ void	david_needs_to_work(t_vm vm)
 				if (process->cycle_to_do == 0 && process->has_read)
 				{
 					printf("\033[37;01mFt_pass => Cycle_to_do = 0\n\033[0m");
+					g_opc = i + 1;
 					ft_pass(&vm, process);
 					process = vm.vec->processes + i;
 					printf("\n");

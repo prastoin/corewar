@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/22 14:38:02 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/22 17:19:13 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,10 @@
 
 #include "op.h"
 #include "asm.h"
+
+int	g_fd;
+int	g_opc;
+
 #define OCP_DIR 0b10
 #define OCP_REG 0b01
 #define OCP_IND 0b11
@@ -57,7 +61,7 @@ typedef struct	s_process
 	uint8_t actual_opcode;
 	//au dessus need avis
 	bool		carry;
-	size_t		offset;
+	ssize_t		offset;
 	bool		has_read;
 	size_t		cycle_to_do;
 	uint8_t		registre[16][REG_SIZE];

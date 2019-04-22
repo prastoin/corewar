@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/18 11:39:57 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/22 16:58:35 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,7 @@ int main(int argc, char *argv[])
 	ssize_t		ret;
 	size_t		ok_champ;
 
+	g_fd = open("verbose", O_RDWR | O_CREAT | O_TRUNC);
 	ok_champ = 1;
 	vm = (t_vm) {
 		.cycle_to_die = CYCLE_TO_DIE,

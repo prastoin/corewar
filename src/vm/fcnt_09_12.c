@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:27:13 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/22 16:15:21 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/22 18:42:45 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,13 +66,13 @@ bool		sti(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 	if (param[0] >= 16 || param[0] < 0)
 	{
 		printf("\033[31m bad register %zu \033[0m ", param[0]);
-		return (carry_down(process, ocp, 11));
+		return (invalid(process, ocp, 11));
 	}
 	if (!ft_get_value_mod(param[1], (ocp >> 4 & 0b11), process, game))
-		return (carry_down(process, ocp, 11));
+		return (invalid(process, ocp, 11));
 	ft_memcpy(op1, process->tampon, REG_SIZE);
 	if (!ft_get_value(param[2], (ocp >> 2 & 0b11), process, game))
-		return (carry_down(process, ocp, 11));
+		return (invalid(process, ocp, 11));
 	bin_add(op1, process->tampon, adr);
 	adress = (conv_bin_num(adr, REG_SIZE))% IDX_MOD;
 	printf("Lol %d + %d: %d + %d = %d", param[1], param[2], conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), conv_bin_num(adr, REG_SIZE));
@@ -81,7 +81,10 @@ bool		sti(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 	printf("With pc %d\n", process->offset + adress);
 	ft_dump_mem(*game, false);
 	ft_dump_process(process);
-	return (carry_up(process, ocp, 11));
+	if (conv_bin_num(process->registre[param[0]], REG_SIZE) == 0)
+		return (carry_up(process, ocp, 11));
+	else
+		return (carry_down(process, ocp, 11));
 }
 
 bool		ft_fork(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
@@ -90,6 +93,8 @@ bool		ft_fork(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 	size_t		index;
 
 	printf("param[0] = %d\n", param[0]);
+	while (param[0] + process->offset < 0)
+		param[0] += MEM_SIZE;
 	index = (process - game->vec->processes);
 	new_process = add_process(&game->vec);
 	process = game->vec->processes + index;
