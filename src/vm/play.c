@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/19 18:00:59 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/22 15:20:31 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,37 +172,44 @@ void	ft_dump_mem(t_vm vm, bool ex)
 
 void	david_needs_to_work(t_vm vm)
 {
-	size_t i;
+	ssize_t i;
 	t_process *process;
 
 	vm.continu = true;
 	while (vm.continu)
 	{
 //		printf("FEU D'ARTIFICE\n");
-		i = 0;
+		i = vm.vec->len - 1;
 		printf("│champion[0] %s\n", vm.live[0] ? "is_alive" : "is_dead");
 		printf("│champion[1] %s\n", vm.live[1] ? "is_alive" : "is_dead");
-		while (i < vm.vec->len)
+		while (i >= 0)
 		{
 			process = vm.vec->processes + i;
 			printf("process[\033[32;01m%zu\033[0m] working at mem[\033[33;01m%4zu\033[0m]  \033[31m%.3zu\033[0m | \033[37;01m%.4zu / %.4zu\033[0m | \033[34;01m%d\033[0m \n", i, process->offset, process->cycle_to_do, vm.i_to_die, vm.cycle_to_die, process->is_alive ? 1 : 0);
 			if (process->is_alive)
 			{
-				if (process->cycle_to_do == 0)
+				if (process->cycle_to_do == 0 && process->has_read)
 				{
-					if (process->has_read)
-					{
-						printf("\033[37;01mFt_pass => Cycle_to_do = 0\n\033[0m");
-						ft_pass(&vm, process);
-						process = vm.vec->processes + i;
-						printf("\n");
-					}
-					printf("\033[37;01mRead_opcode\n\033[0m");
-					read_opcode(&vm, process);
+					printf("\033[37;01mFt_pass => Cycle_to_do = 0\n\033[0m");
+					ft_pass(&vm, process);
+					process = vm.vec->processes + i;
 					printf("\n");
 				}
-				else
+				if (process->cycle_to_do > 0)
 					process->cycle_to_do--;
+			}
+			i--;
+		}
+		i = 0;
+		while (i < vm.vec->len)
+		{
+			process = vm.vec->processes + i;
+			printf("%d: Cycle %d, has_read: %d\n", i, process->cycle_to_do, process->has_read);
+			if (process->cycle_to_do == 0 && !process->has_read)
+			{
+				printf("\033[37;01mRead_opcode\n\033[0m");
+				read_opcode(&vm, process);
+				printf("\n");
 			}
 			i++;
 		}

@@ -49,8 +49,8 @@ function dumpOurMemory(cycle, champs) {
 const champs = process.argv.slice(2);
 
 const CYCLE_DELTA = 100;
-const CYCLE_DO = 100;
-let cycle = 200;
+const CYCLE_DO = 1;
+let cycle = 0;
 
 void async function () {
 	let l = true;

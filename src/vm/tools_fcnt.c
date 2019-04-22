@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 11:18:42 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/09 11:18:17 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/22 14:26:46 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ size_t		get_decale(uint8_t ocp, int opcode)
 	size_t type;
 	size_t i;
 
-	size = 0;
+	size = g_ops[opcode].ocp ? 2 : 1;
 	i = 0;
 	while (i < 3)
 	{
@@ -36,7 +36,7 @@ size_t		get_decale(uint8_t ocp, int opcode)
 		i++;
 	}
 	printf("\n\033[32;01mand go through %zu bytes\033[0m\n", size);
-	return(size);
+	return (size);
 }
 
 bool	carry_up(t_process *process, uint8_t ocp, int opcode)
@@ -45,22 +45,28 @@ bool	carry_up(t_process *process, uint8_t ocp, int opcode)
 
 	process->carry = 1;
 	decale = get_decale(ocp, opcode);
-	inc_process_off_mod(process, decale, false);
+	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (true);
 }
 
-bool	carry_down(t_process *process)
+bool	carry_down(t_process *process, uint8_t ocp, int opcode)
 {
-	process->carry = -1;
+	size_t decale;
+
+	decale = get_decale(ocp, opcode);
+	process->carry = 0;
 	printf("\n\033[31m and has failed\033[0m\n");
-	inc_process_off_mod(process, 1, false);
+	process->offset = (process->offset + 1) % MEM_SIZE;
 	return (false);
 }
 
-bool	invalid(t_process *process)
+bool	invalid(t_process *process, uint8_t ocp, int opcode)
 {
+	size_t decale;
+
+	decale = get_decale(ocp, opcode);
 	printf("\n\033[31m and has failed\033[0m\n");
-	inc_process_off_mod(process, 1, false);
+	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (false);
 }
 
@@ -69,17 +75,6 @@ bool	valid(t_process *process, uint8_t ocp, int opcode)
 	size_t decale;
 
 	decale = get_decale(ocp, opcode);
-	inc_process_off_mod(process, decale, false);
+	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (true);
-}
-
-void	inc_process_off_mod(t_process *process, size_t size, bool mod)
-{
-	if (mod == false)
-		process->offset = (process->offset + size) % MEM_SIZE;
-	else
-	{
-		process->offset += size % IDX_MOD;
-		process->offset = process->offset % MEM_SIZE;
-	}
 }

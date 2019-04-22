@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 15:21:34 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/19 19:19:01 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/22 15:44:16 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ bool		ft_get_value(ssize_t nbr, uint8_t type, t_process *process, t_vm *vm)
 {
 	if (type == OCP_REG)
 	{
-		if (nbr >= 16)
+		if (nbr >= 16 || nbr < 0)
 			return (false);
 		else
 			ft_memcpy(process->tampon, process->registre[nbr], REG_SIZE);
@@ -87,7 +87,7 @@ bool		ft_get_value_mod(ssize_t nbr, uint8_t type, t_process *process, t_vm *vm)
 {
 	if (type == OCP_REG)
 	{
-		if (nbr >= 16)
+		if (nbr >= 16 || nbr < 0)
 		{
 			printf("\033[31m get value failed bad register\033[0m ");
 			return (false);
@@ -107,9 +107,7 @@ bool		ft_get_value_mod(ssize_t nbr, uint8_t type, t_process *process, t_vm *vm)
 	else if (type == OCP_IND)
 	{
 		printf("Nbr: %d\n", nbr);
-		while (nbr < 0)
-			nbr += IDX_MOD;
-		mem_read(vm->mem, process->tampon, (process->offset + nbr % IDX_MOD) % MEM_SIZE, 2);
+		mem_read(vm->mem, process->tampon, process->offset + nbr % IDX_MOD, REG_SIZE);
 		printf("\033[32m Process tampon get %.2x-%.2x-%.2x-%.2x with a indirect at the adress %.2x\033[0m ", process->tampon[0], process->tampon[1], process->tampon[2], process->tampon[3], nbr);
 	}
 	else

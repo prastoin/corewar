@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/19 18:32:43 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/22 14:38:02 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,11 +117,10 @@ void	mem_write_int(char mem[], size_t nb, size_t len, ssize_t offset);
 bool	ft_play(t_vm vm);
 t_vec		*create_process(size_t capacity);
 t_process	*add_process(t_vec **list);
-bool		carry_down(t_process *process);
+bool		carry_down(t_process *process, uint8_t ocp, int opcode);
 bool		carry_up(t_process *process, uint8_t ocp, int opcode);
-bool		invalid(t_process *process);
+bool		invalid(t_process *process, uint8_t ocp, int opcode);
 bool		valid(t_process *process, uint8_t ocp, int opcode);
-void		inc_process_off_mod(t_process *process, size_t size, bool mod);
 bool		ft_pass(t_vm *vm, t_process *process);
 bool		read_opcode(t_vm *vm, t_process *process);
 
