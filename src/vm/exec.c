@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/02 14:20:14 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/16 10:06:02 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/23 15:38:34 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void		copy_process(t_process *dest, t_process *src)
 	i = 0;
 	dest->carry = src->carry;
 	dest->said_live = src->said_live;
+	dest->last_cycle_live = src->last_cycle_live;
 	while (i < REG_NUMBER)
 	{
 		ft_memcpy(dest->registre + i, src->registre + i, REG_SIZE);

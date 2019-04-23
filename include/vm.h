@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/22 17:19:13 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/23 15:36:24 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 #include "op.h"
 #include "asm.h"
 
-int	g_fd;
-int	g_opc;
+int		g_fd;
+int		g_opc;
 
 #define OCP_DIR 0b10
 #define OCP_REG 0b01
@@ -66,6 +66,7 @@ typedef struct	s_process
 	size_t		cycle_to_do;
 	uint8_t		registre[16][REG_SIZE];
 	uint8_t		tampon[REG_SIZE];
+	size_t		last_cycle_live;
 	bool		is_alive;
 	bool		said_live;
 }				t_process;
@@ -104,8 +105,7 @@ typedef struct	s_vm
 	t_flags		flags;
 }				t_vm;
 
-
-
+t_vm	*g_vm;
 
 typedef	bool (*t_core_fcnt)(t_vm *, t_process *, uint32_t *, uint8_t);
 

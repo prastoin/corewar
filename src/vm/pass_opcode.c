@@ -6,13 +6,13 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/05 13:47:57 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/22 17:13:06 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/23 19:07:02 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-void	get_params_ocp(t_vm *vm, t_process *process, uint8_t ocp, uint32_t params[])
+void	get_params_ocp(t_vm *vm, t_process *process, uint8_t ocp, int32_t params[])
 {
 	const int	opcode = process->actual_opcode;
 	size_t		i;
@@ -41,7 +41,7 @@ void	get_params_ocp(t_vm *vm, t_process *process, uint8_t ocp, uint32_t params[]
 	}
 }
 
-void	get_params_no_ocp(t_vm *vm, t_process *process, size_t opcode, uint32_t params[])
+void	get_params_no_ocp(t_vm *vm, t_process *process, size_t opcode, int32_t params[])
 {
 	size_t	size;
 	uint8_t	stck[4];
@@ -58,7 +58,7 @@ void	get_params_no_ocp(t_vm *vm, t_process *process, size_t opcode, uint32_t par
 	params[0] = conv_bin_num(stck, size);
 }
 
-bool	read_params_and_ocp(t_vm *vm, t_process *process, uint32_t params[4], uint8_t *ocp)
+bool	read_params_and_ocp(t_vm *vm, t_process *process, int32_t params[4], uint8_t *ocp)
 {
 	const int	opcode = process->actual_opcode;
 	uint8_t		tampom[1];
@@ -79,7 +79,7 @@ bool	read_params_and_ocp(t_vm *vm, t_process *process, uint32_t params[4], uint8
 bool	ft_pass(t_vm *vm, t_process *process)
 {
 	uint8_t ocp;
-	uint32_t params[4];
+	int32_t params[4];
 
 	process->has_read = false;
 	printf("\033[37;01m└─Read_params_and_ocp\033[0m\n");

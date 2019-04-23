@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 14:32:56 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/22 13:08:18 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/23 11:16:07 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ t_core_tab g_ops[17] = {
 	},
 	[0x0e] = {
 		0x0e, "lldi", true, 50, {
-			PARAM_ALL, PARAM_DIRECT | PARAM_REGISTER, PARAM_REGISTER, 0
+			PARAM_ALL | PARAM_INDEX, PARAM_DIRECT | PARAM_REGISTER | PARAM_INDEX, PARAM_REGISTER, 0
 		}
 	},
 	[0x0f] = {

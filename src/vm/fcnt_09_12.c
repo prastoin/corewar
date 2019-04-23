@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:27:13 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/22 18:42:45 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/23 18:58:41 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@ bool		zjmp(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 	ssize_t	offset;
 	(void)ocp;
 	(void)game;
+	dprintf(g_fd, "P%5d | zjmp %d %s\n", g_opc, param[0], process->carry == true ? "OK" : "FAILED");
 	if (process->carry == false)
-		return (invalid(process, ocp, 9));
+		return (invalid(process, 0b11000000, 9));
 	offset = (process->offset + /*(int32_t)*/param[0] % IDX_MOD);
 	while (offset < 0)
 		offset += MEM_SIZE;
@@ -39,7 +40,7 @@ bool		ldi(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	uint8_t		op1[REG_SIZE];
 	uint8_t		adr[REG_SIZE];
-	uint64_t	adress;
+	int32_t	adress;
 
 	if (param[2] >= 16 || param[0] < 0)
 		return (invalid(process, ocp, 10));
@@ -54,6 +55,10 @@ bool		ldi(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 	printf("Address: %d\n", adress);
 	mem_read(game->mem, process->registre[param[2]], process->offset + adress, REG_SIZE);
 	ft_dump_process(process);
+	while (adress + process->offset < 0)
+		adress += MEM_SIZE;
+	dprintf(g_fd, "P%5d | ldi %ld %ld r%d\n", g_opc, conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), param[2]);
+	dprintf(g_fd, "       | -> load from %ld + %ld = %ld (with pc and mod %ld)\n", conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), conv_bin_num(adr, REG_SIZE), (process->offset + adress) % MEM_SIZE);
 	return (valid(process, ocp, 10));
 }
 
@@ -74,35 +79,38 @@ bool		sti(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 	if (!ft_get_value(param[2], (ocp >> 2 & 0b11), process, game))
 		return (invalid(process, ocp, 11));
 	bin_add(op1, process->tampon, adr);
-	adress = (conv_bin_num(adr, REG_SIZE))% IDX_MOD;
+	adress = (conv_bin_num(adr, REG_SIZE)) % IDX_MOD;
 	printf("Lol %d + %d: %d + %d = %d", param[1], param[2], conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), conv_bin_num(adr, REG_SIZE));
 	printf("\n\t\t \033[32m └─copy to %d registre = %.2x - %.2x - %.2x - %.2x\033[0m", adress, process->registre[param[0]][0], process->registre[param[0]][1], process->registre[param[0]][2], process->registre[param[0]][3]);
 	mem_write(game->mem, process->registre[param[0]], process->offset + adress, REG_SIZE);
 	printf("With pc %d\n", process->offset + adress);
 	ft_dump_mem(*game, false);
 	ft_dump_process(process);
-	if (conv_bin_num(process->registre[param[0]], REG_SIZE) == 0)
-		return (carry_up(process, ocp, 11));
-	else
-		return (carry_down(process, ocp, 11));
+	dprintf(g_fd, "P%5d | sti r%ld %ld %d\n", g_opc, param[0], conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE));
+	dprintf(g_fd, "       | -> store to %ld + %ld = %ld (with pc and mod %ld)\n", conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), conv_bin_num(adr, REG_SIZE), process->offset + adress);
+	return (valid(process, ocp, 11));
 }
 
 bool		ft_fork(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	t_process	*new_process;
 	size_t		index;
+	int			save;
 
+	save = param[0];
 	printf("param[0] = %d\n", param[0]);
+	param[0] = param[0] % IDX_MOD;
 	while (param[0] + process->offset < 0)
 		param[0] += MEM_SIZE;
 	index = (process - game->vec->processes);
 	new_process = add_process(&game->vec);
 	process = game->vec->processes + index;
 	*new_process = (t_process) {
-		.offset = (process->offset + (param[0] % IDX_MOD)) % MEM_SIZE, // TODO: Negative offset
-		.is_alive = true
+		.offset = (process->offset + param[0]) % MEM_SIZE, // TODO: Negative offset
+		.is_alive = true,
 	};
 	copy_process(new_process, process);
+	dprintf(g_fd, "P%5d | fork %d (%d)\n", g_opc, save, (save % IDX_MOD) + process->offset);
 	printf("Fork process[%d] creating %d\n", index, new_process - game->vec->processes);
 	return (valid(process, 0b11000000, 12));
 }

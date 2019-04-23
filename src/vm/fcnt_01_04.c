@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:22:08 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/22 18:36:30 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/23 18:48:52 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,11 @@ bool		live(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 	int32_t		player;
 
 	(void)ocp;
-	player = (int32_t)param[0];
+	player = param[0];
 	player = -player;
 	printf("live de %d -- receive %d\n", player, param[0]);
 	process->said_live = true;
+	process->last_cycle_live = game->cycle;
 	if (player >= 1 && player <= MAX_PLAYERS)
 	{
 		if (game->live[player - 1])
@@ -30,8 +31,8 @@ bool		live(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 		}
 	}
 	game->nbr_live++;
-	dprintf(g_fd, "P%5d | live %i\n", g_opc, player);
-	return (valid(process, 0b1000, 1));
+	dprintf(g_fd, "P%5d | live %i\n", g_opc, param[0]);
+	return (valid(process, 0b10000000, 1));
 }
 
 bool		ld(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)

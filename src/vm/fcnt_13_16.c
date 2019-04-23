@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/22 18:46:48 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/23 15:38:12 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ bool		lld(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 	if (!ft_get_value(param[0], ocp >> 6 & 0b11, process, game))
 		return (invalid(process, ocp, 13));
 	ft_memcpy(process->registre[param[1]], process->tampon, REG_SIZE);
+	dprintf(g_fd, "P%5d | lld %ld r%d\n", g_opc, conv_bin_num(process->tampon, REG_SIZE), param[1]);
 	if ((conv_bin_num(process->tampon, REG_SIZE)) == 0)
 		return (carry_up(process, ocp, 13));
 	else
@@ -43,6 +44,8 @@ bool		lldi(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 	while ((process->offset + adress) < 0)
 		adress += MEM_SIZE;
 	mem_read(game->mem, process->registre[param[2]], (process->offset + adress) % MEM_SIZE, REG_SIZE);
+	dprintf(g_fd, "P%5d | lldi %ld %ld r%d\n", g_opc, conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), param[2]);
+	dprintf(g_fd, "       | -> load from %ld + %ld = %ld (with pc and mod %ld)\n", conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), conv_bin_num(adr, REG_SIZE), (process->offset + adress) % MEM_SIZE);
 	if ((conv_bin_num(process->registre[param[2]], REG_SIZE)) == 0)
 		return (carry_up(process, ocp, 14));
 	else
@@ -53,7 +56,9 @@ bool		lfork(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	t_process	*new_process;
 	size_t		index;
+	ssize_t		save;
 
+	dprintf(g_fd, "P%5d | lfork %d (%d)\n", g_opc, param[1], param[1]);
 	while (param[1] + process->offset < 0)
 		param[1] += MEM_SIZE;
 	index = (process - game->vec->processes);
@@ -61,7 +66,7 @@ bool		lfork(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 	process = game->vec->processes + index;
 	*new_process = (t_process) {
 		.offset = (process->offset + param[1]) % MEM_SIZE,
-		.is_alive = true
+		.is_alive = true,
 	};
 	copy_process(new_process, process);
 	return (valid(process, 0b11, 15));

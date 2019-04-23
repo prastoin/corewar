@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/22 17:29:00 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/23 18:54:16 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,11 +83,11 @@ bool	ft_winner(t_champ champ[MAX_PLAYERS])
 bool	cycle_decremente_die(t_vm *vm)
 {
 	printf("Decremente NBR_LIVE = %zu\n", vm->nbr_live);
-	if (vm->nbr_live >= NBR_LIVE || vm->check == MAX_CHECKS)
+	if (vm->nbr_live >= NBR_LIVE || vm->check + 1  == MAX_CHECKS)
 	{
 		vm->cycle_to_die -= CYCLE_DELTA;
+		dprintf(g_fd, "Cycle to die is now %d\n", vm->cycle_to_die);
 		vm->check = 0;
-		vm->nbr_live = 0;
 	}
 	else
 		vm->check++;
@@ -96,12 +96,13 @@ bool	cycle_decremente_die(t_vm *vm)
 		printf("cycle to die = 0\n");
 		return (ft_winner(vm->champ));
 	}
+	vm->nbr_live = 0;
 	return (true);
 }
 
 bool	vm_cycle_to_die(t_vm *vm)
 {
-	size_t i;
+	ssize_t i;
 	size_t dead;
 
 	if (vm->i_to_die >= vm->cycle_to_die)
@@ -117,18 +118,21 @@ bool	vm_cycle_to_die(t_vm *vm)
 				vm->live[i] = false;
 		i++;
 		}
-		i = 0;
-		while (i < vm->vec->len)
+		i = vm->vec->len - 1;
+		while (i >= 0)
 		{
 			if (vm->vec->processes[i].said_live == true)
 				vm->vec->processes[i].said_live = false;
-			else
+			else if (vm->vec->processes[i].is_alive == true)
+			{
+				dprintf(g_fd, "Process %d hasn't lived for %ld cycles (CTD %ld)\n", i + 1, vm->cycle - vm->vec->processes[i].last_cycle_live, vm->cycle_to_die);
 				vm->vec->processes[i].is_alive = false;
+			}
 			if (vm->vec->processes[i].is_alive == false)
 				dead++;
 			if (dead == vm->vec->len)
 				return (ft_winner(vm->champ));
-			i++;
+			i--;
 		}
 		if (!cycle_decremente_die(vm))
 			return (false);
@@ -176,6 +180,7 @@ void	david_needs_to_work(t_vm vm)
 	ssize_t i;
 	t_process *process;
 
+	g_vm = &vm;
 	vm.continu = true;
 	while (vm.continu)
 	{
