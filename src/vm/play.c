@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/24 10:50:54 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/24 11:10:07 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,7 +226,7 @@ bool	ft_play(t_vm vm)
 				.offset = (MEM_SIZE / vm.nbr_champ) * nbr_champ,
 				.is_alive = true
 			};
-			conv_int_to_bin(~i, process->registre[1]);
+			conv_int_to_bin(~i, process->registre[0]);
 			nbr_champ++;
 		}
 		i++;

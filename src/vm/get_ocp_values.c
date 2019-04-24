@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 15:21:34 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/24 10:49:26 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/24 11:08:41 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,28 +37,20 @@ bool		ft_check_ocp(uint8_t ocp, uint8_t opcode)
 		if (type == 0b11)
 		{
 			if (!(g_ops[opcode].params[i] & 0b10))
-			{
 				return (false);
-			}
 		}
 		else if (type == 0b10)
 		{
 			if (!(g_ops[opcode].params[i] & 0b1))
-			{
 				return (false);
-			}
 		}
 		else if (type == 0b01)
 		{
 			if (!(g_ops[opcode].params[i] & 0b100))
-			{
 				return (false);
-			}
 		}
 		else
-		{
 			return (false);
-		}
 		i++;
 	}
 	return (true);
@@ -68,10 +60,10 @@ bool		ft_get_value(ssize_t nbr, uint8_t type, t_process *process, t_vm *vm)
 {
 	if (type == OCP_REG)
 	{
-		if (nbr >= 16 || nbr < 0)
+		if (nbr > 16 || nbr <= 0)
 			return (false);
 		else
-			ft_memcpy(process->tampon, process->registre[nbr], REG_SIZE);
+			ft_memcpy(process->tampon, process->registre[nbr - 1], REG_SIZE);
 	}
 	else if (type == OCP_DIR)
 		conv_int_to_bin(nbr, process->tampon);
@@ -86,23 +78,15 @@ bool		ft_get_value_mod(ssize_t nbr, uint8_t type, t_process *process, t_vm *vm)
 {
 	if (type == OCP_REG)
 	{
-		if (nbr >= 16 || nbr < 0)
-		{
+		if (nbr > 16 || nbr <= 0)
 			return (false);
-		}
 		else
-		{
-			ft_memcpy(process->tampon, process->registre[nbr], REG_SIZE);
-		}
+			ft_memcpy(process->tampon, process->registre[nbr - 1], REG_SIZE);
 	}
 	else if (type == OCP_DIR)
-	{
 		conv_int_to_bin(nbr, process->tampon);
-	}
 	else if (type == OCP_IND)
-	{
 		mem_read(vm->mem, process->tampon, process->offset + nbr % IDX_MOD, REG_SIZE);
-	}
 	else
 		return (false);
 	return (true);
