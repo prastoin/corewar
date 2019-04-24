@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/23 15:36:24 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/24 10:42:35 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ typedef struct	s_process
 	ssize_t		offset;
 	bool		has_read;
 	size_t		cycle_to_do;
-	uint8_t		registre[16][REG_SIZE];
+	uint8_t		registre[REG_NUMBER][REG_SIZE];
 	uint8_t		tampon[REG_SIZE];
 	size_t		last_cycle_live;
 	bool		is_alive;

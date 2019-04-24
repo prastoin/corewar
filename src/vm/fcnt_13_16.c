@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/23 15:38:12 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/24 10:21:53 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,20 +56,21 @@ bool		lfork(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	t_process	*new_process;
 	size_t		index;
-	ssize_t		save;
+	int			save;
 
-	dprintf(g_fd, "P%5d | lfork %d (%d)\n", g_opc, param[1], param[1]);
-	while (param[1] + process->offset < 0)
-		param[1] += MEM_SIZE;
+	save = param[0];
+	while (param[0] + process->offset < 0)
+		param[0] += MEM_SIZE;
 	index = (process - game->vec->processes);
 	new_process = add_process(&game->vec);
 	process = game->vec->processes + index;
 	*new_process = (t_process) {
-		.offset = (process->offset + param[1]) % MEM_SIZE,
+		.offset = (process->offset + param[0]) % MEM_SIZE,
 		.is_alive = true,
 	};
 	copy_process(new_process, process);
-	return (valid(process, 0b11, 15));
+	dprintf(g_fd, "P%5d | lfork %d (%d)\n", g_opc, save, save + process->offset);
+	return (valid(process, 0b11000000, 15));
 }
 
 bool		aff(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)

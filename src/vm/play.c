@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/23 18:54:16 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/24 10:50:54 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,6 @@ bool	ft_winner(t_champ champ[MAX_PLAYERS])
 
 bool	cycle_decremente_die(t_vm *vm)
 {
-	printf("Decremente NBR_LIVE = %zu\n", vm->nbr_live);
 	if (vm->nbr_live >= NBR_LIVE || vm->check + 1  == MAX_CHECKS)
 	{
 		vm->cycle_to_die -= CYCLE_DELTA;
@@ -93,7 +92,6 @@ bool	cycle_decremente_die(t_vm *vm)
 		vm->check++;
 	if (vm->cycle_to_die <= 0)
 	{
-		printf("cycle to die = 0\n");
 		return (ft_winner(vm->champ));
 	}
 	vm->nbr_live = 0;
@@ -107,7 +105,6 @@ bool	vm_cycle_to_die(t_vm *vm)
 
 	if (vm->i_to_die >= vm->cycle_to_die)
 	{
-		printf("DIE UPDATE | au cycle = %zu\n", vm->cycle);
 		dead = 0;
 		i = 0;
 		while (i < MAX_PLAYERS)
@@ -144,37 +141,6 @@ bool	vm_cycle_to_die(t_vm *vm)
 	return (true);
 }
 
-void	ft_dump_mem(t_vm vm, bool ex)
-{
-	size_t line;
-	size_t i;
-
-	line = 0;
-	i = 0;
-	printf("\n");
-	while (i < MEM_SIZE)
-	{
-		if (i % 32 == 0)
-		{
-			if (i != 0)
-				printf("\n");
-			printf ("%.4lx\t", line);
-			line += 32;
-		}
-		else if (i % 8 == 0 && i != 0)
-			printf ("\t");
-		if (vm.mem[i] == 0)
-			printf("%.2x", vm.mem[i]);
-		else
-			printf("\033[32;01m%.2x\033[0m", vm.mem[i]);
-		printf (" ");
-		i++;
-	}
-	printf("\n");
-	if (ex == true)
-		exit (0);
-}
-
 void	david_needs_to_work(t_vm vm)
 {
 	ssize_t i;
@@ -184,23 +150,17 @@ void	david_needs_to_work(t_vm vm)
 	vm.continu = true;
 	while (vm.continu)
 	{
-//		printf("FEU D'ARTIFICE\n");
 		i = vm.vec->len - 1;
-		printf("│champion[0] %s\n", vm.live[0] ? "is_alive" : "is_dead");
-		printf("│champion[1] %s\n", vm.live[1] ? "is_alive" : "is_dead");
 		while (i >= 0)
 		{
 			process = vm.vec->processes + i;
-			printf("process[\033[32;01m%zu\033[0m] working at mem[\033[33;01m%4zu\033[0m]  \033[31m%.3zu\033[0m | \033[37;01m%.4zu / %.4zu\033[0m | \033[34;01m%d\033[0m \n", i, process->offset, process->cycle_to_do, vm.i_to_die, vm.cycle_to_die, process->is_alive ? 1 : 0);
 			if (process->is_alive)
 			{
 				if (process->cycle_to_do == 0 && process->has_read)
 				{
-					printf("\033[37;01mFt_pass => Cycle_to_do = 0\n\033[0m");
 					g_opc = i + 1;
 					ft_pass(&vm, process);
 					process = vm.vec->processes + i;
-					printf("\n");
 				}
 				if (process->cycle_to_do > 0)
 					process->cycle_to_do--;
@@ -211,13 +171,8 @@ void	david_needs_to_work(t_vm vm)
 		while (i < vm.vec->len)
 		{
 			process = vm.vec->processes + i;
-			printf("%d: Cycle %d, has_read: %d\n", i, process->cycle_to_do, process->has_read);
 			if (process->cycle_to_do == 0 && !process->has_read)
-			{
-				printf("\033[37;01mRead_opcode\n\033[0m");
 				read_opcode(&vm, process);
-				printf("\n");
-			}
 			i++;
 		}
 		if (vm.cycle == vm.flags.dump_c) {
@@ -229,9 +184,6 @@ void	david_needs_to_work(t_vm vm)
 				if (i != MEM_SIZE)
 					fprintf(stderr, " ");
 			}
-			printf("\n");
-			for (int i = 0; i < vm.vec->len; i++)
-				printf("%d\n", vm.vec->processes[i].is_alive);
 			exit(0);
 		}
 		vm.continu = vm_cycle_to_die(&vm);
@@ -249,10 +201,8 @@ bool	ft_play(t_vm vm)
 
 	i = 0;
 	nbr_champ = 0;
-//	printf("%zu\n", vm.nbr_champ);
 	while (nbr_champ < vm.nbr_champ)
 	{
-//		printf("vm.champ[i].fd = %zu\n", vm.champ[i].fd);
 		if (vm.champ[i].fd)
 		{
 			if (!bin_parse_header(vm.champ[i].fd, vm.champ + i))
@@ -266,13 +216,10 @@ bool	ft_play(t_vm vm)
 	vm.vec = create_process(MAX_PLAYERS);
 	while (nbr_champ < vm.nbr_champ)
 	{
-		printf("%d < %d\n", nbr_champ, vm.nbr_champ);
 		if (vm.champ[i].fd)
 		{
 			//chargement mem(MEM_SIZE / vm.nbr_champ) * nbr_champ)
-			printf("avant = %d\n", vm.nbr_champ);
 			ft_memcpy((vm.mem) + ((MEM_SIZE / vm.nbr_champ) * nbr_champ), vm.champ[i].prog, vm.champ[i].size);
-			printf("apres = %d\n", vm.nbr_champ);
 			//ajout process data
 			process = add_process(&vm.vec);
 			*process = (t_process) {

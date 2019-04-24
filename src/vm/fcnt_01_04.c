@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:22:08 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/23 18:48:52 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/24 10:49:20 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ bool		live(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 	(void)ocp;
 	player = param[0];
 	player = -player;
-	printf("live de %d -- receive %d\n", player, param[0]);
 	process->said_live = true;
 	process->last_cycle_live = game->cycle;
 	if (player >= 1 && player <= MAX_PLAYERS)

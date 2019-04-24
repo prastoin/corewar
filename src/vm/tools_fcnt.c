@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 11:18:42 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/23 17:52:51 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/24 10:56:36 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ size_t		get_decale(uint8_t ocp, int opcode)
 
 	size = g_ops[opcode].ocp ? 2 : 1;
 	i = 0;
-	while (i < 3)
+	while (g_ops[opcode].params[i])
 	{
 		type = (ocp >> ((3 - i) * 2)) & 0b11;
 		if (type == 0b01)
@@ -35,7 +35,6 @@ size_t		get_decale(uint8_t ocp, int opcode)
 			size += 2;
 		i++;
 	}
-	printf("\n\033[32;01mand go through %zu bytes\033[0m\n", size);
 	return (size);
 }
 
@@ -85,7 +84,6 @@ bool	carry_down(t_process *process, uint8_t ocp, int opcode)
 
 	decale = get_decale(ocp, opcode);
 	process->carry = false;
-	printf("\n\033[31m and has failed\033[0m\n");
 	verbose(decale, process, ocp, opcode);
 	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (false);
@@ -96,7 +94,6 @@ bool	invalid(t_process *process, uint8_t ocp, int opcode)
 	size_t decale;
 
 	decale = get_decale(ocp, opcode);
-	printf("\n\033[31m and has failed\033[0m\n");
 	verbose(decale, process, ocp, opcode);
 	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (false);

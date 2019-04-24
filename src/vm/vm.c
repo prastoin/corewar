@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/23 13:58:21 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/24 10:49:19 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ static int	get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2])
 	char	*value;
 
 	arg = *c_arg + i[1]; // ??
-	printf("--%s--\n", arg);
 	if (opt->type == ARG_BOOLEAN)
 		*(bool *)opt->value = true;
 	else if (opt->type == ARG_INT)
@@ -151,10 +150,6 @@ bool		ft_check_is_struct(t_vm *vm, char *name, int n, bool flag) //parse arg aft
 		vm->champ[n - 1].fd = fd;
 		vm->nbr_champ++;
 	}
-	printf("\n\nbool_Player[MAX_PLAYERS]\n%d\n", player[0]);
-	printf("%d\n", player[1]);
-	printf("%d\n", player[2]);
-	printf("%d\n", player[3]);
 
 	return (true);
 }
@@ -220,14 +215,12 @@ int main(int argc, char *argv[])
 		return (0);
 	while (ret < argc)
 	{
-		printf("%s\n", argv[ret]);
 		if (!ft_check_is_struct(&vm, argv[ret], ok_champ, false)) // n a 1 wtf ??
 			return (0);
 		else
 			ok_champ++;
 		ret++;
 	}
-//	printf("champ = %zu\n", vm.nbr_champ);
 	if (vm.nbr_champ > 0 && vm.nbr_champ <= MAX_PLAYERS)
 		ft_play(vm);
 	return (0);
