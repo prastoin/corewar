@@ -1,1 +1,0 @@
-./vm -n 3 ressources/champs/Car.cro ressources/champs/Car.cro

@@ -1,7 +1,12 @@
+SRCS += src/asm/argv_management.c
+SRCS += src/asm/asm_content_parse.c
+SRCS += src/asm/asm_parse.c
 SRCS += src/asm/asm_read.c
+SRCS += src/asm/asm_utils.c
 SRCS += src/asm/bin_write.c
 SRCS += src/asm/error.c
 SRCS += src/asm/hashtable.c
+SRCS += src/common/args_error.c
 SRCS += src/common/ft_memcpy.c
 SRCS += src/common/ft_putf.c
 SRCS += src/common/io.c

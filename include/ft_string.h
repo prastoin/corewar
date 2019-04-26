@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 10:07:00 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/08 15:09:10 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/26 16:08:49 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdarg.h>
 
 # define BUFF_SIZE 4096
 # define CSI "\033["
@@ -25,14 +26,17 @@
 # define CSI_RED CSI "31m"
 # define CSI_RESET CSI "0m"
 
-size_t	ft_strlen(const char *str);
-uint8_t	*ft_strcpy(uint8_t *dst, const uint8_t *src);
-size_t	search_for(uint8_t *str, uint8_t c);
-ssize_t	ft_strncmp(uint8_t *s1, char *str, size_t n);
+size_t		ft_strlen(const char *str);
+uint8_t		*ft_strcpy(uint8_t *dst, const uint8_t *src);
+size_t		search_for(uint8_t *str, uint8_t c);
+ssize_t		ft_strncmp(uint8_t *s1, char *str, size_t n);
 ssize_t		ft_strcmp(const char *s1, const char *s2);
 size_t		atoi_hexa(char nb[], size_t size);
-void	ft_putf_fd(int fd, char *fmt, ...);
-void		ft_putstr_fd(char *str, size_t fd);
 char		*ft_strchr(const char *s, int c);
+char		*ft_strrchr(const char *s, int c);
+size_t		nb_len(uintmax_t n);
+intmax_t	ft_atoi(char *str);
+void	ft_putf_va(int fd, char *fmt, va_list args);
+
 
 #endif

@@ -6,15 +6,14 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/24 10:42:35 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/26 13:39:43 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VM_H
 #define VM_H
 
-#include "op.h"
-#include "asm.h"
+#include "common.h"
 
 int		g_fd;
 int		g_opc;
@@ -23,29 +22,11 @@ int		g_opc;
 #define OCP_REG 0b01
 #define OCP_IND 0b11
 
-
-typedef enum	e_arg_type
-{
-	ARG_END = 0,
-	ARG_STRUCT,
-	ARG_BOOLEAN,
-	ARG_INT
-}				t_type;
-
 typedef struct	s_datan
 {
 	size_t	num;
 	char	*name;
 }				t_datan;
-
-typedef	struct	s_arg
-{
-	t_type	type;
-	uint8_t	short_name;
-	char	*long_name;
-	void	*value;
-	const char *help;
-}				t_arg;
 
 typedef struct	s_flags
 {
@@ -107,9 +88,7 @@ typedef struct	s_vm
 
 t_vm	*g_vm;
 
-typedef	bool (*t_core_fcnt)(t_vm *, t_process *, uint32_t *, uint8_t);
 
-extern t_core_fcnt g_fcnt[17];
 
 bool	ft_check_ocp(uint8_t ocp, uint8_t opcode);
 bool	ft_get_value(ssize_t nbr, uint8_t type, t_process *processes, t_vm *vm);
@@ -145,6 +124,8 @@ void		copy_process(t_process *dest, t_process *src);
 ** op.c
 */
 
+typedef	bool (*t_core_fcnt)(t_vm *, t_process *, int32_t *, uint8_t);
+
 bool	live(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp);
 bool	ld(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp);
 bool	st(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp);
@@ -162,6 +143,7 @@ bool	lldi(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp);
 bool	lfork(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp);
 bool	aff(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp);
 
+extern t_core_fcnt g_fcnt[17];
 
 void	ft_dump_mem(t_vm vm, bool ex);
 

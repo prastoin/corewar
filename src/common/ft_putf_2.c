@@ -1,28 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy.c                                        :+:      :+:    :+:   */
+/*   ft_putf_2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/08 12:10:58 by prastoin          #+#    #+#             */
-/*   Updated: 2019/03/12 15:02:30 by prastoin         ###   ########.fr       */
+/*   Created: 2019/04/26 15:39:21 by prastoin          #+#    #+#             */
+/*   Updated: 2019/04/26 16:08:57 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include "ft_string.h"
+#include <unistd.h>
 
-void	*ft_memcpy(void *dst, const void *src, size_t n)
+int	ft_putf(char *fmt, ...)
 {
-	size_t	i;
+	va_list	args;
 
-	i = 0;
-	if (n == 0)
-		return (dst);
-	while (i < n)
-	{
-		((char *)dst)[i] = ((char *)src)[i];
-		i++;
-	}
-	return (dst);
+	va_start(args, fmt);
+	ft_putf_va(STDOUT_FILENO, fmt, args);
+	va_end(args);
+	return (0);
+}
+
+int		ft_putf_fd(int fd, char *fmt, ...)
+{
+	va_list	args;
+
+	va_start(args, fmt);
+	ft_putf_va(fd, fmt, args);
+	va_end(args);
+	return (0);
 }

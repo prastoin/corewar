@@ -6,14 +6,19 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 17:54:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/08 09:21:31 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/26 16:15:19 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_string.h"
 #include "asm.h"
+#include <fcntl.h>
+#include <sys/ioctl.h>
 
 #define MSG "Expected one of "
+#define SEV_ERROR CSI_RED "error: "
+#define SEV_WARNING CSI_YELLOW "warning: "
+#define SEPARATOR "│"
 
 char	*from_int_to_type(size_t type)
 {
@@ -34,9 +39,6 @@ char	*from_int_to_type(size_t type)
 		return ("Expected Indirect");
 	return (NULL);
 }
-
-#define SEV_ERROR CSI_RED "error: "
-#define SEV_WARNING CSI_YELLOW "warning: "
 
 void	error_severity(t_write *err, size_t severity)
 {
@@ -84,10 +86,6 @@ void	locate_error(t_write *err, t_span begin)
 	io_write(err, "\n", 1);
 }
 
-#define SEPARATOR "│"
-
-#include <sys/ioctl.h>
-
 uint16_t	get_columns(int fd)
 {
 	struct winsize	w;
@@ -121,17 +119,6 @@ void		underline_error(t_write *err, t_span begin, t_span end, uintmax_t severity
 		io_write(err, "^", 1);
 		i++;
 	}
-}
-
-
-size_t	nb_len(uintmax_t n)
-{
-	size_t	len;
-
-	len = 1;
-	while (n /= 10)
-		len++;
-	return (len);
 }
 
 #include <string.h>

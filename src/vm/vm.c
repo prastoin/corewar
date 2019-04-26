@@ -6,38 +6,15 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/24 10:49:19 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/26 14:02:06 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "asm.h"
 #include "vm.h"
+#include "common.h"
 #include "ft_string.h"
-
-#define UNKNOWN_OPTION (-1)
-#define NO_ARG (-2)
-
-
-static int	show_err(int err, char *name, char *option, size_t len	)
-{
-	if (!err)
-		return (0);
-	if (err == UNKNOWN_OPTION)
-	{
-		write(2, name, ft_strlen(name));
-		write(2, ": illegal option -- ", 20);
-		write(2, option, len);
-		write(2, "\n", 1);
-	}
-	else if (err == NO_ARG)
-	{
-		write(2, name, ft_strlen(name));
-		write(2, ": argument required -- ", 23);
-		write(2, option, len);
-		write(2, "\n", 1);
-	}
-	return (1);
-}
+#include <fcntl.h>
+#include <limits.h>
 
 static int	get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2])
 {
@@ -191,15 +168,6 @@ int main(int argc, char *argv[])
 	t_vm		vm;
 	ssize_t		ret;
 	size_t		ok_champ;
-
-	g_fd = open("verbose", O_RDWR | O_CREAT | O_TRUNC);
-	ok_champ = 1;
-	vm = (t_vm) {
-		.cycle_to_die = CYCLE_TO_DIE,
-		.flags = {
-			.dump_c = -1
-		}
-	};
 	const t_arg args[] = {
 		{ARG_STRUCT, 'n', "number", &vm.flags.num, "Choose the number for a player"},
 		{ARG_INT, 'd', "dump", &vm.flags.dump_c, "On sait pas on parse"},
@@ -207,6 +175,15 @@ int main(int argc, char *argv[])
 		{ARG_BOOLEAN, 'b', "bin_aff", &vm.flags.bin_o, "Affichage binnaire"},
 		{ARG_BOOLEAN, 'c', "ncurse_aff", &vm.flags.ncurse_o, "Affichage Ncurse"},
 		{ARG_END, 0, 0, 0, 0}
+	};
+
+	g_fd = open("verbose", O_RDWR | O_CREAT | O_TRUNC);
+	ok_champ = 1;
+	vm = (t_vm) {
+		.cycle_to_die = CYCLE_TO_DIE,
+		.flags = {
+		.dump_c = -1
+		}
 	};
 	ret = -1;
 	while (++ret < MAX_PLAYERS)

@@ -6,11 +6,59 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 10:05:53 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/18 11:09:28 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/26 15:38:28 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_string.h"
+
+char		*ft_strchr(const char *s, int c)
+{
+	size_t	i;
+	size_t	max;
+
+	i = 0;
+	max = ft_strlen(s);
+	while (s[i] != c && s[i])
+		i++;
+	if (i == max && s[i] != c)
+		return (0);
+	else
+		return ((char *)(s + i));
+}
+
+intmax_t	ft_atoi(char *str)
+{
+	intmax_t	res;
+	int			neg;
+	size_t		i;
+
+	res = 0;
+	i = 0;
+	neg = 1;
+	while (str[i] == ' ' || (str[i] >= '\a' && str[i] <= '\r'))
+		i++;
+	if (str[i] == '-')
+		neg = -1;
+	if (str[i] == '+' || neg == -1)
+		i++;
+	while (str[i] && (str[i] >= '0' && str[i] <= '9'))
+	{
+		res = res * 10 + (str[i] - '0');
+		i++;
+	}
+	return (res * neg);
+}
+
+size_t	nb_len(uintmax_t n)
+{
+	size_t	len;
+
+	len = 1;
+	while (n /= 10)
+		len++;
+	return (len);
+}
 
 ssize_t		ft_strcmp(const char *s1, const char *s2)
 {
@@ -26,81 +74,17 @@ ssize_t		ft_strcmp(const char *s1, const char *s2)
 	return (str1[i] - str2[i]);
 }
 
-ssize_t		ft_strncmp(uint8_t *s1, char *str, size_t n)
+void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
-	size_t		i;
+	size_t	i;
 
 	i = 0;
+	if (n == 0)
+		return (dst);
 	while (i < n)
 	{
-		if (str[i] -  s1[i] != 0)
-			return (str[i] - s1[i]);
-		if (str[i] == '\0' && s1[i] == '\n')
-			return (0);
+		((char *)dst)[i] = ((char *)src)[i];
 		i++;
 	}
-	return (0);
-}
-
-size_t	ft_strlen(const char *str)
-{
-	size_t	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
-
-size_t		search_for(uint8_t *str, uint8_t c)
-{
-	size_t	i;
-	size_t	count;
-
-	count = 0;
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == c)
-			count++;
-		i++;
-	}
-	return (count);
-}
-
-uint8_t		*ft_strcpy(uint8_t *dst, const uint8_t *src)
-{
-	size_t	i;
-
-	i = 0;
-	while (src[i])
-	{
-		dst[i] = src[i];
-		i++;
-	}
-	dst[i] = '\0';
 	return (dst);
 }
-/*
-size_t		atoi_hexa(char nb[], size_t size)
-{
-	size_t	res;
-	const char	*base = "0123456789abcdef";
-	size_t	i;
-	size_t	tmp;
-
-	res = 0;
-	i = 0;
-	
-	while (i < size)
-	{
-		tmp = 0;
-		while (base[tmp] != nb[i] && tmp < 16)
-			tmp++;
-		if (tmp == 16)
-			break;
-		res = res * 16 + tmp;
-		i++;
-	}
-	return (res);
-}*/
