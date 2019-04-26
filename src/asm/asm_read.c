@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 16:10:18 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/26 17:01:03 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,7 @@ char			*change_ext(char *name)
 	char		*dot;
 
 	if (!(dot = ft_strrchr(name, '.')))
-		return (NULL);
-	dot = name + ft_strlen(name);
+		dot = name + ft_strlen(name);
 	if ((dot - name + (sizeof(EXT) - 1)) > PATH_MAX)
 		return (NULL);
 	ft_memcpy(file, name, dot - name);
@@ -57,7 +56,7 @@ void		read_fixed(t_read *in, char *name)
 		return ;
 	out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	write (out.fd, out.buffer, out.nbr_write);
-	ft_putf("done\n");
+	ft_putf("done static\n");
 	return ;
 }
 
@@ -74,7 +73,7 @@ void		read_streaming(t_read *in, char *name)
 	out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	table = create_hashtable(8);
 	asm_parser(&out, in, table);
-	printf("fin\n");
+	printf("done streaming\n");
 }
 
 int main(int argc, char *argv[])
@@ -92,12 +91,14 @@ int main(int argc, char *argv[])
 	t_read	in;
 
 	flag = (t_flag) {};
-	if ((ret = parse_args(args, argc, argv)) < 0)
+	if ((ret = parse_args(args, argc, argv)) < 0 || argc == 1)
 		return (-1);
+	file = argv[ret];
 	if (!(out = change_ext(file)))
 		return (ft_putf("Invalid name file\n"));
-	if ((fd = open(file, O_RDONLY)) == -1)
+	if ((fd = open(file, O_RDONLY)) <= 0)
 		return (ft_putf("Open failed\n"));
 	in = init_read(fd, file);
 	(flag.streaming ? read_streaming : read_fixed)(&in, out);
+	close(fd);
 }

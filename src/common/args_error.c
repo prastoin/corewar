@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 12:36:57 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 15:35:42 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/26 16:54:07 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,21 @@ int	show_err(int err, char *name, char *option, size_t len)
 		write(2, "\n", 1);
 	}
 	return (1);
+}
+
+int		args_usage(const t_arg args[], char *name, char *usage, char *desc)
+{
+	ft_putf_fd(1, "Usage: %s %s\n%s\n\nOptions:\n", name, usage, desc);
+	while (args->type != ARG_END)
+	{
+		if (args->short_name && args->long_name)
+			ft_putf_fd(1, "  -%c, --%s\n", args->short_name,
+					args->long_name);
+		else if (args->short_name)
+			ft_putf_fd(1, "  -%c\n", args->short_name);
+		else if (args->long_name)
+			ft_putf_fd(1, "     --%s\n", args->long_name);
+		args++;
+	}
+	return (0);
 }

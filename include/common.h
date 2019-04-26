@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 11:30:59 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 16:09:48 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/26 16:54:04 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ typedef	struct	s_arg
 }				t_arg;
 
 int	show_err(int err, char *name, char *option, size_t len);
+int	args_usage(const t_arg args[], char *name, char *usage, char *desc);
 
 int	ft_putf_fd(int fd, char *fmt, ...);
 int	ft_putf(char *fmt, ...);
