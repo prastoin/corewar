@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 11:36:50 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 18:19:13 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,4 +101,5 @@ int main(int argc, char *argv[])
 	in = init_read(fd, file);
 	(flag.streaming ? read_streaming : read_fixed)(&in, out);
 	close(fd);
+	return (0);
 }

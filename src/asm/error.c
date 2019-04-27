@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 17:54:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 15:22:14 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 18:23:06 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ void		underline_error(t_write *err, t_span begin, t_span end, uintmax_t severity
 
 #include <string.h>
 
-void	error_contxt_print(t_write *err, t_span begin, t_span end, uintmax_t severity)
+void	error_contxt_print(t_write *err, t_span begin, t_span end, uintmax_t severity) //TODO add norm + werror management
 {
 	const uint16_t	columns = get_columns(2);
 	size_t	fd;

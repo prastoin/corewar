@@ -1,6 +1,7 @@
+SRCS += ft_putf.c
+SRCS += src/asm/asm.c
 SRCS += src/asm/asm_content_parse.c
 SRCS += src/asm/asm_parse.c
-SRCS += src/asm/asm_read.c
 SRCS += src/asm/asm_utils.c
 SRCS += src/asm/bin_write.c
 SRCS += src/asm/error.c
