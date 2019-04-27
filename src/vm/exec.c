@@ -6,11 +6,12 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/02 14:20:14 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 11:49:13 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 11:59:25 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
+#include "ft_string.h"
 
 t_vec		*create_process(size_t capacity)
 {

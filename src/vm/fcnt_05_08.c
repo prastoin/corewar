@@ -6,11 +6,12 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:24:34 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/24 11:04:05 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 12:06:43 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
+#include "ft_string.h"
 
 bool		sub(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {

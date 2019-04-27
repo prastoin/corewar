@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 12:36:57 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 16:54:07 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 16:11:23 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,19 @@ int	show_err(int err, char *name, char *option, size_t len)
 
 int		args_usage(const t_arg args[], char *name, char *usage, char *desc)
 {
-	ft_putf_fd(1, "Usage: %s %s\n%s\n\nOptions:\n", name, usage, desc);
+	ft_putf_fd(1, "Usage: %s [options] %s\n%s\n\nOptions:\n", name, usage, desc);
 	while (args->type != ARG_END)
 	{
 		if (args->short_name && args->long_name)
-			ft_putf_fd(1, "  -%c, --%s\n", args->short_name,
+			ft_putf_fd(1, "  -%c, --%s", args->short_name,
 					args->long_name);
 		else if (args->short_name)
-			ft_putf_fd(1, "  -%c\n", args->short_name);
+			ft_putf_fd(1, "  -%c", args->short_name);
 		else if (args->long_name)
-			ft_putf_fd(1, "     --%s\n", args->long_name);
+			ft_putf_fd(1, "     --%s", args->long_name);
+		if (args->type == ARG_INT)
+			ft_putf_fd(1, " N");
+		ft_putf_fd(1, " : %s\n", args->help);
 		args++;
 	}
 	return (0);

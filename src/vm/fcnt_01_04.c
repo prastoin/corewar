@@ -6,11 +6,12 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:22:08 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 11:49:19 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 13:45:53 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
+#include "ft_string.h"
 
 bool		live(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {

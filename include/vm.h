@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 13:39:43 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 14:31:30 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,15 @@ typedef struct	s_datan
 typedef struct	s_flags
 {
 	t_datan	*num;
-	int		dump_c;
-	int		run_c;
-	bool	bin_o;
-	bool	ncurse_o;
+	int			dump_c;
+	int			run_c;
+	bool		bin_o;
+	bool		ncurse_o;
 }				t_flags;
 
 typedef struct	s_process
 {
-	uint8_t actual_opcode;
-	//au dessus need avis
+	uint8_t		actual_opcode;
 	bool		carry;
 	ssize_t		offset;
 	bool		has_read;
@@ -72,7 +71,7 @@ typedef struct	s_champ
 typedef struct	s_vm
 {
 	uintmax_t	cycle;
-	uintmax_t	i_to_die;
+	intmax_t	i_to_die;
 	intmax_t	cycle_to_die;
 	bool		said_live[MAX_PLAYERS];
 	bool		live[MAX_PLAYERS];
@@ -82,21 +81,19 @@ typedef struct	s_vm
 	size_t		check;
 	t_champ		champ[MAX_PLAYERS];
 	t_vec		*vec;
-	unsigned char		mem[MEM_SIZE];
+	uint8_t		mem[MEM_SIZE];
 	t_flags		flags;
 }				t_vm;
 
-t_vm	*g_vm;
-
-
+t_vm	*g_vm; //TODO rm
 
 bool	ft_check_ocp(uint8_t ocp, uint8_t opcode);
 bool	ft_get_value(ssize_t nbr, uint8_t type, t_process *processes, t_vm *vm);
 bool	ft_get_value_mod(ssize_t nbr, uint8_t type, t_process *processes, t_vm *vm);
-void	mem_write(char mem[], const uint8_t *value, ssize_t offset, size_t size);
-void	mem_read(const char mem[], uint8_t str[], ssize_t offset, size_t size);
-void	mem_write_one(char mem[], uint8_t c, ssize_t offset);
-void	mem_write_int(char mem[], size_t nb, size_t len, ssize_t offset);
+void	mem_write(uint8_t mem[MEM_SIZE], const uint8_t *value, ssize_t offset, size_t size);
+void	mem_read(const uint8_t mem[MEM_SIZE], uint8_t str[], ssize_t offset, size_t size);
+void	mem_write_one(uint8_t mem[MEM_SIZE], uint8_t c, ssize_t offset);
+void	mem_write_int(uint8_t mem[MEM_SIZE], size_t nb, size_t len, ssize_t offset);
 bool	ft_play(t_vm vm);
 t_vec		*create_process(size_t capacity);
 t_process	*add_process(t_vec **list);

@@ -6,11 +6,12 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 11:50:33 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 12:21:44 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
+#include "ft_string.h"
 
 intmax_t	conv_bin_num(uint8_t *mem, size_t len) //TODO gestion bit de signe pour faire des lives de negatif
 {
@@ -37,7 +38,6 @@ intmax_t	conv_bin_num(uint8_t *mem, size_t len) //TODO gestion bit de signe pour
 
 bool	bin_parse_header(size_t fd, t_champ *header)
 {
-//	t_span	begin; a implementer
 	uint8_t	magic_len[4];
 
 	if (read(fd, magic_len, 4) != 4)
@@ -168,15 +168,16 @@ void	david_needs_to_work(t_vm vm)
 			i--;
 		}
 		i = 0;
-		while (i < vm.vec->len)
+		while ((size_t)i < vm.vec->len)
 		{
 			process = vm.vec->processes + i;
 			if (process->cycle_to_do == 0 && !process->has_read)
 				read_opcode(&vm, process);
 			i++;
 		}
-		if (vm.cycle == vm.flags.dump_c) {
-			size_t i = 0;
+		if (vm.cycle == vm.flags.dump_c)
+		{
+			i = 0;
 			while (i < MEM_SIZE)
 			{
 				fprintf(stderr, "%02x", vm.mem[i]);

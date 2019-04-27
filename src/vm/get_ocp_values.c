@@ -6,11 +6,12 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 15:21:34 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 12:10:27 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 12:10:27 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
+#include "ft_string.h"
 
 void		conv_int_to_bin(size_t nbr, uint8_t value[REG_SIZE])
 {

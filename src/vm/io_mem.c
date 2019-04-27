@@ -6,13 +6,13 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 15:15:12 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 11:49:51 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 13:46:16 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-void		mem_read(const char mem[], uint8_t *dst, ssize_t offset, size_t n)
+void		mem_read(const uint8_t mem[MEM_SIZE], uint8_t *dst, ssize_t offset, size_t n)
 {
 	size_t i;
 
@@ -28,7 +28,7 @@ void		mem_read(const char mem[], uint8_t *dst, ssize_t offset, size_t n)
 	}
 }
 
-void		mem_write(char mem[], const uint8_t *src, ssize_t offset, size_t n)
+void		mem_write(uint8_t mem[MEM_SIZE], const uint8_t *src, ssize_t offset, size_t n)
 {
 	size_t i;
 
@@ -44,12 +44,12 @@ void		mem_write(char mem[], const uint8_t *src, ssize_t offset, size_t n)
 	}
 }
 
-void		mem_write_one(char mem[], uint8_t c, ssize_t offset)
+void		mem_write_one(uint8_t mem[MEM_SIZE], uint8_t c, ssize_t offset)
 {
 	mem_write(mem, &c, offset, 1);
 }
 
-void		mem_write_int(char mem[], size_t nb, size_t len, ssize_t offset)
+void		mem_write_int(uint8_t mem[MEM_SIZE], size_t nb, size_t len, ssize_t offset)
 {
 	while (len != 0)
 	{

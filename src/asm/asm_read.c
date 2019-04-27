@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 17:01:03 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 11:36:50 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,20 +84,20 @@ int main(int argc, char *argv[])
 	int		fd;
 	ssize_t ret;
 	const t_arg args[] = {
-		{ARG_BOOLEAN, 's', "Streaming", &flag.streaming, "Streaming on mode with this flag"},
-		{ARG_BOOLEAN, 'w', "Werror", &flag.werror, "Warnings become errors"},
+		{ARG_BOOLEAN, 's', "streaming", &flag.streaming, "Streaming on mode with this flag"},
+		{ARG_BOOLEAN, 'e', "Werror", &flag.werror, "Warnings become errors"},
 		{ARG_END, 0, 0, 0, 0}
 	};
 	t_read	in;
 
 	flag = (t_flag) {};
-	if ((ret = parse_args(args, argc, argv)) < 0 || argc == 1)
-		return (-1);
+	if ((ret = parse_args(args, argc, argv)) < 0 || argc == ret)
+		return (args_usage(args, argv[0], "source_file", "Convert asm to corewar bytecode"));
 	file = argv[ret];
 	if (!(out = change_ext(file)))
-		return (ft_putf("Invalid name file\n"));
+		return (print_small_error(SEVERITY_ERROR, "Invalid name file"));
 	if ((fd = open(file, O_RDONLY)) <= 0)
-		return (ft_putf("Open failed\n"));
+		return (print_small_error(SEVERITY_ERROR, "Open failed"));
 	in = init_read(fd, file);
 	(flag.streaming ? read_streaming : read_fixed)(&in, out);
 	close(fd);

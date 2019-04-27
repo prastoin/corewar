@@ -50,7 +50,7 @@ const champs = process.argv.slice(2);
 
 const CYCLE_DELTA = 100;
 const CYCLE_DO = 100;
-let cycle = 3000;
+let cycle = 6000;
 
 void async function () {
 	let l = true;

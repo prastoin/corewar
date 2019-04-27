@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 14:02:06 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 16:18:44 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,102 +16,14 @@
 #include <fcntl.h>
 #include <limits.h>
 
-static int	get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2])
-{
-	char	*arg;
-	char	*value;
-
-	arg = *c_arg + i[1]; // ??
-	if (opt->type == ARG_BOOLEAN)
-		*(bool *)opt->value = true;
-	else if (opt->type == ARG_INT)
-	{
-		value = NULL;
-		if (*arg == '=')
-		{
-			value = arg + 1;
-			*c_arg += i[1] + ft_strlen(arg) - 1;
-		}
-		else if (!*arg)
-			value = argv[++i[0]];
-		if (!value)
-			return (NO_ARG);
-		*(int *)opt->value = atoi(value); //TODO ft_atoi
-	}
-	else if (opt->type == ARG_STRUCT)
-	{
-		value = NULL;
-		if (!*arg)
-			value = argv[++i[0]];
-		else
-			return(UNKNOWN_OPTION);
-		if (!value)
-			return (NO_ARG);
-		*((t_datan *)opt->value) = (t_datan) {
-				.num = atoi(value),
-				.name = argv[++i[0]]
-		};
-		if (((t_datan *)opt->value)->name == NULL)
-			return (NO_ARG);
-		//			*(t_arg *)opt->value; //TODO fill struct
-	};
-	return (0);
-}
-
-bool	parse_long(const t_arg opt[], char **arg, char *argv[], size_t *i)
-{
-	size_t	len;
-	char	*res;
-	int		indexes[2];
-	int		err;
-
-	if ((res = ft_strchr(*arg, '=')))
-		len = res - *arg;
-	else
-		len = ft_strlen(*arg);
-	while (opt->type != ARG_END)
-	{
-		if (ft_strncmp((uint8_t*)opt->long_name, *arg, len) == 0)
-		{
-			indexes[0] = *i;
-			indexes[1] = len;
-			err = get_value(arg, opt, argv, indexes);
-			*i = *indexes;
-			return (show_err(err, argv[0], *arg - len, len));
-		}
-		opt++;
-	}
-	return (show_err(UNKNOWN_OPTION, argv[0], *arg, ft_strlen(*arg)));
-}
-
-bool	parse_short(const t_arg opt[], char **arg, char *argv[], size_t *i)
-{
-	int		indexes[2];
-	int		err;
-
-	while (opt->type != ARG_END)
-	{
-		if (opt->short_name == **arg)
-		{
-			indexes[0] = *i;
-			indexes[1] = 1;
-			err = get_value(arg, opt, argv, indexes);
-			*i = *indexes; // === i = indexes[0] ?
-			return (show_err(err, argv[0], *arg - 1, 1));
-		}
-		opt++;
-	}
-	return (show_err(UNKNOWN_OPTION, argv[0], *arg, 1));
-}
-
-bool		ft_check_is_struct(t_vm *vm, char *name, int n, bool flag) //parse arg after flags
+bool		insert_player(t_vm *vm, char *name, int n, bool flag)
 {
 	int			fd;
 	static bool	player[MAX_PLAYERS];
 
 	if (name)
 	{
-		if ((n - 1) >= MAX_PLAYERS || ft_strlen(name) > PATH_MAX)
+		if (ft_strlen(name) > PATH_MAX)
 			return (false);
 		if ((fd = open(name, O_RDONLY)) < 0)
 			return (false);
@@ -127,50 +39,59 @@ bool		ft_check_is_struct(t_vm *vm, char *name, int n, bool flag) //parse arg aft
 		vm->champ[n - 1].fd = fd;
 		vm->nbr_champ++;
 	}
-
 	return (true);
 }
 
-ssize_t		parse_args(const t_arg args[], int argc, char *argv[], t_vm *vm)
+static bool	is_empty(char *players[MAX_PLAYERS + 1])
 {
 	size_t	i;
-	size_t	err;
-	char	*arg;
 
 	i = 0;
-	err = 0;
-	while ((int)++i < argc)
+	while (i < MAX_PLAYERS)
 	{
-		arg = argv[i];
-		if (arg[0] != '-' || !arg[1])
-			return (err ? -1 : i);
-		if (arg[1] != '-')
-		{
-			while (*++arg)
-				err |= parse_short(args, &arg, argv, &i);
-		}
-		else
-		{
-			if (!arg[2])
-				return (err ? -1 : i + 1);
-			arg += 2;
-			err |= parse_long(args, &arg, argv, &i);
-		}
-		if (((t_datan *)args[0].value)->name && ((t_datan *)args[0].value)->num > 0 && ((t_datan *)args[0].value)->num <= MAX_PLAYERS)
-			if (!(ft_check_is_struct(vm, ((t_datan *)args[0].value)->name, ((t_datan *)args[0].value)->num, true)))
-				return (err ? -1 : i);
+		if (!players[i])
+			return (false);
+		i++;
 	}
-	return (err ? -1 : i);
+	return (true);
+}
+
+int		main_split(char *players[MAX_PLAYERS + 1], char *argv[], int argc, t_vm vm)
+{
+	size_t i;
+
+	i = 0;
+	while (i < MAX_PLAYERS)
+	{
+		if (!insert_player(&vm, players[i], i, true))
+			return (ft_putf("Error in input files\n"));
+		i++;
+	}
+	i = 0;
+	while (i < (size_t)argc)
+	{
+		if (!insert_player(&vm, argv[i], i + 1, false))
+			return (ft_putf("Error in input files\n"));
+		i++;
+	}
+	if (vm.nbr_champ > 0 && vm.nbr_champ <= MAX_PLAYERS)
+	{
+		i = 0;
+		while (i < MAX_PLAYERS)
+			vm.live[i++] = true;
+		ft_play(vm);
+	}
+	return (0);
 }
 
 int main(int argc, char *argv[])
 {
 	t_vm		vm;
 	ssize_t		ret;
-	size_t		ok_champ;
+	char		*players[MAX_PLAYERS + 1];
 	const t_arg args[] = {
-		{ARG_STRUCT, 'n', "number", &vm.flags.num, "Choose the number for a player"},
-		{ARG_INT, 'd', "dump", &vm.flags.dump_c, "On sait pas on parse"},
+		{ARG_PLAYERS, 'n', "number", &players, "Choose the number for a player"},
+		{ARG_INT, 'd', "dump", &vm.flags.dump_c, "Dump memory on 0 at N cycle"},
 		{ARG_INT, 'r', "run", &vm.flags.run_c, "On sait pas on parse"},
 		{ARG_BOOLEAN, 'b', "bin_aff", &vm.flags.bin_o, "Affichage binnaire"},
 		{ARG_BOOLEAN, 'c', "ncurse_aff", &vm.flags.ncurse_o, "Affichage Ncurse"},
@@ -178,27 +99,15 @@ int main(int argc, char *argv[])
 	};
 
 	g_fd = open("verbose", O_RDWR | O_CREAT | O_TRUNC);
-	ok_champ = 1;
 	vm = (t_vm) {
 		.cycle_to_die = CYCLE_TO_DIE,
 		.flags = {
-		.dump_c = -1
+			.dump_c = -1
 		}
 	};
-	ret = -1;
-	while (++ret < MAX_PLAYERS)
-		vm.live[ret] = true;
-	if ((ret = parse_args(args, argc, argv, &vm)) < 0)
-		return (0);
-	while (ret < argc)
-	{
-		if (!ft_check_is_struct(&vm, argv[ret], ok_champ, false)) // n a 1 wtf ??
-			return (0);
-		else
-			ok_champ++;
-		ret++;
-	}
-	if (vm.nbr_champ > 0 && vm.nbr_champ <= MAX_PLAYERS)
-		ft_play(vm);
-	return (0);
+	ft_memset(players, 0, sizeof(players));
+	if ((ret = parse_args(args, argc, argv)) < 0
+			|| (is_empty(players) && argc == ret))
+		return (args_usage(args, argv[0], "source_file", "Launch corewar vm"));
+	return (main_split(players, argv + ret, argc - ret, vm));
 }

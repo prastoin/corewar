@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 17:28:27 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 15:22:49 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ typedef struct	s_instruction
 	t_param	params[MAX_PARAM];
 }				t_instruction;
 
-void		bin_write_inst(t_write *out, t_instruction *inst, uint8_t last_label);
 
 typedef struct		s_entry{
 	char		*key;
@@ -111,7 +110,6 @@ typedef struct	s_read
 }				t_read;
 
 t_write		init_write(void);
-void		*ft_memcpy(void *dst, const void *src, size_t n);
 t_read		init_read(int fd, char *argv);
 void		ft_itoa_base(uintmax_t nb, char *str, uint8_t b, const char *base);
 bool		ft_header(t_write *out, t_read *in);
@@ -122,6 +120,7 @@ void		ft_itoa_hexa(char *str, uintmax_t nb, size_t len);
 /*
 ** bin
 */
+void		bin_write_inst(t_write *out, t_instruction *inst, uint8_t last_label);
 void		bin_write_end(t_write *out);
 void		bin_resolve_label(t_write *out, size_t offset);
 bool		write_header(t_header *head, t_write *out);
@@ -129,8 +128,8 @@ bool		write_header(t_header *head, t_write *out);
 /*
 ** error
 */
-void		print_small_error(uintmax_t severity, char *error);
 void		print_error(uintmax_t severity, t_span begin, t_span end, char *error, char *expected);
+int			print_small_error(uintmax_t severity, char *error);
 
 /*
 ** io

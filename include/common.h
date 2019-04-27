@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 11:30:59 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 16:54:04 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 16:24:19 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,15 +46,16 @@
 
 # define UNKNOWN_OPTION (-1)
 # define NO_ARG (-2)
+# define INVALID_VALUE (-3)
 
-typedef enum e_core_param {
+typedef enum	e_core_param {
 	PARAM_NONE = 0b0,
 	PARAM_DIRECT = 0b1,
 	PARAM_INDIRECT = 0b10,
 	PARAM_REGISTER = 0b100,
 	PARAM_ALL = 0b111,
 	PARAM_INDEX = 0b1000
-}	t_core_param;
+}				t_core_param;
 
 typedef struct	s_core_tab
 {
@@ -85,24 +86,29 @@ extern t_core_tab g_ops[17];
 typedef enum	e_arg_type
 {
 	ARG_END = 0,
-	ARG_STRUCT,
+	ARG_PLAYERS,
 	ARG_BOOLEAN,
 	ARG_INT
 }				t_type;
 
 typedef	struct	s_arg
 {
-	t_type	type;
-	uint8_t	short_name;
-	char	*long_name;
-	void	*value;
-	const char *help;
+	t_type		type;
+	uint8_t		short_name;
+	char		*long_name;
+	void		*value;
+	const char	*help;
 }				t_arg;
 
-int	show_err(int err, char *name, char *option, size_t len);
-int	args_usage(const t_arg args[], char *name, char *usage, char *desc);
+int		show_err(int err, char *name, char *option, size_t len);
 
-int	ft_putf_fd(int fd, char *fmt, ...);
-int	ft_putf(char *fmt, ...);
+int		ft_putf_fd(int fd, char *fmt, ...);
+int		ft_putf(char *fmt, ...);
+
+int		args_usage(const t_arg args[], char *name, char *usage, char *desc);
+int		get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2]);
+bool	parse_long(const t_arg opt[], char **arg, char *argv[], size_t *i);
+bool	parse_short(const t_arg opt[], char **arg, char *argv[], size_t *i);
+ssize_t	parse_args(const t_arg args[], int argc, char *argv[]);
 
 #endif

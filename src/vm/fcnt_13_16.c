@@ -6,11 +6,12 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/24 11:06:26 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 12:09:48 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
+#include "ft_string.h"
 
 bool		lld(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
@@ -58,6 +59,7 @@ bool		lfork(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 	size_t		index;
 	int			save;
 
+	(void)ocp;
 	save = param[0];
 	while (param[0] + process->offset < 0)
 		param[0] += MEM_SIZE;

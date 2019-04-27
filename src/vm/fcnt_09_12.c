@@ -6,11 +6,12 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:27:13 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/24 11:05:25 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 12:08:09 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
+#include "ft_string.h"
 
 bool		zjmp(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 {
@@ -77,6 +78,7 @@ bool		ft_fork(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 	size_t		index;
 	int			save;
 
+	(void)ocp;
 	save = param[0];
 	param[0] = param[0] % IDX_MOD;
 	while (param[0] + process->offset < 0)
