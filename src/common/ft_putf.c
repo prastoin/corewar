@@ -6,7 +6,7 @@
 /*   By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/08 15:31:33 by dde-jesu          #+#    #+#             */
-/*   Updated: 2019/04/27 16:25:13 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 17:23:59 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	ft_putf_va(int fd, char *fmt, va_list args, size_t padd)
 {
 	char		*l_fmt;
 	intmax_t	nb;
-	
+
 	l_fmt = fmt;
 	while ((fmt = ft_strchr(fmt, '%')) && *++fmt)
 	{
@@ -80,7 +80,7 @@ void	ft_putf_va(int fd, char *fmt, va_list args, size_t padd)
 		{
 			nb = va_arg(args, intmax_t);
 			while (padd && padd-- > (nb < 0 ? nb_len(nb) + 1 : nb_len(nb)))
-				char_fd(fd, '0', 0);
+				char_fd(fd, ' ', 0);
 			ft_putnbr_fd(fd, nb);
 		}
 		else if (*fmt == 's')

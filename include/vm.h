@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 14:31:30 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 17:54:59 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 #define VM_H
 
 #include "common.h"
-
-int		g_fd;
-int		g_opc;
 
 #define OCP_DIR 0b10
 #define OCP_REG 0b01
@@ -35,6 +32,7 @@ typedef struct	s_flags
 	int			run_c;
 	bool		bin_o;
 	bool		ncurse_o;
+	bool		verbose;
 }				t_flags;
 
 typedef struct	s_process
@@ -70,6 +68,8 @@ typedef struct	s_champ
 
 typedef struct	s_vm
 {
+	size_t		v_fd;
+	size_t		c_pc;
 	uintmax_t	cycle;
 	intmax_t	i_to_die;
 	intmax_t	cycle_to_die;
@@ -97,10 +97,12 @@ void	mem_write_int(uint8_t mem[MEM_SIZE], size_t nb, size_t len, ssize_t offset)
 bool	ft_play(t_vm vm);
 t_vec		*create_process(size_t capacity);
 t_process	*add_process(t_vec **list);
-bool		carry_down(t_process *process, uint8_t ocp, int opcode);
-bool		carry_up(t_process *process, uint8_t ocp, int opcode);
-bool		invalid(t_process *process, uint8_t ocp, int opcode);
-bool		valid(t_process *process, uint8_t ocp, int opcode);
+
+bool		carry_down(t_vm *vm, t_process *process, uint8_t ocp, int opcode);
+bool		carry_up(t_vm *vm, t_process *process, uint8_t ocp, int opcode);
+bool		invalid(t_vm *vm, t_process *process, uint8_t ocp, int opcode);
+bool		valid(t_vm *vm, t_process *process, uint8_t ocp, int opcode);
+
 bool		ft_pass(t_vm *vm, t_process *process);
 bool		read_opcode(t_vm *vm, t_process *process);
 

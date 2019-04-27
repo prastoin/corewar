@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 16:18:44 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 18:10:10 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,10 +95,10 @@ int main(int argc, char *argv[])
 		{ARG_INT, 'r', "run", &vm.flags.run_c, "On sait pas on parse"},
 		{ARG_BOOLEAN, 'b', "bin_aff", &vm.flags.bin_o, "Affichage binnaire"},
 		{ARG_BOOLEAN, 'c', "ncurse_aff", &vm.flags.ncurse_o, "Affichage Ncurse"},
+		{ARG_BOOLEAN, 'v', "verbose", &vm.flags.verbose, "Enabled Verbose mode"},
 		{ARG_END, 0, 0, 0, 0}
 	};
 
-	g_fd = open("verbose", O_RDWR | O_CREAT | O_TRUNC);
 	vm = (t_vm) {
 		.cycle_to_die = CYCLE_TO_DIE,
 		.flags = {
@@ -109,5 +109,8 @@ int main(int argc, char *argv[])
 	if ((ret = parse_args(args, argc, argv)) < 0
 			|| (is_empty(players) && argc == ret))
 		return (args_usage(args, argv[0], "source_file", "Launch corewar vm"));
+	if (vm.flags.verbose == true)
+		vm.v_fd = open("verbose", O_RDWR | O_CREAT | O_TRUNC);
+	ft_putf_fd(vm.v_fd, "NTM\n");
 	return (main_split(players, argv + ret, argc - ret, vm));
 }

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/05 13:47:57 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 12:21:05 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 18:00:20 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ bool	read_params_and_ocp(t_vm *vm, t_process *process, int32_t params[4], uint8_
 		mem_read(vm->mem, tampom, process->offset + 1, 1);
 		*ocp = tampom[0];
 		if (!(ft_check_ocp(*ocp, opcode)))
-			return (invalid(process, *ocp, opcode));
+			return (invalid(vm, process, *ocp, opcode));
 		get_params_ocp(vm, process, *ocp, params);
 	}
 	else

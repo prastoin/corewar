@@ -6,14 +6,14 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:22:08 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 13:45:53 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 17:59:52 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 #include "ft_string.h"
 
-bool		live(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
+bool		live(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	int32_t		player;
 
@@ -21,67 +21,70 @@ bool		live(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
 	player = param[0];
 	player = -player;
 	process->said_live = true;
-	process->last_cycle_live = game->cycle;
+	process->last_cycle_live = vm->cycle;
 	if (player >= 1 && player <= MAX_PLAYERS)
 	{
-		if (game->live[player - 1])
+		if (vm->live[player - 1])
 		{
-			game->said_live[player - 1] = true;
-			game->champ[player - 1].last_cycle_live = game->cycle;
+			vm->said_live[player - 1] = true;
+			vm->champ[player - 1].last_cycle_live = vm->cycle;
 		}
 	}
-	game->nbr_live++;
-	dprintf(g_fd, "P%5d | live %i\n", g_opc, param[0]);
-	return (valid(process, 0b10000000, 1));
+	if (vm->flags.verbose)
+		ft_putf_fd(vm->v_fd, "P%5d | live %d\n", vm->c_pc, param[0]);
+	return (valid(vm, process, 0b10000000, 1));
 }
 
-bool		ld(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
+bool		ld(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	if (param[1] > 16 || param[1] <= 0)
-		return (invalid(process, ocp, 2));
-	if (!ft_get_value_mod(param[0], ocp >> 6 & 0b11, process, game))
-		return (invalid(process, ocp, 2));
+		return (invalid(vm, process, ocp, 2));
+	if (!ft_get_value_mod(param[0], ocp >> 6 & 0b11, process, vm))
+		return (invalid(vm, process, ocp, 2));
 	ft_memcpy(process->registre[param[1] - 1], process->tampon, REG_SIZE);
-	dprintf(g_fd, "P%5d | ld %ld r%d\n", g_opc, conv_bin_num(process->tampon, REG_SIZE), param[1]);
+	if (vm->flags.verbose)
+		ft_putf_fd(vm->v_fd, "P%5d | ld %d r%d\n", vm->c_pc, conv_bin_num(process->tampon, REG_SIZE), param[1]);
 	if ((conv_bin_num(process->tampon, REG_SIZE)) == 0)
-		return (carry_up(process, ocp, 2));
+		return (carry_up(vm, process, ocp, 2));
 	else
-		return (carry_down(process, ocp, 2));
+		return (carry_down(vm, process, ocp, 2));
 }
 
-bool		st(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
+bool		st(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	if (param[0] > 16 || param[0] <= 0)
-		return (invalid(process, ocp, 3));
+		return (invalid(vm, process, ocp, 3));
 	if ((ocp >> 4 & 0b11) == OCP_REG)
 	{
 		if (param[1] > 16 || param[1] <= 0)
-			return (invalid(process, ocp, 3));
+			return (invalid(vm, process, ocp, 3));
 		else
 			ft_memcpy(process->registre[param[1] - 1],
 					process->registre[param[0] - 1], REG_SIZE);
 	}
 	else
-		mem_write(game->mem, process->registre[param[0] - 1], (process->offset + (param[1] % IDX_MOD)), REG_SIZE);
-	dprintf(g_fd, "P%5d | st r%ld %d\n", g_opc, param[0], param[1]);
-	return (valid(process, ocp, 3));
+		mem_write(vm->mem, process->registre[param[0] - 1], (process->offset + (param[1] % IDX_MOD)), REG_SIZE);
+	if (vm->flags.verbose)
+		ft_putf_fd(vm->v_fd, "P%5d | st r%d %d\n", vm->c_pc, param[0], param[1]);
+	return (valid(vm, process, ocp, 3));
 }
 
-bool		add(t_vm *game, t_process *process, int32_t param[4], uint8_t ocp)
+bool		add(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	uint8_t op1[REG_SIZE];
 
 	if (param[2] > 16 || param[2] <= 0)
-		return (invalid(process, ocp, 4));
-	if (!(ft_get_value_mod(param[0], (ocp >> 6 & 0b11), process, game)))
-		return (invalid(process, ocp, 4));
+		return (invalid(vm, process, ocp, 4));
+	if (!(ft_get_value_mod(param[0], (ocp >> 6 & 0b11), process, vm)))
+		return (invalid(vm, process, ocp, 4));
 	ft_memcpy(op1, process->tampon, REG_SIZE);
-	if (!(ft_get_value_mod(param[1], (ocp >> 4 & 0b11), process, game)))
-		return (invalid(process, ocp, 4));
+	if (!(ft_get_value_mod(param[1], (ocp >> 4 & 0b11), process, vm)))
+		return (invalid(vm, process, ocp, 4));
 	bin_add(op1, process->tampon, process->registre[param[2] - 1]);
-	dprintf(g_fd, "P%5d | add r%ld r%ld r%ld\n", g_opc, param[0], param[1], param[2]);
+	if (vm->flags.verbose)
+		ft_putf_fd(vm->v_fd, "P%5d | add r%d r%d r%d\n", vm->c_pc, param[0], param[1], param[2]);
 	if ((conv_bin_num(process->registre[param[2] - 1], REG_SIZE)) == 0)
-		return (carry_up(process, ocp, 4));
+		return (carry_up(vm, process, ocp, 4));
 	else
-		return (carry_down(process, ocp, 4));
+		return (carry_down(vm, process, ocp, 4));
 }

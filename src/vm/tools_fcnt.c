@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 11:18:42 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 12:10:43 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 18:11:51 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ size_t		get_decale(uint8_t ocp, int opcode)
 	return (size);
 }
 
-void	verbose(size_t decale, t_process *process, uint8_t ocp, int opcode)
+size_t	verbose(uint8_t ocp, int opcode)
 {
 	size_t size;
 	size_t i;
@@ -46,7 +46,6 @@ void	verbose(size_t decale, t_process *process, uint8_t ocp, int opcode)
 
 	i = 0;
 	size = g_ops[opcode].ocp ? 2 : 1;
-	dprintf(g_fd, "ADV %d (0x%.4x -> 0x%.4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
 	while (g_ops[opcode].params[i])
 	{
 		type = (ocp >> ((3 - i) * 2)) & 0b11;
@@ -58,53 +57,100 @@ void	verbose(size_t decale, t_process *process, uint8_t ocp, int opcode)
 			size += 2;
 		i++;
 	}
+	return (size);
 	i = 0;
-	while (i < size)
-	{
-		dprintf (g_fd, "%.2x ", g_vm->mem[(process->offset + i) % MEM_SIZE]);
-		i++;
-	}
-	dprintf(g_fd, "\n");
 }
 
-bool	carry_up(t_process *process, uint8_t ocp, int opcode)
+bool	carry_up(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 {
 	size_t decale;
+	size_t size;
+	size_t i;
 
+	i = 0;
 	process->carry = true;
 	decale = get_decale(ocp, opcode);
-	verbose(decale, process, ocp, opcode);
+	if (vm->flags.verbose)
+	{
+		dprintf(vm->v_fd, "ADV %d (0x%.4x -> 0x%.4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
+		size = verbose(ocp, opcode);
+		while (i < size)
+		{
+			dprintf (vm->v_fd, "%.2x ", g_vm->mem[(process->offset + i) % MEM_SIZE]);
+			i++;
+		}
+		dprintf(vm->v_fd, "\n");
+	}
 	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (true);
 }
 
-bool	carry_down(t_process *process, uint8_t ocp, int opcode)
+bool	carry_down(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 {
 	size_t decale;
+	size_t size;
+	size_t i;
 
+	i = 0;
 	decale = get_decale(ocp, opcode);
 	process->carry = false;
-	verbose(decale, process, ocp, opcode);
+	if (vm->flags.verbose)
+	{
+		dprintf(vm->v_fd, "ADV %d (0x%.4x -> 0x%.4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
+		size = verbose(ocp, opcode);
+		while (i < size)
+		{
+			dprintf (vm->v_fd, "%.2x ", g_vm->mem[(process->offset + i) % MEM_SIZE]);
+			i++;
+		}
+		dprintf(vm->v_fd, "\n");
+	}
 	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (false);
 }
 
-bool	invalid(t_process *process, uint8_t ocp, int opcode)
+bool	invalid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 {
 	size_t decale;
+	size_t size;
+	size_t i;
 
+	i = 0;
 	decale = get_decale(ocp, opcode);
-	verbose(decale, process, ocp, opcode);
+	if (vm->flags.verbose)
+	{
+		dprintf(vm->v_fd, "ADV %d (0x%.4x -> 0x%.4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
+		size = verbose(ocp, opcode);
+		while (i < size)
+		{
+			dprintf (vm->v_fd, "%.2x ", g_vm->mem[(process->offset + i) % MEM_SIZE]);
+			i++;
+		}
+		dprintf(vm->v_fd, "\n");
+	}
 	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (false);
 }
 
-bool	valid(t_process *process, uint8_t ocp, int opcode)
+bool	valid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 {
 	size_t decale;
+	size_t size;
+	size_t i;
 
+	i = 0;
 	decale = get_decale(ocp, opcode);
-	verbose(decale, process, ocp, opcode);
+	if (vm->flags.verbose)
+	{
+		dprintf(vm->v_fd, "ADV %d (0x%.4x -> 0x%.4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
+		size = verbose(ocp, opcode);
+		while (i < size)
+		{
+			dprintf (vm->v_fd, "%.2x ", g_vm->mem[(process->offset + i) % MEM_SIZE]);
+			i++;
+		}
+		dprintf(vm->v_fd, "\n");
+	}
 	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (true);
 }

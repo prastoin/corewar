@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 12:21:44 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/27 18:07:53 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ bool	ft_winner(t_champ champ[MAX_PLAYERS])
 		}
 		i++;
 	}
-	printf("%s a gagne avec le num %zu\n", champ[winner].name, winner);
+	ft_putf("%s a gagne avec le num %d\n", champ[winner].name, winner);
 	return (false);
 }
 
@@ -85,7 +85,8 @@ bool	cycle_decremente_die(t_vm *vm)
 	if (vm->nbr_live >= NBR_LIVE || vm->check + 1  == MAX_CHECKS)
 	{
 		vm->cycle_to_die -= CYCLE_DELTA;
-		dprintf(g_fd, "Cycle to die is now %d\n", vm->cycle_to_die);
+		if (vm->flags.verbose)
+			ft_putf_fd(vm->v_fd, "Cycle to die is now %d\n", vm->cycle_to_die);
 		vm->check = 0;
 	}
 	else
@@ -122,7 +123,8 @@ bool	vm_cycle_to_die(t_vm *vm)
 				vm->vec->processes[i].said_live = false;
 			else if (vm->vec->processes[i].is_alive == true)
 			{
-				dprintf(g_fd, "Process %d hasn't lived for %ld cycles (CTD %ld)\n", i + 1, vm->cycle - vm->vec->processes[i].last_cycle_live, vm->cycle_to_die);
+				if (vm->flags.verbose)
+					ft_putf_fd(vm->v_fd, "Process %d hasn't lived for %d cycles (CTD %d)\n", i + 1, vm->cycle - vm->vec->processes[i].last_cycle_live, vm->cycle_to_die);
 				vm->vec->processes[i].is_alive = false;
 			}
 			if (vm->vec->processes[i].is_alive == false)
@@ -137,7 +139,8 @@ bool	vm_cycle_to_die(t_vm *vm)
 	}
 	vm->i_to_die++;
 	vm->cycle++;
-	dprintf(g_fd, "It is now cycle %lu\n", vm->cycle);
+	if (vm->flags.verbose)
+		ft_putf_fd(vm->v_fd, "It is now cycle %d\n", vm->cycle);
 	return (true);
 }
 
@@ -158,7 +161,7 @@ void	david_needs_to_work(t_vm vm)
 			{
 				if (process->cycle_to_do == 0 && process->has_read)
 				{
-					g_opc = i + 1;
+					vm.c_pc = i + 1;
 					ft_pass(&vm, process);
 					process = vm.vec->processes + i;
 				}
