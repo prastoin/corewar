@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 17:54:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 11:30:34 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 11:42:25 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ char	*from_int_to_type(size_t type)
 	return (NULL);
 }
 
-void	error_severity(t_write *err, size_t severity)
+void	error_severity(t_write *err, t_severity severity)
 {
-	if (severity == 1)
+	if (severity == ERR)
 		io_write(err, SEV_ERROR, sizeof(SEV_ERROR) - 1);
-	if (severity == 2)
+	if (severity == WARN)
 		io_write(err, SEV_WARNING, sizeof(SEV_WARNING) - 1);
 	io_write(err, CSI_RESET, sizeof(CSI_RESET) - 1);
 }
@@ -95,7 +95,7 @@ uint16_t	get_columns(int fd)
 	return (w.ws_col);
 }
 
-void		underline_error(t_write *err, t_span begin, t_span end, uintmax_t severity, char *line, size_t line_len)
+void		underline_error(t_write *err, t_span begin, t_span end, t_severity severity, char *line, size_t line_len)
 {
 	size_t i;
 
@@ -108,7 +108,7 @@ void		underline_error(t_write *err, t_span begin, t_span end, uintmax_t severity
 			io_write(err, " ", 1);
 		i++;
 	}
-	if (severity == 1)
+	if (severity == ERR)
 		io_write(err, CSI_RED, (sizeof(CSI_RED) - 1));
 	else
 		io_write(err, CSI_YELLOW, (sizeof(CSI_YELLOW) - 1));
@@ -123,7 +123,7 @@ void		underline_error(t_write *err, t_span begin, t_span end, uintmax_t severity
 
 #include <string.h>
 
-void	error_contxt_print(t_write *err, t_span begin, t_span end, uintmax_t severity) //TODO add norm + werror management
+void	error_contxt_print(t_write *err, t_span begin, t_span end, t_severity severity) //TODO add norm + werror management
 {
 	const uint16_t	columns = get_columns(2);
 	size_t	fd;
@@ -173,7 +173,7 @@ void	error_contxt_print(t_write *err, t_span begin, t_span end, uintmax_t severi
 }
 
 
-int		print_small_error(t_read *in, uintmax_t severity, char *error)
+int		print_small_error(t_read *in, t_severity severity, char *error)
 {
 	t_write	err;
 	uint8_t	buffer[4096];
@@ -186,9 +186,9 @@ int		print_small_error(t_read *in, uintmax_t severity, char *error)
 		.fd = 2,
 		.buffer_size = sizeof(buffer)
 	};
-	if (severity == SEVERITY_ERROR || in->werror)
+	if (severity == ERR || in->werror)
 	{
-		severity = SEVERITY_ERROR;
+		severity = ERR;
 		in->write_able = false;
 	}
 	error_severity(&err, severity);
@@ -199,7 +199,7 @@ int		print_small_error(t_read *in, uintmax_t severity, char *error)
 	return (1);
 }
 
-void	print_error(t_read *in, uintmax_t severity, char *error, char *expected)
+void	print_error(t_read *in, t_severity severity, char *error, char *expected)
 {
 	uint8_t	buffer[4096];
 	size_t  i;
@@ -214,9 +214,9 @@ void	print_error(t_read *in, uintmax_t severity, char *error, char *expected)
 		.buffer_size = sizeof(buffer)
 	};
 	i = 0;
-	if (severity == SEVERITY_ERROR || in->werror)
+	if (severity == ERR || in->werror)
 	{
-		severity = SEVERITY_ERROR;
+		severity = ERR;
 		in->write_able = false;
 	}
 	error_severity(&err, severity);

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 18:07:53 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 12:07:14 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ bool	bin_parse_header(size_t fd, t_champ *header)
 	lseek(fd, 4 - sizeof(header->name) % 4, SEEK_CUR);
 	if (read(fd, magic_len, 4) != 4)
 		return (false);
-	if ((header->size = conv_bin_num(magic_len, 4)) > CHAMP_MAX_SIZE)
+	if ((header->size = conv_bin_num(magic_len, 4)) > CHAMP_MAX_SIZE) //verifier si taille decrite dans le header est la meme que celle du fichier TODO DAVID NEEDS TO WORK
 		return (false);
 	if (read(fd, header->comment, COMMENT_LENGTH) != COMMENT_LENGTH)
 		return (false);
@@ -209,9 +209,8 @@ bool	ft_play(t_vm vm)
 	{
 		if (vm.champ[i].fd)
 		{
-			if (!bin_parse_header(vm.champ[i].fd, vm.champ + i))
+			if (!bin_parse_header(vm.champ[i].fd, vm.champ + i)) //deleting ungood champ
 				return (false);
-			nbr_champ++;
 		}
 		i++;
 	}

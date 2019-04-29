@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 14:19:25 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 11:20:37 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 11:47:12 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst)
 		else
 		{
 			io_skip_until(in, " \t\n#");
-			print_error(in, 1, "Unknown Instructions", NULL);
+			print_error(in, ERR, "Unknown Instructions", NULL);
 		}
 		free(tmp);
 	}
@@ -98,7 +98,7 @@ void		case_label(t_hashtable **table, t_instruction inst, t_write *out, t_read *
 	{
 		entry = hashtable_get((*table), inst.label);
 		if (entry->resolve)
-			print_error(in, 2, "Label already exists: ", NULL);
+			print_error(in, WARN, "Label already exists: ", NULL);
 		else
 		{
 			bin_resolve_label(out, entry->offset);

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 11:31:21 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 11:40:37 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ typedef struct	s_flag
 
 typedef enum e_severity
 {
-	SEVERITY_WARNING,
-	SEVERITY_ERROR
+	WARN,
+	ERR
 }	t_severity;
 
 typedef struct	s_header
@@ -135,8 +135,8 @@ bool		write_header(t_header *head, t_write *out);
 /*
 ** error
 */
-void		print_error(t_read *in, uintmax_t severity, char *error, char *expected);
-int			print_small_error(t_read *in, uintmax_t severity, char *error);
+void		print_error(t_read *in, t_severity severity, char *error, char *expected);
+int			print_small_error(t_read *in, t_severity severity, char *error);
 void		mark_span(t_read *in);
 
 /*

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 11:32:37 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 11:37:51 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,9 @@ int main(int argc, char *argv[])
 		return (args_usage(args, argv[0], "source_file", "Convert asm to corewar bytecode"));
 	file = argv[ret];
 	if (!(out = change_ext(file)))
-		return (print_small_error(&in, SEVERITY_ERROR, "Invalid name file"));
+		return (print_small_error(&in, ERR, "Invalid name file"));
 	if ((fd = open(file, O_RDONLY)) <= 0)
-		return (print_small_error(&in, SEVERITY_ERROR, "Open failed"));
+		return (print_small_error(&in, ERR, "Open failed"));
 	in = init_read(fd, file, in.werror);
 	(flag.streaming ? read_streaming : read_fixed)(&in, out);
 	close(fd);
