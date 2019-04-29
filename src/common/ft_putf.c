@@ -6,7 +6,7 @@
 /*   By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/08 15:31:33 by dde-jesu          #+#    #+#             */
-/*   Updated: 2019/04/29 10:51:26 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 13:12:56 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,52 @@ void		ft_putnbr_fd(size_t fd, intmax_t nb)
 		char_fd(fd, nb + '0', 0);
 }
 
+void	ft_putnbr_hexa_fd(intmax_t nb, size_t fd)
+{
+	const char	*base = "123456789abcdef";
+	uintmax_t	tmp;
+	uint8_t		i;
+
+	tmp = nb;
+	while (tmp /= 16)
+		i++;
+	while (i--)
+	{
+		write(fd, (base + (nb % 16)), 1);
+		nb /= 16;
+	}
+}
+
+void	handle_hexa(size_t fd, va_list args, size_t padd, char *flag)
+{
+	uintmax_t	nb;
+
+	if (*flag == 'x')
+		nb = va_arg(args, uint32_t);
+	else
+		nb = va_arg(args, uint64_t);
+	ft_putnbr_hexa_fd(nb, fd);
+}
+
+void	handle_dlu(size_t fd, va_list args, size_t padd, char *flag)
+{
+	intmax_t	nb;
+
+	if (*flag == 'd')
+		nb = va_arg(args, int32_t);
+	else if (*flag == 'u')
+		nb = va_arg(args, uint32_t);
+	else if (*flag == 'D')
+		nb = va_arg(args, int64_t);
+	else if (*flag == 'U')
+		nb = va_arg(args, uint64_t);
+	else
+		return ;
+	while (padd && padd-- > (nb < 0 ? nb_len(nb) + 1 : nb_len(nb)))
+		char_fd(fd, ' ', 0);
+	ft_putnbr_fd(fd, nb);
+}
+
 void	ft_putf_va(int fd, char *fmt, va_list args, size_t padd)
 {
 	char		*l_fmt;
@@ -76,17 +122,14 @@ void	ft_putf_va(int fd, char *fmt, va_list args, size_t padd)
 		}
 		if (*fmt == '%')
 			char_fd('%', fd, padd);
-		else if (*fmt == 'd')
-		{
-			nb = va_arg(args, intmax_t);
-			while (padd && padd-- > (nb < 0 ? nb_len(nb) + 1 : nb_len(nb)))
-				char_fd(fd, ' ', 0);
-			ft_putnbr_fd(fd, nb);
-		}
 		else if (*fmt == 's')
 			str_fd(va_arg(args, char *), fd, padd);
 		else if (*fmt == 'c')
 			char_fd(fd, (char)va_arg(args, int), padd);
+		else if (*fmt == 'x' || *fmt == 'X')
+			handle_hexa(fd, args, padd, fmt);
+		else
+			handle_dlu(fd, args, padd, fmt);
 		l_fmt = ++fmt;
 	}
 	str_fd(l_fmt, fd, 0);
