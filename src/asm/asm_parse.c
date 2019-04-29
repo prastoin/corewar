@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 12:46:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 13:27:58 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 10:52:47 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,47 +15,45 @@
 
 bool		asm_parse_header(t_read *rd, t_header *header)
 {
-	t_span begin;
-
 	header->size = 0;
 	asm_skip_ws(rd);
-	begin = rd->span;
+	mark_span(&rd->begin, &rd->span);
 	if (io_expect(rd, "."))
 	{
 		if (!io_expect(rd, "name"))
 		{
 			io_skip_until(rd, " #\t\n\"");
-			print_error(1, begin, rd->span, "Expected \".name\"", "Replace by .name");
+			print_error(rd, 1, "Expected \".name\"", "Replace by .name");
 		}
 		else
 		{
 			asm_skip_ws(rd);
-			begin = rd->span;
+			mark_span(&rd->begin, &rd->span);
 			if (!asm_read_quoted(rd, header->name, sizeof(header->name)))
-				print_error(1, begin, rd->span, "Unclosed \" for .name", NULL);
+				print_error(rd, 1, "Unclosed \" for .name", NULL);
 		}
 	}
 	else
-		print_small_error(1, ".name not found");
+		print_small_error(rd, 1, ".name not found");
 	asm_skip_ws(rd);
-	begin = rd->span;
+	mark_span(&rd->begin, &rd->span);
 	if (io_expect(rd, "."))
 	{
 		if (!io_expect(rd, "comment"))
 		{
 			io_skip_until(rd, " #\t\n\"");
-			print_error(1, begin, rd->span, "Expected \".comment\"", "Replace by .comment");
+			print_error(rd, 1, "Expected \".comment\"", "Replace by .comment");
 		}
 		else
 		{
 			asm_skip_ws(rd);
-			begin = rd->span;
+			mark_span(&rd->begin, &rd->span);
 			if (!asm_read_quoted(rd, header->comment, sizeof(header->comment)))
-				print_error(1, begin, rd->span, "Unclosed \" for .comment", NULL);
+				print_error(rd, 1, "Unclosed \" for .comment", NULL);
 		}
 	}
 	else
-		print_small_error(1, ".comment not found");
+		print_small_error(rd, 1, ".comment not found");
 	return (true);
 }
 

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 14:19:25 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 14:30:06 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 10:20:51 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ bool	asm_parser(t_write *out, t_read *in, t_hashtable *table)
 {
 	t_instruction	inst;
 
-	ft_header(out, in);
+	ft_header(out, in); //return to manage
 	in->begin = in->span;
 	while (io_peek(in) != -1)
 	{

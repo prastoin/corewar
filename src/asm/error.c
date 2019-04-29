@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 17:54:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 18:23:06 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 10:47:52 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ void	error_contxt_print(t_write *err, t_span begin, t_span end, uintmax_t severi
 }
 
 
-int		print_small_error(uintmax_t severity, char *error)
+int		print_small_error(t_read *in, uintmax_t severity, char *error)
 {
 	t_write	err;
 	uint8_t	buffer[4096];
@@ -194,7 +194,7 @@ int		print_small_error(uintmax_t severity, char *error)
 	return (1);
 }
 
-void	print_error(uintmax_t severity, t_span begin, t_span end, char *error, char *expected)
+void	print_error(t_read *in, uintmax_t severity, char *error, char *expected)
 {
 	uint8_t	buffer[4096];
 	size_t  i;
@@ -209,10 +209,13 @@ void	print_error(uintmax_t severity, t_span begin, t_span end, char *error, char
 		.buffer_size = sizeof(buffer)
 	};
 	i = 0;
+
+	if (severity == SEVERITY_ERROR || in->werror)
+		in->write_able = false;
 	error_severity(&err, severity);
 	error_msg(&err, error);
-	locate_error(&err, begin);
-	error_contxt_print(&err, begin, end, severity);
+	locate_error(&err, in->begin);
+	error_contxt_print(&err, in->begin, in->span, severity);
 	if (expected)
 	{
 		io_write(&err, " ", 1);

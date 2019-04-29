@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 15:36:02 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 10:13:50 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,8 @@ t_read		init_read(int fd, char *argv)
 				.file_name = argv
 		},
 		.nbr_read = 0,
-		.fd = fd
+		.fd = fd,
+		.write_able = true
 	};
 	return (rd);
 }
@@ -102,7 +103,7 @@ t_write		init_write(void)
 	out = (t_write){
 		.index = 0,
 		.flushable = false,
-		.nbr_write = 0
+		.nbr_write = 0,
 	};
 	return (out);
 }

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 15:22:49 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 10:52:58 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ typedef struct	s_flag
 	bool	werror;
 }				t_flag;
 
-typedef enum e_severity{
+typedef enum e_severity
+{
 	SEVERITY_WARNING,
 	SEVERITY_ERROR
 }	t_severity;
@@ -41,7 +42,8 @@ typedef struct	s_header
 	size_t	size;
 }				t_header;
 
-typedef enum e_param_type {
+typedef enum e_param_type
+{
 	TYPE_LABEL_INDIRECT,
 	TYPE_LABEL_DIRECT,
 	TYPE_OFFSET_DIRECT,
@@ -65,7 +67,8 @@ typedef struct	s_write
 	size_t		buffer_size;
 }				t_write;
 
-typedef union	u_param {
+typedef union	u_param
+{
 	t_core_param		type;
 	t_param_offset		offset;
 	t_param_register	reg;
@@ -78,20 +81,22 @@ typedef struct	s_instruction
 	t_param	params[MAX_PARAM];
 }				t_instruction;
 
-
-typedef struct		s_entry{
+typedef struct		s_entry
+{
 	char		*key;
 	uint64_t	hash;
 	uint64_t	offset;
 	bool		resolve;
 }					t_entry;
 
-typedef struct	s_hashtable{
+typedef struct	s_hashtable
+{
 	size_t		size;
 	t_entry		bucket[];
 }				t_hashtable;
 
-typedef struct	s_span{
+typedef struct	s_span
+{
 	size_t		offset;
 	char		*file_name;
 	uintmax_t		lines;
@@ -105,6 +110,8 @@ typedef struct	s_read
 	size_t		index;
 	size_t		nbr_read;
 	int			fd;
+	bool		write_able;
+	bool		werror;
 	t_span		span;
 	t_span		begin;
 }				t_read;
@@ -128,8 +135,9 @@ bool		write_header(t_header *head, t_write *out);
 /*
 ** error
 */
-void		print_error(uintmax_t severity, t_span begin, t_span end, char *error, char *expected);
-int			print_small_error(uintmax_t severity, char *error);
+void		print_error(t_read *in, uintmax_t severity, char *error, char *expected);
+int			print_small_error(t_read *in, uintmax_t severity, char *error);
+void		mark_span(t_span *begin, t_span *curr);
 
 /*
 ** io
