@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 10:53:31 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 11:32:37 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,12 @@ void		read_fixed(t_read *in, char *name)
 	table = create_hashtable(8);
 	if (!asm_parser(&out, in, table))
 		return ;
-	if (in->write_able)
+	if (in->write_able == true)
 	{
 		out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 		write (out.fd, out.buffer, out.nbr_write);
+		ft_putf("done static\n");
 	}
-	ft_putf("done static\n");
 	return ;
 }
 
@@ -86,13 +86,14 @@ int main(int argc, char *argv[])
 	char	*out;
 	int		fd;
 	ssize_t ret;
+	t_read	in;
 	const t_arg args[] = {
 		{ARG_BOOLEAN, 's', "streaming", &flag.streaming, "Streaming on mode with this flag"},
-		{ARG_BOOLEAN, 'e', "Werror", &flag.werror, "Warnings become errors"},
+		{ARG_BOOLEAN, 'e', "Werror", &in.werror, "Warnings become errors"},
 		{ARG_END, 0, 0, 0, 0}
 	};
-	t_read	in;
 
+	in.werror = false;
 	flag = (t_flag) {};
 	if ((ret = parse_args(args, argc, argv)) < 0 || argc == ret)
 		return (args_usage(args, argv[0], "source_file", "Convert asm to corewar bytecode"));
@@ -101,7 +102,7 @@ int main(int argc, char *argv[])
 		return (print_small_error(&in, SEVERITY_ERROR, "Invalid name file"));
 	if ((fd = open(file, O_RDONLY)) <= 0)
 		return (print_small_error(&in, SEVERITY_ERROR, "Open failed"));
-	in = init_read(fd, file);
+	in = init_read(fd, file, in.werror);
 	(flag.streaming ? read_streaming : read_fixed)(&in, out);
 	close(fd);
 	return (0);

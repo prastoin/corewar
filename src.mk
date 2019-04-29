@@ -6,6 +6,7 @@ SRCS += src/asm/asm_utils.c
 SRCS += src/asm/bin_write.c
 SRCS += src/asm/error.c
 SRCS += src/asm/hashtable.c
+SRCS += src/asm/utils.c
 SRCS += src/common/args_error.c
 SRCS += src/common/argv_management.c
 SRCS += src/common/ft_putf.c

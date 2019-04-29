@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 12:46:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 10:52:47 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 11:24:44 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ bool		asm_parse_header(t_read *rd, t_header *header)
 {
 	header->size = 0;
 	asm_skip_ws(rd);
-	mark_span(&rd->begin, &rd->span);
+	mark_span(rd);
 	if (io_expect(rd, "."))
 	{
 		if (!io_expect(rd, "name"))
@@ -28,7 +28,7 @@ bool		asm_parse_header(t_read *rd, t_header *header)
 		else
 		{
 			asm_skip_ws(rd);
-			mark_span(&rd->begin, &rd->span);
+			mark_span(rd);
 			if (!asm_read_quoted(rd, header->name, sizeof(header->name)))
 				print_error(rd, 1, "Unclosed \" for .name", NULL);
 		}
@@ -36,7 +36,7 @@ bool		asm_parse_header(t_read *rd, t_header *header)
 	else
 		print_small_error(rd, 1, ".name not found");
 	asm_skip_ws(rd);
-	mark_span(&rd->begin, &rd->span);
+	mark_span(rd);
 	if (io_expect(rd, "."))
 	{
 		if (!io_expect(rd, "comment"))
@@ -47,7 +47,7 @@ bool		asm_parse_header(t_read *rd, t_header *header)
 		else
 		{
 			asm_skip_ws(rd);
-			mark_span(&rd->begin, &rd->span);
+			mark_span(rd);
 			if (!asm_read_quoted(rd, header->comment, sizeof(header->comment)))
 				print_error(rd, 1, "Unclosed \" for .comment", NULL);
 		}
@@ -112,22 +112,17 @@ bool		asm_parse_params(t_read *in, t_instruction *inst)
 		else
 		{
 			io_skip_until(in, SEPARATOR_CHAR);
-			print_error(1, in->begin, in->span, "Invalid param", from_int_to_type(g_ops[inst->opcode].params[i]));
+			print_error(in, 1, "Invalid param", from_int_to_type(g_ops[inst->opcode].params[i]));
 		}
-
 		if (!(g_ops[inst->opcode].params[i] & inst->params[i].type))
-		{
-			print_error(2, in->begin, in->span, "Type for param is invalid", from_int_to_type(g_ops[inst->opcode].params[i]));
-		}
+			print_error(in, 2, "Type for param is invalid", from_int_to_type(g_ops[inst->opcode].params[i]));
 		i++;
 		if (g_ops[inst->opcode].params[i])
 		{
 			in->begin = in->span;
 			asm_skip_ws(in);
 			if (!io_expect(in, SEPARATOR_CHAR))
-			{
-				print_error(1, in->begin, in->span, "Expected " SEPARATOR_CHAR, NULL);
-			}
+				print_error(in, 1, "Expected " SEPARATOR_CHAR, NULL);
 		}
 	}
 	return (true);

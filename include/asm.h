@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 10:52:58 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 11:31:21 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ typedef struct	s_read
 }				t_read;
 
 t_write		init_write(void);
-t_read		init_read(int fd, char *argv);
+t_read		init_read(int fd, char *argv, bool werror);
 void		ft_itoa_base(uintmax_t nb, char *str, uint8_t b, const char *base);
 bool		ft_header(t_write *out, t_read *in);
 ssize_t		header(t_read *rd);
@@ -137,7 +137,7 @@ bool		write_header(t_header *head, t_write *out);
 */
 void		print_error(t_read *in, uintmax_t severity, char *error, char *expected);
 int			print_small_error(t_read *in, uintmax_t severity, char *error);
-void		mark_span(t_span *begin, t_span *curr);
+void		mark_span(t_read *in);
 
 /*
 ** io

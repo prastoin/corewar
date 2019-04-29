@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 17:54:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 10:47:52 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 11:30:34 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,6 +186,11 @@ int		print_small_error(t_read *in, uintmax_t severity, char *error)
 		.fd = 2,
 		.buffer_size = sizeof(buffer)
 	};
+	if (severity == SEVERITY_ERROR || in->werror)
+	{
+		severity = SEVERITY_ERROR;
+		in->write_able = false;
+	}
 	error_severity(&err, severity);
 	error_msg(&err, error);
 	io_write(&err, CSI_RESET, (sizeof(CSI_RESET) - 1));
@@ -209,9 +214,11 @@ void	print_error(t_read *in, uintmax_t severity, char *error, char *expected)
 		.buffer_size = sizeof(buffer)
 	};
 	i = 0;
-
 	if (severity == SEVERITY_ERROR || in->werror)
+	{
+		severity = SEVERITY_ERROR;
 		in->write_able = false;
+	}
 	error_severity(&err, severity);
 	error_msg(&err, error);
 	locate_error(&err, in->begin);

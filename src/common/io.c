@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 10:13:50 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 11:31:45 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ ssize_t		io_fill(t_read *rd)
 	return (ret < 0 ? ret : (rd->len = ret));
 }
 
-t_read		init_read(int fd, char *argv)
+t_read		init_read(int fd, char *argv, bool werror)
 {
 	t_read	rd;
 
@@ -91,7 +91,8 @@ t_read		init_read(int fd, char *argv)
 		},
 		.nbr_read = 0,
 		.fd = fd,
-		.write_able = true
+		.write_able = true,
+		.werror = werror
 	};
 	return (rd);
 }
