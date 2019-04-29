@@ -6,7 +6,7 @@
 /*   By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/08 15:31:33 by dde-jesu          #+#    #+#             */
-/*   Updated: 2019/04/29 13:12:56 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/04/29 16:14:52 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,32 @@ static void		char_fd(size_t fd, uint8_t c, size_t padd)
 
 static void		str_fd(char *str, size_t fd, size_t padd)
 {
-	size_t i;
+	ssize_t i;
 
 	i = 0;
 	if (padd > 0)
 	{
-		while (i < padd - ft_strlen(str))
+		while (i < (ssize_t)(padd - ft_strlen(str)))
 		{
 			char_fd(fd, ' ', 0);
+			i++;
+		}
+	}
+	i = -1;
+	while (str[++i])
+		write(fd, str + i, 1);
+}
+
+static void		str_hexa_fd(char *str, size_t fd, size_t padd)
+{
+	ssize_t i;
+
+	i = 0;
+	if (padd > 0)
+	{
+		while (i < (ssize_t)(padd - ft_strlen(str)))
+		{
+			char_fd(fd, '0', 0);
 			i++;
 		}
 	}
@@ -59,20 +77,24 @@ void		ft_putnbr_fd(size_t fd, intmax_t nb)
 		char_fd(fd, nb + '0', 0);
 }
 
-void	ft_putnbr_hexa_fd(intmax_t nb, size_t fd)
+void	ft_putnbr_hexa_fd(intmax_t nb, size_t fd, size_t padd)
 {
-	const char	*base = "123456789abcdef";
+	const char	*base = "0123456789abcdef";
 	uintmax_t	tmp;
-	uint8_t		i;
+	size_t		i;
+	char		str[11];
 
 	tmp = nb;
+	i = 1;
 	while (tmp /= 16)
 		i++;
+	str[i] = '\0';
 	while (i--)
 	{
-		write(fd, (base + (nb % 16)), 1);
+		str[i] = base[nb % 16];
 		nb /= 16;
 	}
+	str_hexa_fd(str, fd, padd);
 }
 
 void	handle_hexa(size_t fd, va_list args, size_t padd, char *flag)
@@ -83,7 +105,7 @@ void	handle_hexa(size_t fd, va_list args, size_t padd, char *flag)
 		nb = va_arg(args, uint32_t);
 	else
 		nb = va_arg(args, uint64_t);
-	ft_putnbr_hexa_fd(nb, fd);
+	ft_putnbr_hexa_fd(nb, fd, padd);
 }
 
 void	handle_dlu(size_t fd, va_list args, size_t padd, char *flag)
@@ -108,7 +130,6 @@ void	handle_dlu(size_t fd, va_list args, size_t padd, char *flag)
 void	ft_putf_va(int fd, char *fmt, va_list args, size_t padd)
 {
 	char		*l_fmt;
-	intmax_t	nb;
 
 	l_fmt = fmt;
 	while ((fmt = ft_strchr(fmt, '%')) && *++fmt)

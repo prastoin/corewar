@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 17:59:25 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 15:17:35 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ bool		lld(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		return (invalid(vm, process, ocp, 13));
 	ft_memcpy(process->registre[param[1] - 1], process->tampon, REG_SIZE);
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P%5d | lld %d r%d\n", vm->c_pc, conv_bin_num(process->tampon, REG_SIZE), param[1]);
+		ft_putf_fd(vm->v_fd, "P%5d | lld %D r%d\n", vm->c_pc, conv_bin_num(process->tampon, REG_SIZE), param[1]);
 	if ((conv_bin_num(process->tampon, REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 13));
 	else
@@ -30,12 +30,12 @@ bool		lld(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 
 static void	print_a(t_vm *vm, uint8_t op1[REG_SIZE], uint8_t tampon[REG_SIZE], int32_t param)
 {
-	ft_putf_fd(vm->v_fd, "P%5d | lldi %d %d r%d\n       | -> load from %d", vm->c_pc, conv_bin_num(op1, REG_SIZE), conv_bin_num(tampon, REG_SIZE), param, conv_bin_num(op1, REG_SIZE));
+	ft_putf_fd(vm->v_fd, "P%5d | lldi %D %D r%D\n       | -> load from %d", vm->c_pc, conv_bin_num(op1, REG_SIZE), conv_bin_num(tampon, REG_SIZE), param, conv_bin_num(op1, REG_SIZE));
 }
 
 static void	print_b(t_vm *vm, t_process *process, uint8_t adr[REG_SIZE], int64_t adress)
 {
-	ft_putf_fd(vm->v_fd, " + %d = %d (with pc and mod %d)\n", conv_bin_num(process->tampon, REG_SIZE), conv_bin_num(adr, REG_SIZE), (process->offset + adress) % MEM_SIZE);
+	ft_putf_fd(vm->v_fd, " + %D = %D (with pc and mod %D)\n", conv_bin_num(process->tampon, REG_SIZE), conv_bin_num(adr, REG_SIZE), (process->offset + adress) % MEM_SIZE);
 }
 
 bool		lldi(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)

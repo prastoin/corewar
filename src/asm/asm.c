@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 12:52:44 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 16:31:17 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void		read_fixed(t_read *in, char *name)
 	{
 		out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 		write (out.fd, out.buffer, out.nbr_write);
+		close(out.fd);
 		ft_putf("done static\n");
 	}
 	return ;
@@ -76,6 +77,7 @@ void		read_streaming(t_read *in, char *name)
 	out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	table = create_hashtable(8);
 	asm_parser(&out, in, table);
+	close(out.fd);
 	printf("done streaming\n");
 }
 

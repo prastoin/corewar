@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:27:13 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 17:58:44 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 15:14:40 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ bool		ldi(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		adress += MEM_SIZE;
 	if (vm->flags.verbose)
 	{
-		ft_putf_fd(vm->v_fd, "P%5d | ldi %d %d r%d\n", vm->c_pc, conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), param[2]);
-		ft_putf_fd(vm->v_fd, "       | -> load from %d + %d = %d (with pc and mod %d)\n", conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), conv_bin_num(adr, REG_SIZE), (process->offset + adress) % MEM_SIZE);
+		ft_putf_fd(vm->v_fd, "P%5d | ldi %D %D r%d\n", vm->c_pc, conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), param[2]);
+		ft_putf_fd(vm->v_fd, "       | -> load from %D + %D = %D (with pc and mod %D)\n", conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), conv_bin_num(adr, REG_SIZE), (process->offset + adress) % MEM_SIZE);
 	}
 	return (valid(vm, process, ocp, 10));
 }
@@ -73,8 +73,8 @@ bool		sti(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	mem_write(vm->mem, process->registre[param[0] - 1], process->offset + adress, REG_SIZE);
 	if (vm->flags.verbose)
 	{
-		ft_putf_fd(vm->v_fd, "P%5d | sti r%d %d %d\n", vm->c_pc, param[0], conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE));
-		ft_putf_fd(vm->v_fd, "       | -> store to %d + %d = %d (with pc and mod %d)\n", conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), conv_bin_num(adr, REG_SIZE), process->offset + adress);
+		ft_putf_fd(vm->v_fd, "P%5d | sti r%d %D %D\n", vm->c_pc, param[0], conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE));
+		ft_putf_fd(vm->v_fd, "       | -> store to %D + %D = %D (with pc and mod %D)\n", conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), conv_bin_num(adr, REG_SIZE), process->offset + adress);
 	}
 	return (valid(vm, process, ocp, 11));
 }

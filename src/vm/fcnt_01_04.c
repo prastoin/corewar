@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:22:08 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 17:59:52 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 16:28:29 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ bool		live(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 			vm->champ[player - 1].last_cycle_live = vm->cycle;
 		}
 	}
+	vm->nbr_live++;
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "P%5d | live %d\n", vm->c_pc, param[0]);
 	return (valid(vm, process, 0b10000000, 1));
@@ -43,7 +44,7 @@ bool		ld(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		return (invalid(vm, process, ocp, 2));
 	ft_memcpy(process->registre[param[1] - 1], process->tampon, REG_SIZE);
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P%5d | ld %d r%d\n", vm->c_pc, conv_bin_num(process->tampon, REG_SIZE), param[1]);
+		ft_putf_fd(vm->v_fd, "P%5d | ld %D r%d\n", vm->c_pc, conv_bin_num(process->tampon, REG_SIZE), param[1]);
 	if ((conv_bin_num(process->tampon, REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 2));
 	else

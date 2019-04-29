@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 11:18:42 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 11:05:45 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 15:26:34 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,14 @@ bool	carry_up(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 	decale = get_decale(ocp, opcode);
 	if (vm->flags.verbose)
 	{
-		dprintf(vm->v_fd, "ADV %d (0x%.4x -> 0x%.4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
+		ft_putf_fd(vm->v_fd, "ADV %d (0x%4x -> 0x%4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
 		size = verbose(ocp, opcode);
 		while (i < size)
 		{
-			dprintf (vm->v_fd, "%.2x ", g_vm->mem[(process->offset + i) % MEM_SIZE]);
+			ft_putf_fd(vm->v_fd, "%2x ", vm->mem[(process->offset + i) % MEM_SIZE]);
 			i++;
 		}
-		dprintf(vm->v_fd, "\n");
+		ft_putf_fd(vm->v_fd, "\n");
 	}
 	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (true);
@@ -96,11 +96,11 @@ bool	carry_down(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 	process->carry = false;
 	if (vm->flags.verbose)
 	{
-		dprintf(vm->v_fd, "ADV %d (0x%.4x -> 0x%.4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
+		ft_putf_fd(vm->v_fd, "ADV %d (0x%4x -> 0x%4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
 		size = verbose(ocp, opcode);
 		while (i < size)
 		{
-			dprintf (vm->v_fd, "%.2x ", g_vm->mem[(process->offset + i) % MEM_SIZE]);
+			ft_putf_fd(vm->v_fd, "%2x ", vm->mem[(process->offset + i) % MEM_SIZE]);
 			i++;
 		}
 		dprintf(vm->v_fd, "\n");
@@ -119,14 +119,14 @@ bool	invalid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 	decale = get_decale(ocp, opcode);
 	if (vm->flags.verbose)
 	{
-		dprintf(vm->v_fd, "ADV %d (0x%.4x -> 0x%.4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
+		ft_putf_fd(vm->v_fd, "ADV %d (0x%4x -> 0x%4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
 		size = verbose(ocp, opcode);
 		while (i < size)
 		{
-			dprintf (vm->v_fd, "%.2x ", g_vm->mem[(process->offset + i) % MEM_SIZE]);
+			ft_putf_fd (vm->v_fd, "%2x ", vm->mem[(process->offset + i) % MEM_SIZE]);
 			i++;
 		}
-		dprintf(vm->v_fd, "\n");
+		ft_putf_fd(vm->v_fd, "\n");
 	}
 	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (false);
@@ -142,11 +142,11 @@ bool	valid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 	decale = get_decale(ocp, opcode);
 	if (vm->flags.verbose)
 	{
-		dprintf(vm->v_fd, "ADV %d (0x%.4x -> 0x%.4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
+		ft_putf_fd(vm->v_fd, "ADV %d (0x%4x -> 0x%4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
 		size = verbose(ocp, opcode);
 		while (i < size)
 		{
-			dprintf (vm->v_fd, "%.2x ", g_vm->mem[(process->offset + i) % MEM_SIZE]);
+			ft_putf_fd(vm->v_fd, "%2x ", vm->mem[(process->offset + i) % MEM_SIZE]);
 			i++;
 		}
 		dprintf(vm->v_fd, "\n");

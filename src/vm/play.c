@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 12:07:14 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 16:27:13 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,6 @@ void	david_needs_to_work(t_vm vm)
 	ssize_t i;
 	t_process *process;
 
-	g_vm = &vm;
 	vm.continu = true;
 	while (vm.continu)
 	{
@@ -178,7 +177,7 @@ void	david_needs_to_work(t_vm vm)
 				read_opcode(&vm, process);
 			i++;
 		}
-		if (vm.cycle == vm.flags.dump_c)
+		if (vm.cycle == (uintmax_t)vm.flags.dump_c)
 		{
 			i = 0;
 			while (i < MEM_SIZE)
@@ -211,6 +210,7 @@ bool	ft_play(t_vm vm)
 		{
 			if (!bin_parse_header(vm.champ[i].fd, vm.champ + i)) //deleting ungood champ
 				return (false);
+			nbr_champ++;
 		}
 		i++;
 	}

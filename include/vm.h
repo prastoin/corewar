@@ -6,18 +6,18 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 17:54:59 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 16:27:57 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VM_H
-#define VM_H
+# define VM_H
 
-#include "common.h"
+# include "common.h"
 
-#define OCP_DIR 0b10
-#define OCP_REG 0b01
-#define OCP_IND 0b11
+# define OCP_DIR 0b10
+# define OCP_REG 0b01
+# define OCP_IND 0b11
 
 typedef struct	s_datan
 {
@@ -84,8 +84,6 @@ typedef struct	s_vm
 	uint8_t		mem[MEM_SIZE];
 	t_flags		flags;
 }				t_vm;
-
-t_vm	*g_vm; //TODO rm
 
 bool	ft_check_ocp(uint8_t ocp, uint8_t opcode);
 bool	ft_get_value(ssize_t nbr, uint8_t type, t_process *processes, t_vm *vm);
