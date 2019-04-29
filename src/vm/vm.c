@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 16:24:00 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/29 16:37:15 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,23 @@ static bool	is_empty(char *players[MAX_PLAYERS + 1])
 		i++;
 	}
 	return (true);
+}
+
+void	close_fd(t_vm *vm)
+{
+	size_t i;
+	size_t fd;
+
+	i = 0;
+	while (i < MAX_PLAYERS)
+	{
+		fd = vm->champ[i].fd;
+		if (fd)
+			close(fd);
+		i++;
+	}
+	if (vm->flags.verbose)
+		close(vm->v_fd);
 }
 
 int		main_split(char *players[MAX_PLAYERS + 1], char *argv[], int argc, t_vm vm)
@@ -115,6 +132,6 @@ int main(int argc, char *argv[])
 			|| (is_empty(players) && argc == ret))
 		return (args_usage(args, argv[0], "source_file", "Launch corewar vm"));
 	if (vm.flags.verbose == true)
-		vm.v_fd = open("verbose", O_RDWR | O_CREAT | O_TRUNC);
+		vm.v_fd = open("verbose", O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	return (main_split(players, argv + ret, argc - ret, vm));
 }
