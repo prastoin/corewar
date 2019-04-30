@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 11:57:26 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 12:11:12 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void		read_streaming(t_read *in, char *name)
 int			main(int argc, char *argv[])
 {
 	t_flag		flag;
-	char		*file;
+	char		*files[2];
 	int			fd;
 	t_read		in;
 	const t_arg	args[] = {
@@ -92,17 +92,17 @@ int			main(int argc, char *argv[])
 		{ARG_BOOLEAN, 'e', "Werror", &in.werror, "Warnings become errors"},
 		{ARG_END, 0, 0, 0, 0}};
 
-	flag = (t_flag) {0};
+	flag = (t_flag) {0, 0};
 	in.werror = false;
 	if ((fd = parse_args(args, argc, argv)) < 0 || argc == fd)
 		return (args_usage(args, argv[0], "source_file", ARGS_MSG));
-	file = argv[fd];
-	if (!(file = change_ext(file)))
+	files[IN] = argv[fd];
+	if (!(files[OUT] = change_ext(files[IN])))
 		return (print_small_error(&in, ERR, "Invalid name file"));
-	if ((fd = open(file, O_RDONLY)) <= 0)
+	if ((fd = open(files[IN], O_RDONLY)) <= 0)
 		return (print_small_error(&in, ERR, "Open failed"));
-	in = init_read(fd, file, in.werror);
-	(flag.streaming ? read_streaming : read_fixed)(&in, file);
+	in = init_read(fd, files[IN], in.werror);
+	(flag.streaming ? read_streaming : read_fixed)(&in, files[OUT]);
 	close(fd);
 	return (0);
 }

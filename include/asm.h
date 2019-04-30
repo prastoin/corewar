@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 11:57:19 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 12:11:07 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include <stdbool.h>
 # include <stdio.h>
 
+# define IN 0
+# define OUT 1
 # define ARGS_MSG "Convert asm to corewar bytecode"
 # define FLAG_S_MSG "Turn on streaming reading mode"
 # define BUFFER_SIZE  4096
