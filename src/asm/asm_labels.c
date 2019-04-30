@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 14:19:25 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 16:53:04 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 18:36:38 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,5 +74,24 @@ void		asm_store_label(t_hashtable **table, char *label, t_write *out, t_read *in
 			entry->resolve = true;
 			entry->offset = out->nbr_write;
 		}
+	}
+}
+
+void		asm_check_labels(t_hashtable *table, t_read *in)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < table->size)
+	{
+		if (table->bucket[i].key)
+		{
+			if (!table->bucket[i].resolve)
+			{
+				print_small_error(in, ERR, "Undeclared label",
+						table->bucket[i].key);
+			}
+		}
+		i++;
 	}
 }

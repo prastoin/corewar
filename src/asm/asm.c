@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 17:48:55 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/04/30 18:30:40 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void		read_fixed(t_read *in, char *name)
 	out.fd = 0;
 	asm_transform(&out, in);
 	if (out.fd == -1)
-		print_small_error(in, ERR, "Program too big (Exceed CHAMP_MAX_SIZE)");
+		print_small_error(in, ERR, "Program too big (Exceed CHAMP_MAX_SIZE)", 0);
 	else if (in->write_able)
 	{
 		if ((out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) != -1)
@@ -50,7 +50,7 @@ void		read_fixed(t_read *in, char *name)
 			ft_putf("done static\n");
 		}
 		else
-			print_small_error(in, ERR, "Cannot open output file");
+			print_small_error(in, ERR, "Cannot open output file", name);
 	}
 }
 
@@ -70,7 +70,7 @@ void		read_streaming(t_read *in, char *name)
 		ft_putf("done streaming\n");
 	}
 	else
-		print_small_error(in, ERR, "Cannot open output file");
+		print_small_error(in, ERR, "Cannot open output file", name);
 }
 
 int			main(int argc, char *argv[])
@@ -90,9 +90,9 @@ int			main(int argc, char *argv[])
 		return (args_usage(args, argv[0], "source_file", ARGS_MSG));
 	files[IN] = argv[fd];
 	if (!(files[OUT] = change_ext(files[IN])))
-		return (print_small_error(&in, ERR, "Invalid name file"));
+		return (print_small_error(&in, ERR, "Invalid file name", files[IN]));
 	if ((fd = open(files[IN], O_RDONLY)) <= 0)
-		return (print_small_error(&in, ERR, "Open failed"));
+		return (print_small_error(&in, ERR, "Open failed", files[IN]));
 	in = init_read(fd, files[IN], in.werror);
 	(flag.streaming ? read_streaming : read_fixed)(&in, files[OUT]);
 	close(fd);

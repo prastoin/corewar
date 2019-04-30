@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 17:46:33 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/04/30 18:28:12 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ bool		bin_write_header(t_header head, t_write *out);
 ** error
 */
 void		print_error(t_read *in, t_severity severity, char *error, char *expected);
-int			print_small_error(t_read *in, t_severity severity, char *error);
+int			print_small_error(t_read *in, t_severity severity, char *error, char *expected);
 void		mark_span(t_read *in);
 
 /*
@@ -197,6 +197,7 @@ bool		asm_read_inst(t_read *in, t_instruction *inst);
 void		asm_transform(t_write *out, t_read *in);
 void		asm_store_label(t_hashtable **table, char *label, t_write *out, t_read *in);
 size_t		asm_resolve_label(t_hashtable **table, t_instruction *inst, t_write *out, t_read *in);
+void		asm_check_labels(t_hashtable *table, t_read *in);
 
 /*
 ** others

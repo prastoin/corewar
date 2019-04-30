@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 17:54:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 11:42:25 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 18:28:53 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ void	error_contxt_print(t_write *err, t_span begin, t_span end, t_severity sever
 }
 
 
-int		print_small_error(t_read *in, t_severity severity, char *error)
+int		print_small_error(t_read *in, t_severity severity, char *error, char *expected)
 {
 	t_write	err;
 	uint8_t	buffer[4096];
@@ -193,6 +193,11 @@ int		print_small_error(t_read *in, t_severity severity, char *error)
 	}
 	error_severity(&err, severity);
 	error_msg(&err, error);
+	if (expected)
+	{
+		io_write(&err, ": ", 2);
+		io_write(&err, expected, ft_strlen(expected));
+	}
 	io_write(&err, CSI_RESET, (sizeof(CSI_RESET) - 1));
 	io_write(&err, "\n", 1);
 	io_flush(&err);

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/30 13:46:44 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 14:52:35 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 18:31:03 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void	asm_read_comment(t_read *rd, t_header *header)
 		}
 	}
 	else
-		print_small_error(rd, ERR, ".comment not found");
+		print_small_error(rd, ERR, ".comment not found", NULL);
 }
 
 static void	asm_read_name(t_read *rd, t_header *header)
@@ -51,7 +51,7 @@ static void	asm_read_name(t_read *rd, t_header *header)
 		}
 	}
 	else
-		print_small_error(rd, ERR, ".name not found");
+		print_small_error(rd, ERR, ".name not found", NULL);
 }
 
 t_header		asm_read_header(t_read *rd)
