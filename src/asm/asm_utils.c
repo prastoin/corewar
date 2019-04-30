@@ -6,24 +6,32 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 13:23:44 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 14:29:33 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 11:38:43 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_string.h"
 #include "asm.h"
 
-bool	asm_skip_ws(t_read *rd)
+bool		asm_skip_ws(t_read *rd)
 {
-	int16_t		c;
+	int16_t	c;
 
 	while ((c = io_peek(rd)) == ' ' || c == '\t' || c == '#' || c == '\n')
 	{
 		io_next(rd);
 		if (c == '#')
-			if (!io_skip(rd , '\n'))
+			if (!io_skip(rd, '\n'))
 				return (false);
-	}	
+	}
+	return (true);
+}
+
+static bool	escape(t_read *rd, int16_t c)
+{
+	io_next(rd);
+	if ((c = io_peek(rd)) == -1)
+		return (false);
 	return (true);
 }
 
@@ -38,11 +46,8 @@ bool		asm_read_quoted(t_read *rd, char data[], size_t len)
 	while ((c = io_peek(rd)) != '"' && c != '\n' && c != -1)
 	{
 		if (c == '\\')
-		{
-			io_next(rd);
-			if ((c = io_peek(rd)) == -1)
+			if (!escape(rd, c))
 				return (false);
-		}
 		data[i] = c;
 		io_next(rd);
 		i++;

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 16:57:23 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 11:30:39 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,20 +83,19 @@ void		read_streaming(t_read *in, char *name)
 
 int main(int argc, char *argv[])
 {
-	t_flag	flag;
-	char	*file;
-	char	*out;
-	int		fd;
-	ssize_t ret;
-	t_read	in;
-	const t_arg args[] = {
+	t_flag		flag;
+	char		*file;
+	char		*out;
+	int			fd;
+	ssize_t		ret;
+	t_read		in;
+	const t_arg	args[] = {
 		{ARG_BOOLEAN, 's', "streaming", &flag.streaming, "Streaming on mode with this flag"},
 		{ARG_BOOLEAN, 'e', "Werror", &in.werror, "Warnings become errors"},
-		{ARG_END, 0, 0, 0, 0}
-	};
+		{ARG_END, 0, 0, 0, 0}};
 
 	in.werror = false;
-	flag = (t_flag) {};
+	flag = (t_flag) {0};
 	if ((ret = parse_args(args, argc, argv)) < 0 || argc == ret)
 		return (args_usage(args, argv[0], "source_file", "Convert asm to corewar bytecode"));
 	file = argv[ret];

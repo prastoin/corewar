@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 11:18:42 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 15:26:34 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 10:59:38 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ bool	carry_up(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 	decale = get_decale(ocp, opcode);
 	if (vm->flags.verbose)
 	{
-		ft_putf_fd(vm->v_fd, "ADV %d (0x%4x -> 0x%4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
+		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale, process->offset, ((process->offset + decale)));
 		size = verbose(ocp, opcode);
 		while (i < size)
 		{
@@ -96,7 +96,8 @@ bool	carry_down(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 	process->carry = false;
 	if (vm->flags.verbose)
 	{
-		ft_putf_fd(vm->v_fd, "ADV %d (0x%4x -> 0x%4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
+		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale, process->offset, ((process->offset + decale)));
+		size = verbose(ocp, opcode);
 		size = verbose(ocp, opcode);
 		while (i < size)
 		{
@@ -119,7 +120,7 @@ bool	invalid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 	decale = get_decale(ocp, opcode);
 	if (vm->flags.verbose)
 	{
-		ft_putf_fd(vm->v_fd, "ADV %d (0x%4x -> 0x%4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
+		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale, process->offset, ((process->offset + decale)));
 		size = verbose(ocp, opcode);
 		while (i < size)
 		{
@@ -142,7 +143,7 @@ bool	valid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 	decale = get_decale(ocp, opcode);
 	if (vm->flags.verbose)
 	{
-		ft_putf_fd(vm->v_fd, "ADV %d (0x%4x -> 0x%4x) ", decale, process->offset, (process->offset + decale) % MEM_SIZE);
+		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale, process->offset, ((process->offset + decale)));
 		size = verbose(ocp, opcode);
 		while (i < size)
 		{

@@ -6,7 +6,7 @@
 /*   By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/08 15:31:33 by dde-jesu          #+#    #+#             */
-/*   Updated: 2019/04/29 16:14:52 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 10:48:37 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void		ft_putnbr_fd(size_t fd, intmax_t nb)
 		char_fd(fd, nb + '0', 0);
 }
 
-void	ft_putnbr_hexa_fd(intmax_t nb, size_t fd, size_t padd)
+void	ft_putnbr_hexa_fd(uintmax_t nb, size_t fd, size_t padd)
 {
 	const char	*base = "0123456789abcdef";
 	uintmax_t	tmp;
