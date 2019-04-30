@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 16:55:03 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 17:42:07 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,7 @@ void	io_flush(t_write *out)
 	}
 	else
 	{
-		printf("ERROR\n");
-		out->buffer_size = -1;
-		exit(0);
+		out->fd = -1;
 	}
 	out->index = 0;
 }

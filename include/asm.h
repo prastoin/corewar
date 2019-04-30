@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 17:24:05 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 17:46:33 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ typedef struct	s_write
 	size_t		index;
 	size_t		nbr_write;
 	bool		flushable;
-	size_t		fd;
+	int			fd;
 	size_t		buffer_size;
 }				t_write;
 

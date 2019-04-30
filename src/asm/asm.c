@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 17:32:03 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 17:48:55 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,20 @@ void		read_fixed(t_read *in, char *name)
 	out = init_write();
 	out.buffer_size = CHAMP_MAX_SIZE + HEADER_SIZE;
 	out.buffer = buffer;
+	out.fd = 0;
 	asm_transform(&out, in);
-	if (in->write_able)
+	if (out.fd == -1)
+		print_small_error(in, ERR, "Program too big (Exceed CHAMP_MAX_SIZE)");
+	else if (in->write_able)
 	{
-		out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-		write(out.fd, out.buffer, out.nbr_write);
-		close(out.fd);
-		ft_putf("done static\n");
+		if ((out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) != -1)
+		{
+			write(out.fd, out.buffer, out.nbr_write);
+			close(out.fd);
+			ft_putf("done static\n");
+		}
+		else
+			print_small_error(in, ERR, "Cannot open output file");
 	}
 }
 
@@ -56,10 +63,14 @@ void		read_streaming(t_read *in, char *name)
 	out.buffer_size = BUFFER_SIZE;
 	out.flushable = true;
 	out.buffer = buffer;
-	out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-	asm_transform(&out, in);
-	close(out.fd);
-	ft_putf("done streaming\n");
+	if ((out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) != -1)
+	{
+		asm_transform(&out, in);
+		close(out.fd);
+		ft_putf("done streaming\n");
+	}
+	else
+		print_small_error(in, ERR, "Cannot open output file");
 }
 
 int			main(int argc, char *argv[])

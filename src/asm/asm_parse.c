@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 12:46:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 17:29:54 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 17:42:51 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	asm_transform(t_write *out, t_read *in)
 		return ((void)print_small_error(in, ERR, "Hashtable creation failed"));
 	bin_write_header(asm_read_header(in), out);
 	asm_skip_ws(in);
-	while (io_peek(in) != -1)
+	while (io_peek(in) != -1 && out->fd != -1)
 	{
 		mark_span(in);
 		if (!asm_read_inst(in, &inst))
