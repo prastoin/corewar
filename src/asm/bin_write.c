@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 17:05:34 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 16:55:03 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ void	io_write_one(t_write *out, char c)
 {
 	io_write(out, &c, 1);
 }
-
 
 void	io_write_int(t_write *out, uintmax_t nb, size_t nb_bytes)
 {
@@ -114,6 +113,8 @@ void		io_seek(t_write *out, ssize_t offset, bool set_cur)
 			out->index += offset;
 }
 
+#include <assert.h>
+
 void		io_write_read(t_write *out, uint8_t *tmp, size_t size)
 {
 	if (out->flushable)
@@ -123,35 +124,39 @@ void		io_write_read(t_write *out, uint8_t *tmp, size_t size)
 	}
 	else
 	{
-		ft_memcpy(tmp, out->buffer + out->index, size);
-		out->index += size;
+		if (out->index < out->buffer_size)
+		{
+			ft_memcpy(tmp, out->buffer + out->index, size);
+			out->index += size;
+		}
 	}
 }
 
 void	bin_write_end(t_write *out)
 {
 	size_t		len;
-	t_header	*head;
 
 	if (out->flushable)
 		io_flush(out);
-	len = 4 + sizeof(head->name) + 4 - sizeof(head->name) % 4;
+	len = 4 + sizeof(((t_header *)0)->name) + 4
+		- sizeof(((t_header *)0)->name) % 4;
 	io_seek(out, len, true);
-	len += 4 + sizeof(head->comment) + 4 - sizeof(head->comment) % 4;
+	len += 4 + sizeof(((t_header *)0)->comment) + 4
+		- sizeof(((t_header *)0)->comment) % 4;
 	io_write_int(out, out->nbr_write - len, 4);
 	if (out->flushable)
 		io_flush(out);
 	out->nbr_write -= 4;
 }
 
-bool	write_header(t_header *head, t_write *out)
+bool	bin_write_header(t_header head, t_write *out)
 {
 	io_write_int(out, COREWAR_EXEC_MAGIC, 4);
-	io_write(out, head->name, sizeof(head->name));
-	io_write(out, (uint8_t [4]){0, 0, 0, 0}, 4 - sizeof(head->name) % 4);
+	io_write(out, head.name, sizeof(head.name));
+	io_write(out, (uint8_t [4]){0, 0, 0, 0}, 4 - sizeof(head.name) % 4);
 	io_write_int(out, 0, 4);
-	io_write(out, head->comment, sizeof(head->comment));
-	io_write(out, (uint8_t [4]){0, 0, 0, 0}, 4 - sizeof(head->comment) % 4);
+	io_write(out, head.comment, sizeof(head.comment));
+	io_write(out, (uint8_t [4]){0, 0, 0, 0}, 4 - sizeof(head.comment) % 4);
 	return (true);
 }
 

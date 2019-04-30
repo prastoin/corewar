@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 12:11:07 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 16:53:38 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # define ARGS_MSG "Convert asm to corewar bytecode"
 # define FLAG_S_MSG "Turn on streaming reading mode"
 # define BUFFER_SIZE  4096
-# define HEADER_SIZE  16 + PROG_NAME_LENGTH + COMMENT_LENGTH
+# define HEADER_SIZE (16 + PROG_NAME_LENGTH + COMMENT_LENGTH)
 # define EXT ".cro"
 
 typedef struct	s_flag
@@ -123,8 +123,7 @@ typedef struct	s_read
 t_write		init_write(void);
 t_read		init_read(int fd, char *argv, bool werror);
 void		ft_itoa_base(uintmax_t nb, char *str, uint8_t b, const char *base);
-bool		ft_header(t_write *out, t_read *in);
-ssize_t		header(t_read *rd);
+void		asm_header(t_write *out, t_read *in);
 char		*from_int_to_type(size_t type);
 void		ft_itoa_hexa(char *str, uintmax_t nb, size_t len);
 
@@ -134,7 +133,7 @@ void		ft_itoa_hexa(char *str, uintmax_t nb, size_t len);
 void		bin_write_inst(t_write *out, t_instruction *inst, uint8_t last_label);
 void		bin_write_end(t_write *out);
 void		bin_resolve_label(t_write *out, size_t offset);
-bool		write_header(t_header *head, t_write *out);
+bool		bin_write_header(t_header head, t_write *out);
 
 /*
 ** error
@@ -179,9 +178,9 @@ ssize_t		asm_opcode_for(char *name);
 /*
 ** asm_parse.c
 */
-bool		asm_parse_header(t_read *rd, t_header *header);
-char		*asm_parse_name(t_read *in);
-bool		asm_parse_params(t_read *in, t_instruction *inst);
+t_header	asm_read_header(t_read *in);
+char		*asm_get_inst(t_read *in);
+bool		asm_read_params(t_read *in, t_instruction *inst);
 
 /*
 ** argv_management.c
@@ -194,10 +193,10 @@ ssize_t		parse_args(const t_arg args[], int argc, char *argv[]);
 ** argv_management.c
 */
 
-bool		asm_parse_instruction(t_read *in, t_instruction *inst);
+bool		asm_read_inst(t_read *in, t_instruction *inst);
 bool		asm_parser(t_write *out, t_read *in, t_hashtable *table);
-void		case_label(t_hashtable **table, t_instruction inst, t_write *out, t_read *in);
-void		gest_arg(t_instruction inst, t_hashtable **table, t_write *out, t_read *in);
+void		asm_store_label(t_hashtable **table, char *label, t_write *out, t_read *in);
+size_t		asm_resolve_label(t_hashtable **table, t_instruction *inst, t_write *out, t_read *in);
 
 /*
 ** others

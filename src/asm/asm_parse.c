@@ -6,58 +6,33 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 12:46:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 11:52:33 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 16:58:21 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "common.h"
+#include "ft_string.h"
 #include "asm.h"
 
-bool		asm_parse_header(t_read *rd, t_header *header)
+bool	is_labelchar(char c)
 {
-	header->size = 0;
-	asm_skip_ws(rd);
-	mark_span(rd);
-	if (io_expect(rd, "."))
+	size_t	i;
+	size_t	len;
+	char	*str;
+
+	str = LABEL_CHARS;
+	len = ft_strlen(LABEL_CHARS);
+	i = 0;
+	while (i < len)
 	{
-		if (!io_expect(rd, "name"))
-		{
-			io_skip_until(rd, " #\t\n\"");
-			print_error(rd, ERR, "Expected \".name\"", "Replace by .name");
-		}
-		else
-		{
-			asm_skip_ws(rd);
-			mark_span(rd);
-			if (!asm_read_quoted(rd, header->name, sizeof(header->name)))
-				print_error(rd, ERR, "Unclosed \" for .name", NULL);
-		}
+		if (c == str[i])
+			return (true);
+		i++;
 	}
-	else
-		print_small_error(rd, ERR, ".name not found");
-	asm_skip_ws(rd);
-	mark_span(rd);
-	if (io_expect(rd, "."))
-	{
-		if (!io_expect(rd, "comment"))
-		{
-			io_skip_until(rd, " #\t\n\"");
-			print_error(rd, ERR, "Expected \".comment\"", "Replace by .comment");
-		}
-		else
-		{
-			asm_skip_ws(rd);
-			mark_span(rd);
-			if (!asm_read_quoted(rd, header->comment, sizeof(header->comment)))
-				print_error(rd, ERR, "Unclosed \" for .comment", NULL);
-		}
-	}
-	else
-		print_small_error(rd, ERR, ".comment not found");
-	return (true);
+	return (false);
 }
 
-char		*asm_parse_name(t_read *in)
+char		*asm_get_inst(t_read *in)
 {
 	size_t		len;
 	int16_t		c;
@@ -66,7 +41,7 @@ char		*asm_parse_name(t_read *in)
 	len = 0;
 	if (!(str = (char*)malloc(sizeof(char) * 1)))
 		return (NULL);
-	while ((c = io_peek(in)) != -1 && ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_'))
+	while ((c = io_peek(in)) != -1 && is_labelchar(c)) //pb si on change nom inst pas bon
 	{
 		str[len] = c;
 		io_next(in);
@@ -75,56 +50,31 @@ char		*asm_parse_name(t_read *in)
 			return (NULL);
 	}
 	str[len] = '\0';
-	if (c == -1)
-		return (NULL);
 	return (str);
 }
 
-bool		asm_parse_params(t_read *in, t_instruction *inst)
+bool	asm_parser(t_write *out, t_read *in, t_hashtable *table)
 {
-	size_t		i;
-	uint16_t	c;
+	t_instruction	inst;
 
-	i = 0;
-	while (g_ops[inst->opcode].params[i])
+	bin_write_header(asm_read_header(in), out);
+	asm_skip_ws(in);
+	while (io_peek(in) != -1)
 	{
-		asm_skip_ws(in);
-		in->begin = in->span;
-		c = io_peek(in);
-		if (c == DIRECT_CHAR)
-		{
-			io_next(in);
-			inst->params[i].type = PARAM_DIRECT;
-			asm_read_offset_value(in, inst->params + i);
-		}
-		else if (c == 'r')
-		{
-			io_next(in);
-			inst->params[i].type = PARAM_REGISTER;
-			inst->params[i].reg.reg = io_readnum(in);
-		}
-		else if (c == LABEL_CHAR || (c >= '0' && c <= '9')
-				|| (c == '+' || c == '-'))
-		{
-			inst->params[i].type = PARAM_INDIRECT;
-			asm_read_offset_value(in, inst->params + i);
-		}
+		mark_span(in);
+		if (!asm_read_inst(in, &inst))
+			break ; // ==> pb de malloc TODO: Afficher
+		if (inst.label)
+			asm_store_label(&table, inst.label, out, in);
+		else if (inst.opcode != -1)
+			bin_write_inst(out, &inst, asm_resolve_label(&table, &inst, out, in));
 		else
 		{
-			io_skip_until(in, SEPARATOR_CHAR);
-			print_error(in, ERR, "Invalid param", from_int_to_type(g_ops[inst->opcode].params[i]));
+			io_skip_until(in, " \t\n#");
+			print_error(in, ERR, "Unknown Instructions", NULL);
 		}
-		if (!(g_ops[inst->opcode].params[i] & inst->params[i].type))
-			print_error(in, WARN, "Type for param is invalid", from_int_to_type(g_ops[inst->opcode].params[i]));
-		i++;
-		if (g_ops[inst->opcode].params[i])
-		{
-			in->begin = in->span;
-			asm_skip_ws(in);
-			if (!io_expect(in, SEPARATOR_CHAR))
-				print_error(in, ERR, "Expected " SEPARATOR_CHAR, NULL);
-		}
+		asm_skip_ws(in);
 	}
+	bin_write_end(out);
 	return (true);
 }
-

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 13:23:44 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 11:40:44 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 14:40:16 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void		asm_read_offset_value(t_read *in, t_param *param)
 	if (c == LABEL_CHAR)
 	{
 		io_next(in);
-		param->offset.label = asm_parse_name(in);
+		param->offset.label = asm_get_inst(in);
 	}
 	else
 	{

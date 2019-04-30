@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 12:11:12 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 16:44:38 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,6 @@ char		*change_ext(char *name)
 	ft_memcpy(file, name, dot - name);
 	ft_memcpy(file + (dot - name), EXT, sizeof(EXT));
 	return (file);
-}
-
-bool		ft_header(t_write *out, t_read *in)
-{
-	t_header		head;
-
-	head = (t_header) {
-		.size = 0
-	};
-	if (!asm_parse_header(in, &head))
-		return (false);
-	write_header(&head, out);
-	return (true);
 }
 
 void		read_fixed(t_read *in, char *name)
