@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 16:44:38 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 17:32:03 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,37 +33,31 @@ void		read_fixed(t_read *in, char *name)
 {
 	uint8_t		buffer[CHAMP_MAX_SIZE + HEADER_SIZE];
 	t_write		out;
-	t_hashtable	*table;
 
 	out = init_write();
 	out.buffer_size = CHAMP_MAX_SIZE + HEADER_SIZE;
 	out.buffer = buffer;
-	table = create_hashtable(8);
-	if (!asm_parser(&out, in, table))
-		return ;
-	if (in->write_able == true)
+	asm_transform(&out, in);
+	if (in->write_able)
 	{
 		out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 		write(out.fd, out.buffer, out.nbr_write);
 		close(out.fd);
 		ft_putf("done static\n");
 	}
-	return ;
 }
 
 void		read_streaming(t_read *in, char *name)
 {
 	uint8_t		buffer[BUFFER_SIZE];
 	t_write		out;
-	t_hashtable	*table;
 
 	out = init_write();
 	out.buffer_size = BUFFER_SIZE;
 	out.flushable = true;
 	out.buffer = buffer;
 	out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-	table = create_hashtable(8);
-	asm_parser(&out, in, table);
+	asm_transform(&out, in);
 	close(out.fd);
 	ft_putf("done streaming\n");
 }

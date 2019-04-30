@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 12:46:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 16:58:21 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 17:29:54 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,13 @@ char		*asm_get_inst(t_read *in)
 	return (str);
 }
 
-bool	asm_parser(t_write *out, t_read *in, t_hashtable *table)
+void	asm_transform(t_write *out, t_read *in)
 {
 	t_instruction	inst;
+	t_hashtable		*table;
 
+	if (!(table = create_hashtable(8)))
+		return ((void)print_small_error(in, ERR, "Hashtable creation failed"));
 	bin_write_header(asm_read_header(in), out);
 	asm_skip_ws(in);
 	while (io_peek(in) != -1)
@@ -76,5 +79,4 @@ bool	asm_parser(t_write *out, t_read *in, t_hashtable *table)
 		asm_skip_ws(in);
 	}
 	bin_write_end(out);
-	return (true);
 }
