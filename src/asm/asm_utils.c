@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 13:23:44 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 11:38:43 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 11:40:44 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,6 @@ bool		asm_skip_ws(t_read *rd)
 			if (!io_skip(rd, '\n'))
 				return (false);
 	}
-	return (true);
-}
-
-static bool	escape(t_read *rd, int16_t c)
-{
-	io_next(rd);
-	if ((c = io_peek(rd)) == -1)
-		return (false);
 	return (true);
 }
 

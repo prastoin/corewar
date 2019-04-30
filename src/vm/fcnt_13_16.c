@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 10:20:15 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 11:49:15 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ bool		lldi(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 
 	if (param[2] > 16 || param[2] <= 0)
 		return (invalid(vm, process, ocp, 14));
-	if (!ft_get_value_mod(param[0], (ocp >> 6 & 0b11), process, vm))
+	if (!ft_get_value_mod(param[0], (ocp >> 6 & 0b11), process, vm)) //IDX MOD RAJOUTER ICI
 		return (invalid(vm, process, ocp, 14));
 	ft_memcpy(op1, process->tampon, REG_SIZE);
 	if (!ft_get_value(param[1], (ocp >> 4 & 0b11), process, vm))

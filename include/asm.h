@@ -6,22 +6,24 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 16:18:31 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/04/30 11:57:19 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ASM_H
-#define ASM_H
+# define ASM_H
 
-#include "common.h"
-#include <unistd.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <stdio.h>
+# include "common.h"
+# include <unistd.h>
+# include <stdint.h>
+# include <stdbool.h>
+# include <stdio.h>
 
-#define BUFFER_SIZE  4096
-#define HEADER_SIZE  16 + PROG_NAME_LENGTH + COMMENT_LENGTH
-#define EXT ".cro"
+# define ARGS_MSG "Convert asm to corewar bytecode"
+# define FLAG_S_MSG "Turn on streaming reading mode"
+# define BUFFER_SIZE  4096
+# define HEADER_SIZE  16 + PROG_NAME_LENGTH + COMMENT_LENGTH
+# define EXT ".cro"
 
 typedef struct	s_flag
 {
@@ -194,5 +196,10 @@ bool		asm_parse_instruction(t_read *in, t_instruction *inst);
 bool		asm_parser(t_write *out, t_read *in, t_hashtable *table);
 void		case_label(t_hashtable **table, t_instruction inst, t_write *out, t_read *in);
 void		gest_arg(t_instruction inst, t_hashtable **table, t_write *out, t_read *in);
+
+/*
+** others
+*/
+bool	escape(t_read *rd, int16_t c);
 
 #endif
