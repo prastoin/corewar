@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:24:34 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 17:58:06 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/01 10:58:08 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ bool		sub(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		return (invalid(vm, process, ocp, 5));
 	bin_sub(op1, process->tampon, process->registre[param[2] - 1]);
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P%5d | sub r%d r%d r%d\n", vm->c_pc, param[0], param[1], param[2]);
+		ft_putf_fd(vm->v_fd, "P%5d | sub r%d r%d r%d\n", vm->c_pc, param[0],
+				param[1], param[2]);
 	if ((conv_bin_num(process->registre[param[2] - 1], REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 5));
 	else
@@ -46,7 +47,9 @@ bool		ft_and(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		return (invalid(vm, process, ocp, 6));
 	bin_and(op1, process->tampon, process->registre[param[2] - 1]);
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P%5d | and %d %d r%d\n", vm->c_pc, conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), param[2]);
+		ft_putf_fd(vm->v_fd, "P%5d | and %d %d r%d\n", vm->c_pc,
+				conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon,
+					REG_SIZE), param[2]);
 	if ((conv_bin_num(process->registre[param[2] - 1], REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 6));
 	else
@@ -66,7 +69,9 @@ bool		ft_or(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		return (invalid(vm, process, ocp, 7));
 	bin_or(op1, process->tampon, process->registre[param[2] - 1]);
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P%5d | or %d %d r%d\n", vm->c_pc, conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), param[2]);
+		ft_putf_fd(vm->v_fd, "P%5d | or %d %d r%d\n", vm->c_pc,
+				conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon,
+					REG_SIZE), param[2]);
 	if ((conv_bin_num(process->registre[param[2] - 1], REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 7));
 	else
@@ -86,7 +91,9 @@ bool		ft_xor(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		return (invalid(vm, process, ocp, 8));
 	bin_xor(op1, process->tampon, process->registre[param[2] - 1]);
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P%5d | xor %d %d r%d\n", vm->c_pc, conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon, REG_SIZE), param[2]);
+		ft_putf_fd(vm->v_fd, "P%5d | xor %d %d r%d\n", vm->c_pc,
+				conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon,
+					REG_SIZE), param[2]);
 	if ((conv_bin_num(process->registre[param[2] - 1], REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 8));
 	else

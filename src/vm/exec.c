@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/02 14:20:14 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 11:59:25 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/01 10:56:23 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ t_process	*add_process(t_vec **list)
 	if ((*list)->len == (*list)->capacity)
 	{
 		new_capacity = (*list)->capacity * 2;
-		*list = realloc(*list, sizeof(t_vec) + new_capacity * sizeof(t_process));
+		*list = realloc(*list, sizeof(t_vec)
+				+ new_capacity * sizeof(t_process));
 		(*list)->capacity = new_capacity;
 	}
 	return ((*list)->processes + (*list)->len++);

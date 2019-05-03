@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 11:49:15 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/02 11:54:01 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,52 +19,59 @@ bool		lld(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		return (invalid(vm, process, ocp, 13));
 	if (!ft_get_value(param[0], ocp >> 6 & 0b11, process, vm))
 		return (invalid(vm, process, ocp, 13));
-	ft_memcpy(process->registre[param[1] - 1], process->tampon, REG_SIZE); //vm de zaz lit de deux 
+	ft_memcpy(process->registre[param[1] - 1], process->tampon, 2);
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P%5d | lld %D r%d\n", vm->c_pc, conv_bin_num(process->tampon, REG_SIZE), param[1]);
+		ft_putf_fd(vm->v_fd, "P%5d | lld %D r%d\n", vm->c_pc,
+				conv_bin_num(process->tampon, 2), param[1]);
 	if ((conv_bin_num(process->tampon, REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 13));
 	else
 		return (carry_down(vm, process, ocp, 13));
 }
 
-static void	print_a(t_vm *vm, uint8_t op1[REG_SIZE], uint8_t tampon[REG_SIZE], int32_t param)
+static void	print_a(t_vm *vm, uint8_t op1[REG_SIZE], uint8_t tampon[REG_SIZE],
+		int32_t param)
 {
-	ft_putf_fd(vm->v_fd, "P%5d | lldi %D %D r%D\n       | -> load from %d", vm->c_pc, conv_bin_num(op1, REG_SIZE), conv_bin_num(tampon, REG_SIZE), param, conv_bin_num(op1, REG_SIZE));
+	ft_putf_fd(vm->v_fd, "P%5d | lldi %D %D r%D\n       | -> load from %d",
+			vm->c_pc, conv_bin_num(op1, REG_SIZE), conv_bin_num(tampon,
+				REG_SIZE), param, conv_bin_num(op1, REG_SIZE));
 }
 
-static void	print_b(t_vm *vm, t_process *process, uint8_t adr[REG_SIZE], int64_t adress)
+static void	print_b(t_vm *vm, t_process *process, uint8_t adr[REG_SIZE],
+		int64_t adress)
 {
-	ft_putf_fd(vm->v_fd, " + %D = %D (with pc and mod %D)\n", conv_bin_num(process->tampon, REG_SIZE), conv_bin_num(adr, REG_SIZE), (process->offset + adress) % MEM_SIZE);
+	ft_putf_fd(vm->v_fd, " + %D = %D (with pc and mod %D)\n",
+			conv_bin_num(process->tampon, REG_SIZE), conv_bin_num(adr,
+				REG_SIZE), (process->offset + adress) % MEM_SIZE);
 }
 
 bool		lldi(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 {
 	uint8_t		op1[REG_SIZE];
 	uint8_t		adr[REG_SIZE];
-	int64_t	adress;
+	int64_t		adress;
 
 	if (param[2] > 16 || param[2] <= 0)
 		return (invalid(vm, process, ocp, 14));
-	if (!ft_get_value_mod(param[0], (ocp >> 6 & 0b11), process, vm)) //IDX MOD RAJOUTER ICI
+	if (!ft_get_value_mod(param[0], (ocp >> 6 & 0b11), process, vm))
 		return (invalid(vm, process, ocp, 14));
 	ft_memcpy(op1, process->tampon, REG_SIZE);
-	if (!ft_get_value(param[1], (ocp >> 4 & 0b11), process, vm))
+	if (!ft_get_value_mod(param[1], (ocp >> 4 & 0b11), process, vm))
 		return (invalid(vm, process, ocp, 14));
 	bin_add(op1, process->tampon, adr);
 	adress = (conv_bin_num(adr, REG_SIZE));
 	while ((process->offset + adress) < 0)
 		adress += MEM_SIZE;
-	mem_read(vm->mem, process->registre[param[2] - 1], (process->offset + adress) % MEM_SIZE, REG_SIZE);
+	mem_read(vm->mem, process->registre[param[2] - 1],
+			(process->offset + adress) % MEM_SIZE, REG_SIZE);
 	if (vm->flags.verbose)
-	{
 		print_a(vm, op1, process->tampon, param[2]);
+	if (vm->flags.verbose)
 		print_b(vm, process, adr, adress);
-	}
 	if ((conv_bin_num(process->registre[param[2] - 1], REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 14));
 	else
-		return(carry_down(vm, process, ocp, 14));
+		return (carry_down(vm, process, ocp, 14));
 }
 
 bool		lfork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
@@ -76,7 +83,10 @@ bool		lfork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	(void)ocp;
 	save = param[0];
 	while (param[0] + process->offset < 0)
+	{
+		printf("it was the case with the %ld process\n", vm->c_pc);
 		param[0] += MEM_SIZE;
+	}
 	index = (process - vm->vec->processes);
 	new_process = add_process(&vm->vec);
 	process = vm->vec->processes + index;
@@ -86,7 +96,8 @@ bool		lfork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	};
 	copy_process(new_process, process);
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P%5d | lfork %d (%d)\n", vm->c_pc, save, save + process->offset);
+		ft_putf_fd(vm->v_fd, "P%5d | lfork %d (%d)\n", vm->c_pc, save,
+				save + process->offset);
 	return (valid(vm, process, 0b11000000, 15));
 }
 

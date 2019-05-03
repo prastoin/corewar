@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 17:54:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 18:28:53 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/01 11:59:13 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,19 +126,21 @@ void		underline_error(t_write *err, t_span begin, t_span end, t_severity severit
 void	error_contxt_print(t_write *err, t_span begin, t_span end, t_severity severity) //TODO add norm + werror management
 {
 	const uint16_t	columns = get_columns(2);
-	size_t	fd;
-	size_t	len;
+	int	fd;
+	ssize_t	len;
 	size_t	i;
 	size_t	size;
 	char	buffer[4096];
 
 	i = 0;
 	fd = open(begin.file_name, O_RDONLY);
-	lseek(fd, begin.offset - begin.col + 1, SEEK_SET);
+	if (lseek(fd, begin.offset - begin.col + 1, SEEK_SET) == -1)
+		return ;
 	len = end.col + 100;
 	if (len > sizeof(buffer))
 		len = sizeof(buffer);
-	len = read(fd, buffer, len);
+	if ((len = read(fd, buffer, len)) == -1)
+		return ;
 	size = 6;
 	while (i < len  && buffer[i] != '\n' && size < columns - 1)
 	{

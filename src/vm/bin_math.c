@@ -6,13 +6,14 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 11:23:08 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/26 13:34:26 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/01 10:55:57 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-bool	bin_add(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE])
+bool	bin_add(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE],
+		uint8_t res[REG_SIZE])
 {
 	uint16_t			save;
 	ssize_t				i;
@@ -36,7 +37,8 @@ bool	bin_add(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]
 	return (!carry);
 }
 
-bool	bin_sub(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE])
+bool	bin_sub(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE],
+		uint8_t res[REG_SIZE])
 {
 	uint16_t			save;
 	ssize_t				i;
@@ -60,7 +62,8 @@ bool	bin_sub(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]
 	return (!carry);
 }
 
-void	bin_and(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE])
+void	bin_and(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE],
+		uint8_t res[REG_SIZE])
 {
 	size_t				i;
 
@@ -72,7 +75,8 @@ void	bin_and(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE]
 	}
 }
 
-void	bin_or(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE])
+void	bin_or(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE],
+		uint8_t res[REG_SIZE])
 {
 	size_t				i;
 
@@ -84,7 +88,8 @@ void	bin_or(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE])
 	}
 }
 
-void	bin_xor(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE], uint8_t res[REG_SIZE])
+void	bin_xor(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE],
+		uint8_t res[REG_SIZE])
 {
 	size_t				i;
 

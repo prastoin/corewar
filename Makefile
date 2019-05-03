@@ -6,12 +6,12 @@
 #    By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/15 10:32:31 by dde-jesu          #+#    #+#              #
-#    Updated: 2019/04/29 09:57:34 by prastoin         ###   ########.fr        #
+#    Updated: 2019/05/01 14:00:26 by fbecerri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude -g -fsanitize=address
+CFLAGS = -Wall -Wextra -Iinclude
 
 BUILD_DIR = build
 OBJS_DIR = $(BUILD_DIR)/objs
