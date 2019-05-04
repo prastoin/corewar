@@ -6,41 +6,53 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 14:19:25 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 18:36:38 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/04 13:36:38 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "asm.h"
 
-size_t		asm_resolve_label(t_hashtable **table, t_instruction *inst, t_write *out, t_read *in)
+t_entry	*asm_swap_off(t_instruction *inst, t_write *out, size_t i,
+		t_hashtable **table)
 {
-	size_t i;
-	size_t last_label;
 	t_entry *entry;
+
+	if ((entry = hashtable_get((*table), inst->params[i].offset.label)))
+	{
+		inst->params[i].offset.offset = entry->offset;
+		if (!entry->resolve)
+			entry->offset = out->nbr_write;
+		else
+			inst->params[i].offset.offset -= (ssize_t)out->nbr_write;
+	}
+	else
+	{
+		entry = insert_hashtable(table,
+				create_entry(inst->params[i].offset.label));
+		entry->resolve = false;
+		entry->offset = out->nbr_write;
+		inst->params[i].offset.offset = 0;
+	}
+	return (entry);
+}
+
+size_t	asm_resolve_label(t_hashtable **table, t_instruction *inst
+		, t_write *out, t_read *in)
+{
+	size_t	i;
+	size_t	last_label;
+	t_entry	*entry;
 
 	i = 0;
 	last_label = 0;
 	while (g_ops[inst->opcode].params[i])
 	{
-		in->begin = in->span;
-		if ((inst->params[i].type == PARAM_DIRECT || inst->params[i].type == PARAM_INDIRECT)
-				&& inst->params[i].offset.label) //comprends plus la derniere cdt
+		mark_span(in);
+		if ((inst->params[i].type == PARAM_DIRECT
+					|| inst->params[i].type == PARAM_INDIRECT)
+						&& inst->params[i].offset.label)
 		{
-			if ((entry = hashtable_get((*table), inst->params[i].offset.label)))
-			{
-				inst->params[i].offset.offset = entry->offset;
-				if (!entry->resolve)
-					entry->offset = out->nbr_write;
-				else
-					inst->params[i].offset.offset -= (ssize_t)out->nbr_write;
-			}
-			else
-			{
-				entry = insert_hashtable(table, create_entry(inst->params[i].offset.label));
-				entry->resolve = false;
-				entry->offset = out->nbr_write;
-				inst->params[i].offset.offset = 0;
-			}
+			entry = asm_swap_off(inst, out, i, table);
 			if (!entry->resolve)
 			{
 				if (last_label == 1)
@@ -54,7 +66,8 @@ size_t		asm_resolve_label(t_hashtable **table, t_instruction *inst, t_write *out
 	return (last_label);
 }
 
-void		asm_store_label(t_hashtable **table, char *label, t_write *out, t_read *in)
+void	asm_store_label(t_hashtable **table, char *label, t_write *out
+		, t_read *in)
 {
 	t_entry *entry;
 
@@ -77,7 +90,7 @@ void		asm_store_label(t_hashtable **table, char *label, t_write *out, t_read *in
 	}
 }
 
-void		asm_check_labels(t_hashtable *table, t_read *in)
+void	asm_check_labels(t_hashtable *table, t_read *in)
 {
 	size_t	i;
 

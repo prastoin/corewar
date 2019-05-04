@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 10:05:53 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 16:15:19 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/04 14:23:22 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,19 +72,4 @@ ssize_t		ft_strcmp(const char *s1, const char *s2)
 	while (str1[i] == str2[i] && str1[i] && str2[i])
 		i++;
 	return (str1[i] - str2[i]);
-}
-
-void	*ft_memcpy(void *dst, const void *src, size_t n)
-{
-	size_t	i;
-
-	i = 0;
-	if (n == 0)
-		return (dst);
-	while (i < n)
-	{
-		((char *)dst)[i] = ((char *)src)[i];
-		i++;
-	}
-	return (dst);
 }

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 10:07:00 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 16:24:37 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/04 14:22:05 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,6 @@ intmax_t	ft_atoi(char *str);
 void	ft_putf_va(int fd, char *fmt, va_list args, size_t padd);
 void		*ft_memcpy(void *dst, const void *src, size_t n);
 void		*ft_memset(void *s, int c, size_t n);
+void		*ft_memchr(const void *s, int c, size_t n);
 
 #endif

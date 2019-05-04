@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/20 13:58:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 17:31:12 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/04 15:22:01 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,31 +34,14 @@ t_entry			create_entry(char *key)
 	});
 }
 
-t_hashtable		*create_hashtable(size_t size)
-{
-	t_hashtable *hash;
-	size_t		i;
-
-	if (!(hash = malloc(sizeof(*hash) + size * sizeof(*hash->bucket))))
-		return (NULL);
-	i = 0;
-	while (i < size)
-	{
-		hash->bucket[i].key = NULL;
-		i++;
-	}
-	hash->size = size;
-	return (hash);
-}
-
-void			grow_hashtable(t_hashtable **old)
+bool			grow_hashtable(t_hashtable **old)
 {
 	t_hashtable	*table;
 	size_t		i;
 	t_entry		*entry;
 
-	// TODO error
-	table = create_hashtable((*old)->size * 2);
+	if (!(table = create_hashtable((*old)->size * 2)))
+		return (false);
 	i = 0;
 	while (i < (*old)->size)
 	{
@@ -69,13 +52,14 @@ void			grow_hashtable(t_hashtable **old)
 	}
 	free(*old);
 	*old = table;
+	return (true);
 }
 
-t_entry			*insert_hashtable(t_hashtable **table, t_entry entry)
+t_entry			*insert_hashtable(t_hashtable **table, t_entry entry) //TODO error management
 {
-	size_t	i;
-	size_t	j;
-	const t_entry *curr = (*table)->bucket;
+	size_t			i;
+	size_t			j;
+	const t_entry	*curr = (*table)->bucket;
 
 	j = 0;
 	i = entry.hash % (*table)->size;
@@ -90,18 +74,19 @@ t_entry			*insert_hashtable(t_hashtable **table, t_entry entry)
 	}
 	if (j == (*table)->size / 2)
 	{
-		grow_hashtable(table);
+		if (!grow_hashtable(table))
+			return (NULL);
 		return (insert_hashtable(table, entry));
 	}
 	(*table)->bucket[i % (*table)->size] = entry;
 	return ((*table)->bucket + (i % (*table)->size));
 }
 
-t_entry	*hashtable_get(t_hashtable *table, char *name)
+t_entry			*hashtable_get(t_hashtable *table, char *name)
 {
-	uint64_t	hash_name;
-	size_t		i;
-	size_t		j;
+	uint64_t		hash_name;
+	size_t			i;
+	size_t			j;
 	t_entry *const	curr = table->bucket;
 
 	hash_name = hash(name);

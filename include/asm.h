@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 18:28:12 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/04 15:43:25 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,18 +134,33 @@ void		bin_write_inst(t_write *out, t_instruction *inst, uint8_t last_label);
 void		bin_write_end(t_write *out);
 void		bin_resolve_label(t_write *out, size_t offset);
 bool		bin_write_header(t_header head, t_write *out);
+void	bin_padding_ocp(uint8_t ocp, t_write *out, int8_t *size,
+		uint8_t opcode);
 
 /*
 ** error
 */
+typedef struct	s_error
+{
+	t_span	*begin;
+	t_span	*end;
+	t_severity	*severity;
+}				t_error;
+
 void		print_error(t_read *in, t_severity severity, char *error, char *expected);
 int			print_small_error(t_read *in, t_severity severity, char *error, char *expected);
 void		mark_span(t_read *in);
+void		error_msg(t_write *err, char *error);
+void		error_severity(t_write *err, t_severity severity);
+uint16_t	get_columns(int fd);
+void	locate_error(t_write *err, t_span begin);
+void	error_contxt_print(t_write *err, t_error pack, size_t i);
 
 /*
 ** io
 */
 void		io_write(t_write *out, void *o_data, size_t size);
+void		io_write_number(t_write *w, uintmax_t n);
 void		io_write_one(t_write *out, char c);
 void		io_flush(t_write *out);
 void		io_write_int(t_write *out, uintmax_t nb, size_t nb_bytes);
@@ -158,7 +173,7 @@ int16_t		io_peek(t_read *rd);
 bool		io_skip(t_read *rd, char e);
 bool		io_skip_until(t_read *rd, char *chars);
 void		io_seek(t_write *out, ssize_t offset, bool set_cur);
-
+void		io_write_read(t_write *out, uint8_t *tmp, size_t size);
 /*
 ** Hashtable.c
 */

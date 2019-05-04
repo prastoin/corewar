@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/30 13:48:34 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 14:38:36 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/04 13:36:46 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	asm_comma_check(t_read *in, t_instruction *inst, size_t i)
 	}
 }
 
-bool		asm_read_params(t_read *in, t_instruction *inst)
+bool	asm_read_params(t_read *in, t_instruction *inst)
 {
 	size_t		i;
 	uint16_t	c;

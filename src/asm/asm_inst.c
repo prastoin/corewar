@@ -6,11 +6,51 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/30 13:50:49 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 15:03:01 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/04 13:30:34 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "asm.h"
+#include "ft_string.h"
+
+static bool	is_labelchar(char c)
+{
+	size_t	i;
+	size_t	len;
+	char	*str;
+
+	str = LABEL_CHARS;
+	len = ft_strlen(LABEL_CHARS);
+	i = 0;
+	while (i < len)
+	{
+		if (c == str[i])
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
+char		*asm_get_inst(t_read *in)
+{
+	size_t		len;
+	int16_t		c;
+	char		*str;
+
+	len = 0;
+	if (!(str = (char*)malloc(sizeof(char) * 1)))
+		return (NULL);
+	while ((c = io_peek(in)) != -1 && is_labelchar(c))
+	{
+		str[len] = c;
+		io_next(in);
+		len++;
+		if (!(str = realloc(str, sizeof(char) * (len + 1))))
+			return (NULL);
+	}
+	str[len] = '\0';
+	return (str);
+}
 
 bool		asm_read_inst(t_read *in, t_instruction *inst)
 {
@@ -21,7 +61,7 @@ bool		asm_read_inst(t_read *in, t_instruction *inst)
 	mark_span(in);
 	i = 0;
 	if (!(tmp = asm_get_inst(in)))
-		return (false);
+		return (ft_putf("Malloc failed\n"));
 	c = io_peek(in);
 	if (c == ':')
 	{
@@ -37,4 +77,3 @@ bool		asm_read_inst(t_read *in, t_instruction *inst)
 	}
 	return (true);
 }
-

@@ -1,26 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   string_3.c                                         :+:      :+:    :+:   */
+/*   hashtable_create.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/27 16:15:45 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 16:18:19 by prastoin         ###   ########.fr       */
+/*   Created: 2019/05/04 13:37:30 by prastoin          #+#    #+#             */
+/*   Updated: 2019/05/04 13:40:11 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_string.h"
+#include "asm.h"
 
-void		*ft_memset(void *s, int c, size_t n)
+t_hashtable		*create_hashtable(size_t size)
 {
-	size_t i;
+	t_hashtable *hash;
+	size_t		i;
 
+	if (!(hash = malloc(sizeof(*hash) + size * sizeof(*hash->bucket))))
+		return (NULL);
 	i = 0;
-	while (i < n)
+	while (i < size)
 	{
-		((char *)s)[i] = c;
+		hash->bucket[i].key = NULL;
 		i++;
 	}
-	return (s);
+	hash->size = size;
+	return (hash);
 }

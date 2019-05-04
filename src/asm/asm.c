@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 18:30:40 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/04 13:36:08 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,17 @@
 #include <fcntl.h>
 #include <limits.h>
 
+#define FIX_SIZE_ERR "Program too big (Exceed CHAMP_MAX_SIZE)"
+
 char		*change_ext(char *name)
 {
 	static char	file[PATH_MAX - 1];
 	char		*dot;
 
 	if (!(dot = ft_strrchr(name, '.')))
-		dot = name + ft_strlen(name);
+		return (NULL);
+	if (!*(dot + 1) || *(dot + 1) != 's')
+		return (NULL);
 	if ((dot - name + (sizeof(EXT) - 1)) > PATH_MAX)
 		return (NULL);
 	ft_memcpy(file, name, dot - name);
@@ -40,10 +44,11 @@ void		read_fixed(t_read *in, char *name)
 	out.fd = 0;
 	asm_transform(&out, in);
 	if (out.fd == -1)
-		print_small_error(in, ERR, "Program too big (Exceed CHAMP_MAX_SIZE)", 0);
+		print_small_error(in, ERR, FIX_SIZE_ERR, 0);
 	else if (in->write_able)
 	{
-		if ((out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) != -1)
+		if ((out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR))
+				!= -1)
 		{
 			write(out.fd, out.buffer, out.nbr_write);
 			close(out.fd);
@@ -63,7 +68,8 @@ void		read_streaming(t_read *in, char *name)
 	out.buffer_size = BUFFER_SIZE;
 	out.flushable = true;
 	out.buffer = buffer;
-	if ((out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) != -1)
+	if ((out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR))
+			!= -1)
 	{
 		asm_transform(&out, in);
 		close(out.fd);
