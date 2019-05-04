@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "common.h"
 #include "ft_string.h"
 #include "asm.h"
+#include <stdlib.h>
 
 static void	asm_free_write(t_write *out, t_read *in, t_hashtable *table)
 {

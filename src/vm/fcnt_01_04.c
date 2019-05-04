@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:22:08 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 16:28:29 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/01 11:37:27 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ bool		ld(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		return (invalid(vm, process, ocp, 2));
 	ft_memcpy(process->registre[param[1] - 1], process->tampon, REG_SIZE);
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P%5d | ld %D r%d\n", vm->c_pc, conv_bin_num(process->tampon, REG_SIZE), param[1]);
+		ft_putf_fd(vm->v_fd, "P%5d | ld %D r%d\n", vm->c_pc,
+				conv_bin_num(process->tampon, REG_SIZE), param[1]);
 	if ((conv_bin_num(process->tampon, REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 2));
 	else
@@ -64,9 +65,11 @@ bool		st(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 					process->registre[param[0] - 1], REG_SIZE);
 	}
 	else
-		mem_write(vm->mem, process->registre[param[0] - 1], (process->offset + (param[1] % IDX_MOD)), REG_SIZE);
+		mem_write(vm->mem, process->registre[param[0] - 1],
+				(process->offset + (param[1] % IDX_MOD)), REG_SIZE);
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P%5d | st r%d %d\n", vm->c_pc, param[0], param[1]);
+		ft_putf_fd(vm->v_fd, "P%5d | st r%d %d\n", vm->c_pc,
+				param[0], param[1]);
 	return (valid(vm, process, ocp, 3));
 }
 
@@ -83,7 +86,8 @@ bool		add(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		return (invalid(vm, process, ocp, 4));
 	bin_add(op1, process->tampon, process->registre[param[2] - 1]);
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P%5d | add r%d r%d r%d\n", vm->c_pc, param[0], param[1], param[2]);
+		ft_putf_fd(vm->v_fd, "P%5d | add r%d r%d r%d\n", vm->c_pc, param[0],
+				param[1], param[2]);
 	if ((conv_bin_num(process->registre[param[2] - 1], REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 4));
 	else

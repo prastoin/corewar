@@ -16,15 +16,15 @@
 t_write	init_write_error(void)
 {
 	t_write	err;
-	uint8_t	buffer[4096];
+	static uint8_t	buffer[4096];
 
 	err = (t_write){
-	.buffer = buffer,
-	.index = 0,
-	.nbr_write = 0,
-	.flushable = true,
-	.fd = 2,
-	.buffer_size = sizeof(buffer)
+		.buffer = buffer,
+		.index = 0,
+		.nbr_write = 0,
+		.flushable = true,
+		.fd = 2,
+		.buffer_size = sizeof(buffer)
 	};
 	return (err);
 }

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/05 13:47:57 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 18:00:20 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/02 11:01:28 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,15 +77,21 @@ bool	ft_pass(t_vm *vm, t_process *process)
 	uint8_t ocp;
 	int32_t params[4];
 
+	if (vm->cycle == 7321)
+		printf("process = %ld opcode = %d\n", vm->c_pc, process->actual_opcode);
 	process->has_read = false;
 	if (!(read_params_and_ocp(vm, process, params, &ocp)))
 	{
+		if (vm->cycle == 7321)
+			printf("has a bad ocp %.2x\n", ocp);
 		return (false);
 	}
 	process->cycle_to_do = 0;
 	g_fcnt[process->actual_opcode](vm, process, params, ocp);
 	return (true);
 }
+
+void	start_op(uint8_t op);
 
 bool	read_opcode(t_vm *game, t_process *process)
 {
@@ -95,10 +101,13 @@ bool	read_opcode(t_vm *game, t_process *process)
 	process->actual_opcode = stck[0];
 	if (process->actual_opcode <= 0 || process->actual_opcode > 16)
 	{
+		if (game->c_pc == 50)
+			printf("decale 1 cycle %ld mem %.2x offset %.4lx\n", game->cycle, game->mem[process->offset], process->offset);
 		process->offset = (process->offset + 1) % MEM_SIZE;
 		process->actual_opcode = 0;
 		return (false);
 	}
+	start_op(process->actual_opcode);
 	process->has_read = true;
 	process->cycle_to_do = g_ops[stck[0]].cycle - 1;
 	return (true);
