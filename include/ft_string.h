@@ -6,14 +6,15 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 10:07:00 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/27 16:24:37 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/04 13:37:26 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_STRING_H
 #define FT_STRING_H
 
-#include <stdlib.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <stdarg.h>
 

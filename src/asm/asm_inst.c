@@ -6,11 +6,12 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/30 13:50:49 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 15:03:01 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/04 13:55:29 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "asm.h"
+#include <stdlib.h>
 
 bool		asm_read_inst(t_read *in, t_instruction *inst)
 {

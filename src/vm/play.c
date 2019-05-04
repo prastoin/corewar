@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/01 20:19:14 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/04 14:50:20 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,25 +147,27 @@ bool	vm_cycle_to_die(t_vm *vm)
 	return (true);
 }
 
-void	david_needs_to_work(t_vm vm)
+#include <stdio.h>
+
+void	david_needs_to_work(t_vm *vm)
 {
 	ssize_t i;
 	t_process *process;
 
-	vm.continu = true;
-	while (vm.continu)
+	vm->continu = true;
+	while (vm->continu)
 	{
-		i = vm.vec->len - 1;
+		i = vm->vec->len - 1;
 		while (i >= 0)
 		{
-			process = vm.vec->processes + i;
+			process = vm->vec->processes + i;
 			if (process->is_alive)
 			{
 				if (process->cycle_to_do == 0 && process->has_read)
 				{
-					vm.c_pc = i + 1;
-					ft_pass(&vm, process);
-					process = vm.vec->processes + i;
+					vm->c_pc = i + 1;
+					ft_pass(vm, process);
+					process = vm->vec->processes + i;
 				}
 				if (process->cycle_to_do > 0)
 					process->cycle_to_do--;
@@ -173,42 +175,42 @@ void	david_needs_to_work(t_vm vm)
 			i--;
 		}
 		i = 0;
-		while ((size_t)i < vm.vec->len)
+		while ((size_t)i < vm->vec->len)
 		{
-			vm.c_pc = i + 1;
-			process = vm.vec->processes + i;
+			vm->c_pc = i + 1;
+			process = vm->vec->processes + i;
 			if (process->cycle_to_do == 0 && !process->has_read)
-				read_opcode(&vm, process);
+				read_opcode(vm, process);
 			i++;
 		}
-		if (vm.cycle == (uintmax_t)vm.flags.dump_c && !vm.flags.verbose)
+		if (vm->cycle == (uintmax_t)vm->flags.dump_c && !vm->flags.verbose)
 		{
 			i = 0;
 			while (i < MEM_SIZE)
 			{
-				fprintf(stderr, "%02x", vm.mem[i]);
+				fprintf(stderr, "%02x", vm->mem[i]);
 				i++;
 				if (i != MEM_SIZE)
 					fprintf(stderr, " ");
 			}
 			exit(0);
 		}
-		else if (vm.cycle == (uintmax_t)vm.flags.dump_c)
+		else if (vm->cycle == (uintmax_t)vm->flags.dump_c)
 		{
 			i = 0;
 			while (i < MEM_SIZE)
 			{
 				if (i % 64 == 0 && i != 0)
-					ft_putf_fd(vm.v_fd, "\n");
+					ft_putf_fd(vm->v_fd, "\n");
 				if (i % 64 == 0)
-					ft_putf_fd(vm.v_fd, "0x%4x : ", i);
-				ft_putf_fd(vm.v_fd, "%2x ", vm.mem[i]);
+					ft_putf_fd(vm->v_fd, "0x%4x : ", i);
+				ft_putf_fd(vm->v_fd, "%2x ", vm->mem[i]);
 				i++;
 			}
-			ft_putf_fd(vm.v_fd, "\n");
+			ft_putf_fd(vm->v_fd, "\n");
 			exit(0);
 		}
-		vm.continu = vm_cycle_to_die(&vm);
+		vm->continu = vm_cycle_to_die(vm);
 	}
 	return ;
 }
@@ -274,6 +276,6 @@ bool	ft_play(t_vm vm)
 	i = 0;
 	if (vm.flags.verbose)
 		affstart_verbose(vm);
-	david_needs_to_work(vm);
+	david_needs_to_work(&vm);
 	return (true);
 }

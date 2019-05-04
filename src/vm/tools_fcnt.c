@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 11:18:42 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/01 19:20:25 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/04 14:18:42 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ size_t		get_decale(uint8_t ocp, int opcode)
 	}
 	return (size);
 }
+
+#include <stdio.h>
 
 bool	carry_up(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 {

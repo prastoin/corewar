@@ -6,17 +6,17 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 11:30:59 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 16:36:39 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/04 13:47:51 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef COMMON_H
-#define COMMON_H
+# define COMMON_H
 
-# include <stdio.h>
 # include <unistd.h>
-# include <stdlib.h>
 # include <stdbool.h>
+# include <stddef.h>
+# include <stdint.h>
 
 # define MAX_PARAM 4
 # define MAX_PLAYERS 4
@@ -80,8 +80,8 @@ typedef struct	s_param_register {
 extern t_core_tab g_ops[17];
 
 /*
- * arg management
- */
+** arg management
+*/
 
 typedef enum	e_arg_type
 {

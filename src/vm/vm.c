@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 16:37:15 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/04 13:56:00 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 #include "ft_string.h"
 #include <fcntl.h>
 #include <limits.h>
+
+// TODO REMOVE
+#include <stdio.h>
 
 bool		insert_player(t_vm *vm, char *name, int n, bool flag)
 {

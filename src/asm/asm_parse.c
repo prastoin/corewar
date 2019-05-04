@@ -6,13 +6,13 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 12:46:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 18:32:21 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/04 13:55:14 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "common.h"
 #include "ft_string.h"
 #include "asm.h"
+#include <stdlib.h>
 
 bool	is_labelchar(char c)
 {
