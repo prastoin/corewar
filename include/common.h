@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 11:30:59 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/04 13:47:51 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/06 00:28:31 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,15 +100,19 @@ typedef	struct	s_arg
 	const char	*help;
 }				t_arg;
 
-int		show_err(int err, char *name, char *option, size_t len);
+int				show_err(int err, char *name, char *option, size_t len);
 
-int		ft_putf_fd(int fd, char *fmt, ...);
-int		ft_putf(char *fmt, ...);
+int				ft_putf_fd(int fd, char *fmt, ...);
+int				ft_putf(char *fmt, ...);
 
-int		args_usage(const t_arg args[], char *name, char *usage, char *desc);
-int		get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2]);
-bool	parse_long(const t_arg opt[], char **arg, char *argv[], size_t *i);
-bool	parse_short(const t_arg opt[], char **arg, char *argv[], size_t *i);
-ssize_t	parse_args(const t_arg args[], int argc, char *argv[]);
+int				args_usage(const t_arg args[], char *name, char *usage,
+		char *desc);
+int				get_value(char **c_arg, const t_arg *opt, char *argv[],
+		int i[2]);
+bool			parse_long(const t_arg opt[], char **arg, char *argv[],
+		size_t *i);
+bool			parse_short(const t_arg opt[], char **arg, char *argv[],
+		size_t *i);
+ssize_t			parse_args(const t_arg args[], int argc, char *argv[]);
 
 #endif

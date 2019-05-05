@@ -6,17 +6,17 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 10:07:00 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 00:21:53 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/06 00:32:31 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_STRING_H
-#define FT_STRING_H
+# define FT_STRING_H
 
-#include <stddef.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <stdarg.h>
+# include <stddef.h>
+# include <stdint.h>
+# include <unistd.h>
+# include <stdarg.h>
 
 # define BUFF_SIZE 4096
 # define CSI "\033["
@@ -37,13 +37,13 @@ char		*ft_strchr(const char *s, int c);
 char		*ft_strrchr(const char *s, int c);
 size_t		nb_len(uintmax_t n);
 intmax_t	ft_atoi(char *str);
-void	ft_putf_va(int fd, char *fmt, va_list args, size_t padd);
+void		ft_putf_va(int fd, char *fmt, va_list args, size_t padd);
 void		*ft_memcpy(void *dst, const void *src, size_t n);
 void		*ft_memset(void *s, int c, size_t n);
 void		*ft_memchr(const void *s, int c, size_t n);
 void		ft_putnbr_fd(size_t fd, intmax_t nb);
-void			handle_hexa(size_t fd, va_list args, size_t padd, char *flag);
-void			handle_dlu(size_t fd, va_list args, size_t padd, char *flag);
+void		handle_hexa(size_t fd, va_list args, size_t padd, char *flag);
+void		handle_dlu(size_t fd, va_list args, size_t padd, char *flag);
 void		char_fd(size_t fd, uint8_t c, size_t padd);
 void		str_hexa_fd(char *str, size_t fd, size_t padd);
 
