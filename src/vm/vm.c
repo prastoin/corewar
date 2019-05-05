@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 00:14:11 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 01:10:50 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,12 @@
 #include "ft_string.h"
 #include <fcntl.h>
 #include <limits.h>
-
-// TODO REMOVE
-#include <stdio.h>
+#define FLAG_N_MSG "Choose the number for a player"
+#define FLAG_D_MSG "Dump memory on 0 at N cycle"
+#define FLAG_R_MSG "On sait pas on parse"
+#define FLAG_B_MSG "Affichage binnaire"
+#define FLAG_C_MSG "Affichage Ncurse"
+#define FLAG_V_MSG "Enabled Verbose mode"
 
 bool		insert_player(t_vm *vm, char *name, int n, bool flag)
 {
@@ -60,7 +63,7 @@ static bool	is_empty(char *players[MAX_PLAYERS + 1])
 	return (true);
 }
 
-void	close_fd(t_vm *vm)
+void		close_fd(t_vm *vm)
 {
 	size_t i;
 	size_t fd;
@@ -77,7 +80,8 @@ void	close_fd(t_vm *vm)
 		close(vm->v_fd);
 }
 
-int		main_split(char *players[MAX_PLAYERS + 1], char *argv[], int argc, t_vm vm)
+int			main_split(char *players[MAX_PLAYERS + 1], char *argv[], int argc,
+		t_vm vm)
 {
 	size_t i;
 
@@ -104,32 +108,41 @@ int		main_split(char *players[MAX_PLAYERS + 1], char *argv[], int argc, t_vm vm)
 	return (0);
 }
 
-int main(int argc, char *argv[])
+t_vm		init_vm(void)
+{
+	t_vm vm;
+
+	return (
+			vm = (t_vm) {
+		.cycle_to_die = CYCLE_TO_DIE,
+		.flags = {
+			.dump_c = 0
+		}
+	});
+}
+
+int			main(int argc, char *argv[])
 {
 	t_vm		vm;
 	ssize_t		ret;
 	char		*players[MAX_PLAYERS + 1];
 	const t_arg args[] = {
-		{ARG_PLAYERS, 'n', "number", &players, "Choose the number for a player"},
-		{ARG_INT, 'd', "dump", &vm.flags.dump_c, "Dump memory on 0 at N cycle"},
-		{ARG_INT, 'r', "run", &vm.flags.run_c, "On sait pas on parse"},
-		{ARG_BOOLEAN, 'b', "bin_aff", &vm.flags.bin_o, "Affichage binnaire"},
-		{ARG_BOOLEAN, 'c', "ncurse_aff", &vm.flags.ncurse_o, "Affichage Ncurse"},
-		{ARG_BOOLEAN, 'v', "verbose", &vm.flags.verbose, "Enabled Verbose mode"},
+		{ARG_PLAYERS, 'n', "number", &players, FLAG_N_MSG},
+		{ARG_INT, 'd', "dump", &vm.flags.dump_c, FLAG_D_MSG},
+		{ARG_INT, 'r', "run", &vm.flags.run_c, FLAG_R_MSG},
+		{ARG_BOOLEAN, 'b', "bin_aff", &vm.flags.bin_o, FLAG_B_MSG},
+		{ARG_BOOLEAN, 'c', "ncurse_aff", &vm.flags.ncurse_o, FLAG_C_MSG},
+		{ARG_BOOLEAN, 'v', "verbose", &vm.flags.verbose, FLAG_V_MSG},
 		{ARG_END, 0, 0, 0, 0}
 	};
 
-	vm = (t_vm) {
-		.cycle_to_die = CYCLE_TO_DIE,
-		.flags = {
-			.dump_c = 0
-		}
-	};
+	vm = init_vm();
 	ft_memset(players, 0, sizeof(players));
 	if ((ret = parse_args(args, argc, argv)) < 0
 			|| (is_empty(players) && argc == ret))
 		return (args_usage(args, argv[0], "source_file", "Launch corewar vm"));
 	if (vm.flags.verbose == true)
-		vm.v_fd = open("verbose", O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+		vm.v_fd = open("verbose", O_RDWR | O_CREAT | O_TRUNC,
+				S_IRUSR | S_IWUSR);
 	return (main_split(players, argv + ret, argc - ret, vm));
 }

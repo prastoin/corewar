@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 11:18:42 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/04 14:18:42 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/06 01:05:19 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #define IND_T 0b11
 #define DIR_T 0b10
 
-size_t		get_decale(uint8_t ocp, int opcode)
+size_t	get_decale(uint8_t ocp, int opcode)
 {
 	size_t size;
 	size_t type;
@@ -38,8 +38,6 @@ size_t		get_decale(uint8_t ocp, int opcode)
 	return (size);
 }
 
-#include <stdio.h>
-
 bool	carry_up(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 {
 	size_t decale;
@@ -50,19 +48,17 @@ bool	carry_up(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 	decale = get_decale(ocp, opcode);
 	if (vm->flags.verbose)
 	{
-		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale, process->offset, ((process->offset + decale)));
+		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale,
+				process->offset, ((process->offset + decale)));
 		while (i < decale)
 		{
-			ft_putf_fd(vm->v_fd, "%2x ", vm->mem[(process->offset + i) % MEM_SIZE]);
+			ft_putf_fd(vm->v_fd, "%2x ", vm->mem[(process->offset + i)
+					% MEM_SIZE]);
 			i++;
 		}
 		ft_putf_fd(vm->v_fd, "\n");
 	}
-	if (vm->c_pc == 50)
-		printf("offset %ld cycle %ld\n", process->offset, vm->cycle);
 	process->offset = (process->offset + decale) % MEM_SIZE;
-	if (vm->c_pc == 50)
-		printf("offset %ld should have decale %ld\n", process->offset, decale);
 	return (true);
 }
 
@@ -76,19 +72,17 @@ bool	carry_down(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 	process->carry = false;
 	if (vm->flags.verbose)
 	{
-		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale, process->offset, ((process->offset + decale)));
+		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale,
+				process->offset, ((process->offset + decale)));
 		while (i < decale)
 		{
-			ft_putf_fd(vm->v_fd, "%2x ", vm->mem[(process->offset + i) % MEM_SIZE]);
+			ft_putf_fd(vm->v_fd, "%2x ", vm->mem[(process->offset + i)
+					% MEM_SIZE]);
 			i++;
 		}
-		dprintf(vm->v_fd, "\n");
+		ft_putf_fd(vm->v_fd, "\n");
 	}
-	if (vm->c_pc == 50)
-		printf("offset %ld cycle %ld\n", process->offset, vm->cycle);
 	process->offset = (process->offset + decale) % MEM_SIZE;
-	if (vm->c_pc == 50)
-		printf("offset %ld should have decale %ld\n", process->offset, decale);
 	return (false);
 }
 
@@ -101,10 +95,12 @@ bool	invalid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 	decale = get_decale(ocp, opcode);
 	if (vm->flags.verbose)
 	{
-		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale, process->offset, ((process->offset + decale)));
+		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale,
+				process->offset, ((process->offset + decale)));
 		while (i < decale)
 		{
-			ft_putf_fd (vm->v_fd, "%2x ", vm->mem[(process->offset + i) % MEM_SIZE]);
+			ft_putf_fd(vm->v_fd, "%2x ",
+					vm->mem[(process->offset + i) % MEM_SIZE]);
 			i++;
 		}
 		ft_putf_fd(vm->v_fd, "\n");
@@ -126,10 +122,12 @@ bool	valid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 	decale = get_decale(ocp, opcode);
 	if (vm->flags.verbose)
 	{
-		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale, process->offset, ((process->offset + decale)));
+		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale,
+				process->offset, ((process->offset + decale)));
 		while (i < decale)
 		{
-			ft_putf_fd(vm->v_fd, "%2x ", vm->mem[(process->offset + i) % MEM_SIZE]);
+			ft_putf_fd(vm->v_fd, "%2x ",
+					vm->mem[(process->offset + i) % MEM_SIZE]);
 			i++;
 		}
 		dprintf(vm->v_fd, "\n");
