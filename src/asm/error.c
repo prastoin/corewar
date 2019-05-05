@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 17:54:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/04 15:18:54 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/05 23:03:27 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,15 @@
 t_write	init_write_error(void)
 {
 	t_write	err;
-	static uint8_t	buffer[4096];
+	uint8_t	buffer[4096];
 
 	err = (t_write){
-		.buffer = buffer,
-		.index = 0,
-		.nbr_write = 0,
-		.flushable = true,
-		.fd = 2,
-		.buffer_size = sizeof(buffer)
+	.buffer = buffer,
+	.index = 0,
+	.nbr_write = 0,
+	.flushable = true,
+	.fd = 2,
+	.buffer_size = sizeof(buffer)
 	};
 	return (err);
 }

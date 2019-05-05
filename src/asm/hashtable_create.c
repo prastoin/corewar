@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "asm.h"
-#include <stdlib.h>
 
 t_hashtable		*create_hashtable(size_t size)
 {

@@ -1,5 +1,7 @@
 #include "vm.h"
 
+export const uint32_t	VM_MEM_SIZE = MEM_SIZE;
+
 export t_vm				*create_vm()
 {
 	static t_vm	vm;
@@ -17,11 +19,6 @@ export t_vm				*create_vm()
 export uint8_t			*get_vm_mem(t_vm *vm)
 {
 	return vm->mem;
-}
-
-export size_t			get_vm_mem_size()
-{
-	return MEM_SIZE;
 }
 
 export t_vec			**get_vm_vec(t_vm *vm)
