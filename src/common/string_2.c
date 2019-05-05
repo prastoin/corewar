@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 15:36:59 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/04 14:23:23 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/06 00:23:40 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ ssize_t		ft_strncmp(uint8_t *s1, char *str, size_t n)
 	i = 0;
 	while (i < n)
 	{
-		if (str[i] -  s1[i] != 0)
+		if (str[i] - s1[i] != 0)
 			return (str[i] - s1[i]);
 		if (str[i] == '\0' && s1[i] == '\n')
 			return (0);
@@ -28,7 +28,7 @@ ssize_t		ft_strncmp(uint8_t *s1, char *str, size_t n)
 	return (0);
 }
 
-size_t	ft_strlen(const char *str)
+size_t		ft_strlen(const char *str)
 {
 	size_t	i;
 

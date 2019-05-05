@@ -6,13 +6,13 @@
 /*   By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/08 15:31:33 by dde-jesu          #+#    #+#             */
-/*   Updated: 2019/04/30 10:48:37 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/06 00:21:06 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_string.h"
 
-static void		char_fd(size_t fd, uint8_t c, size_t padd)
+void			char_fd(size_t fd, uint8_t c, size_t padd)
 {
 	size_t	i;
 	char	sp;
@@ -43,7 +43,7 @@ static void		str_fd(char *str, size_t fd, size_t padd)
 		write(fd, str + i, 1);
 }
 
-static void		str_hexa_fd(char *str, size_t fd, size_t padd)
+void			str_hexa_fd(char *str, size_t fd, size_t padd)
 {
 	ssize_t i;
 
@@ -61,7 +61,7 @@ static void		str_hexa_fd(char *str, size_t fd, size_t padd)
 		write(fd, str + i, 1);
 }
 
-void		ft_putnbr_fd(size_t fd, intmax_t nb)
+void			ft_putnbr_fd(size_t fd, intmax_t nb)
 {
 	if (nb < 0)
 	{
@@ -77,57 +77,7 @@ void		ft_putnbr_fd(size_t fd, intmax_t nb)
 		char_fd(fd, nb + '0', 0);
 }
 
-void	ft_putnbr_hexa_fd(uintmax_t nb, size_t fd, size_t padd)
-{
-	const char	*base = "0123456789abcdef";
-	uintmax_t	tmp;
-	size_t		i;
-	char		str[11];
-
-	tmp = nb;
-	i = 1;
-	while (tmp /= 16)
-		i++;
-	str[i] = '\0';
-	while (i--)
-	{
-		str[i] = base[nb % 16];
-		nb /= 16;
-	}
-	str_hexa_fd(str, fd, padd);
-}
-
-void	handle_hexa(size_t fd, va_list args, size_t padd, char *flag)
-{
-	uintmax_t	nb;
-
-	if (*flag == 'x')
-		nb = va_arg(args, uint32_t);
-	else
-		nb = va_arg(args, uint64_t);
-	ft_putnbr_hexa_fd(nb, fd, padd);
-}
-
-void	handle_dlu(size_t fd, va_list args, size_t padd, char *flag)
-{
-	intmax_t	nb;
-
-	if (*flag == 'd')
-		nb = va_arg(args, int32_t);
-	else if (*flag == 'u')
-		nb = va_arg(args, uint32_t);
-	else if (*flag == 'D')
-		nb = va_arg(args, int64_t);
-	else if (*flag == 'U')
-		nb = va_arg(args, uint64_t);
-	else
-		return ;
-	while (padd && padd-- > (nb < 0 ? nb_len(nb) + 1 : nb_len(nb)))
-		char_fd(fd, ' ', 0);
-	ft_putnbr_fd(fd, nb);
-}
-
-void	ft_putf_va(int fd, char *fmt, va_list args, size_t padd)
+void			ft_putf_va(int fd, char *fmt, va_list args, size_t padd)
 {
 	char		*l_fmt;
 
@@ -135,7 +85,7 @@ void	ft_putf_va(int fd, char *fmt, va_list args, size_t padd)
 	while ((fmt = ft_strchr(fmt, '%')) && *++fmt)
 	{
 		padd = 0;
-		write(fd, l_fmt, fmt - l_fmt - 1); //??
+		write(fd, l_fmt, fmt - l_fmt - 1);
 		if (*fmt >= '0' && *fmt <= '9')
 		{
 			padd = ft_atoi(fmt);

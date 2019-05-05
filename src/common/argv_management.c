@@ -6,18 +6,32 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 14:51:06 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 11:06:40 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/06 00:14:04 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "common.h"
 #include "ft_string.h"
 
-int		get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2])
+static int	args_players(const t_arg *opt, char *value, char *argv[], int i[2])
+{
+	int		player;
+
+	if (!(value = argv[++i[0]]))
+		return (NO_ARG);
+	player = ft_atoi(value);
+	if (!(value = argv[++i[0]]))
+		return (NO_ARG);
+	if (player > 0 && player <= MAX_PLAYERS)
+		((char **)opt->value)[player] = value;
+	else
+		return (INVALID_VALUE);
+}
+
+int			get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2])
 {
 	char	*arg;
 	char	*value;
-	int		player;
 
 	arg = *c_arg + i[1];
 	if (opt->type == ARG_BOOLEAN)
@@ -37,21 +51,11 @@ int		get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2])
 		*(int *)opt->value = ft_atoi(value);
 	}
 	else if (opt->type == ARG_PLAYERS)
-	{
-		if (!(value = argv[++i[0]]))
-			return (NO_ARG);
-		player = ft_atoi(value);
-		if (!(value = argv[++i[0]]))
-			return (NO_ARG);
-		if (player > 0 && player <= MAX_PLAYERS)
-			((char **)opt->value)[player] = value;
-		else
-			return (INVALID_VALUE);
-	}
+		return (args_players(opt, value, argv, i));
 	return (0);
 }
 
-bool	parse_long(const t_arg opt[], char **arg, char *argv[], size_t *i)
+bool		parse_long(const t_arg opt[], char **arg, char *argv[], size_t *i)
 {
 	size_t	len;
 	char	*res;
@@ -77,7 +81,7 @@ bool	parse_long(const t_arg opt[], char **arg, char *argv[], size_t *i)
 	return (show_err(UNKNOWN_OPTION, argv[0], *arg, ft_strlen(*arg)));
 }
 
-bool	parse_short(const t_arg opt[], char **arg, char *argv[], size_t *i)
+bool		parse_short(const t_arg opt[], char **arg, char *argv[], size_t *i)
 {
 	int		indexes[2];
 	int		err;

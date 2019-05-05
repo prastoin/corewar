@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 10:05:53 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/04 14:23:22 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/06 00:23:57 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ intmax_t	ft_atoi(char *str)
 	return (res * neg);
 }
 
-size_t	nb_len(uintmax_t n)
+size_t		nb_len(uintmax_t n)
 {
 	size_t	len;
 

@@ -6,11 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 10:07:00 by prastoin          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2019/05/04 14:22:05 by prastoin         ###   ########.fr       */
-=======
-/*   Updated: 2019/05/04 13:37:26 by dde-jesu         ###   ########.fr       */
->>>>>>> 2fa88c80f06457d1c618f9af9ef0c3b6d390abfd
+/*   Updated: 2019/05/06 00:21:53 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +41,10 @@ void	ft_putf_va(int fd, char *fmt, va_list args, size_t padd);
 void		*ft_memcpy(void *dst, const void *src, size_t n);
 void		*ft_memset(void *s, int c, size_t n);
 void		*ft_memchr(const void *s, int c, size_t n);
+void		ft_putnbr_fd(size_t fd, intmax_t nb);
+void			handle_hexa(size_t fd, va_list args, size_t padd, char *flag);
+void			handle_dlu(size_t fd, va_list args, size_t padd, char *flag);
+void		char_fd(size_t fd, uint8_t c, size_t padd);
+void		str_hexa_fd(char *str, size_t fd, size_t padd);
 
 #endif

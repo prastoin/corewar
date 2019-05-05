@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 15:39:21 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/04 13:27:59 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/05 23:59:05 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	ft_putf(char *fmt, ...)
 	return (0);
 }
 
-int		ft_putf_fd(int fd, char *fmt, ...)
+int	ft_putf_fd(int fd, char *fmt, ...)
 {
 	va_list	args;
 	size_t	padd;
@@ -36,11 +36,3 @@ int		ft_putf_fd(int fd, char *fmt, ...)
 	va_end(args);
 	return (0);
 }
-
-/*
-int main(int argc, const char *argv[])
-{
-	ft_putf_fd(1, "test1 = %2x, test2 = %4x\n", 454, 785);
-	dprintf(1, "test1 = %2x, test2 = %4x", 454, 785);
-	return 0;
-}*/

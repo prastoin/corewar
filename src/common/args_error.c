@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 12:36:57 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/29 11:06:04 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/05 23:58:26 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,9 @@ int	show_err(int err, char *name, char *option, size_t len)
 	return (1);
 }
 
-int		args_usage(const t_arg args[], char *name, char *usage, char *desc)
+int	args_usage(const t_arg args[], char *name, char *usge, char *desc)
 {
-	ft_putf_fd(1, "Usage: %s [options] %s\n%s\n\nOptions:\n", name, usage, desc);
+	ft_putf_fd(1, "Usage: %s [options] %s\n%s\n\nOptions:\n", name, usge, desc);
 	while (args->type != ARG_END)
 	{
 		if (args->short_name && args->long_name)
