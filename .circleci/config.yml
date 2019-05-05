@@ -1,0 +1,15 @@
+version: 2.1
+executors:
+  nix:
+    docker:
+      - image: nixorg/nix:circleci
+jobs:
+  build:
+    executor: nix
+    working_directory: ~/corewar
+    steps:
+      - run: nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs
+      - run: nix-channel --update
+      - checkout
+      - run: nix-shell --pure -p clang_8.cc lld_8 binaryen --run "make CC=clang vm.wasm"
+      - run: .circleci/publish.sh
