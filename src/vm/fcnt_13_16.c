@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/02 11:54:01 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 00:15:38 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void	print_a(t_vm *vm, uint8_t op1[REG_SIZE], uint8_t tampon[REG_SIZE],
 static void	print_b(t_vm *vm, t_process *process, uint8_t adr[REG_SIZE],
 		int64_t adress)
 {
-	ft_putf_fd(vm->v_fd, " + %D = %D (with pc and mod %D)\n",
+	ft_putf_fd(vm->v_fd, " + %D = %D (with pc %D)\n",
 			conv_bin_num(process->tampon, REG_SIZE), conv_bin_num(adr,
 				REG_SIZE), (process->offset + adress) % MEM_SIZE);
 }

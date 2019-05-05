@@ -6,13 +6,14 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/05 13:47:57 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/02 11:01:28 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/05 23:56:07 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-void	get_params_ocp(t_vm *vm, t_process *process, uint8_t ocp, int32_t params[])
+void	get_params_ocp(t_vm *vm, t_process *process, uint8_t ocp,
+		int32_t params[])
 {
 	const int	opcode = process->actual_opcode;
 	size_t		i;
@@ -25,11 +26,11 @@ void	get_params_ocp(t_vm *vm, t_process *process, uint8_t ocp, int32_t params[])
 	tmp = 2;
 	while (g_ops[opcode].params[i])
 	{
-		if ((ocp >> ((3 - i) *  2) & 0b11) == 0b01)
+		if ((ocp >> ((3 - i) * 2) & 0b11) == 0b01)
 			size = 1;
-		else if ((ocp >> ((3 - i) *  2) & 0b11) == 0b10)
+		else if ((ocp >> ((3 - i) * 2) & 0b11) == 0b10)
 			size = g_ops[opcode].params[i] & PARAM_INDEX ? 2 : 4;
-		else if ((ocp >> ((3 - i) *  2) & 0b11) == 0b11)
+		else if ((ocp >> ((3 - i) * 2) & 0b11) == 0b11)
 			size = 2;
 		mem_read(vm->mem, stck, process->offset + tmp, size);
 		params[i] = conv_bin_num(stck, size);
@@ -38,7 +39,8 @@ void	get_params_ocp(t_vm *vm, t_process *process, uint8_t ocp, int32_t params[])
 	}
 }
 
-void	get_params_no_ocp(t_vm *vm, t_process *process, size_t opcode, int32_t params[])
+void	get_params_no_ocp(t_vm *vm, t_process *process, size_t opcode,
+		int32_t params[])
 {
 	size_t	size;
 	uint8_t	stck[4];
@@ -54,7 +56,8 @@ void	get_params_no_ocp(t_vm *vm, t_process *process, size_t opcode, int32_t para
 	params[0] = conv_bin_num(stck, size);
 }
 
-bool	read_params_and_ocp(t_vm *vm, t_process *process, int32_t params[4], uint8_t *ocp)
+bool	read_params_and_ocp(t_vm *vm, t_process *process, int32_t params[4],
+		uint8_t *ocp)
 {
 	const int	opcode = process->actual_opcode;
 	uint8_t		tampom[1];
@@ -77,15 +80,9 @@ bool	ft_pass(t_vm *vm, t_process *process)
 	uint8_t ocp;
 	int32_t params[4];
 
-	if (vm->cycle == 7321)
-		printf("process = %ld opcode = %d\n", vm->c_pc, process->actual_opcode);
 	process->has_read = false;
 	if (!(read_params_and_ocp(vm, process, params, &ocp)))
-	{
-		if (vm->cycle == 7321)
-			printf("has a bad ocp %.2x\n", ocp);
 		return (false);
-	}
 	process->cycle_to_do = 0;
 	g_fcnt[process->actual_opcode](vm, process, params, ocp);
 	return (true);
@@ -99,8 +96,6 @@ bool	read_opcode(t_vm *game, t_process *process)
 	process->actual_opcode = stck[0];
 	if (process->actual_opcode <= 0 || process->actual_opcode > 16)
 	{
-		if (game->c_pc == 50)
-			printf("decale 1 cycle %ld mem %.2x offset %.4lx\n", game->cycle, game->mem[process->offset], process->offset);
 		process->offset = (process->offset + 1) % MEM_SIZE;
 		process->actual_opcode = 0;
 		return (false);

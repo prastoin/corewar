@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 15:21:34 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/02 11:49:39 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/05 23:53:51 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,28 +36,23 @@ bool		ft_check_ocp(uint8_t ocp, uint8_t opcode)
 	{
 		type = (ocp >> (3 - i) * 2) & 0b11;
 		if (type == 0b11)
-		{
 			if (!(g_ops[opcode].params[i] & 0b10))
 				return (false);
-		}
-		else if (type == 0b10)
-		{
+		if (type == 0b10)
 			if (!(g_ops[opcode].params[i] & 0b1))
 				return (false);
-		}
-		else if (type == 0b01)
-		{
+		if (type == 0b01)
 			if (!(g_ops[opcode].params[i] & 0b100))
 				return (false);
-		}
-		else
+		if (type == 0b00)
 			return (false);
 		i++;
 	}
 	return (true);
 }
 
-bool		ft_get_value(ssize_t nbr, uint8_t type, t_process *process, t_vm *vm)
+bool		ft_get_value(ssize_t nbr, uint8_t type, t_process *process,
+		t_vm *vm)
 {
 	if (type == OCP_REG)
 	{
@@ -69,16 +64,15 @@ bool		ft_get_value(ssize_t nbr, uint8_t type, t_process *process, t_vm *vm)
 	else if (type == OCP_DIR)
 		conv_int_to_bin(nbr, process->tampon);
 	else if (type == OCP_IND)
-	{
-		mem_read(vm->mem, process->tampon, (process->offset + nbr) % MEM_SIZE, 2);
-		printf("read no mod %.2x %.2x %.2x %.2x\n", process->tampon[0], process->tampon[1], process->tampon[2], process->tampon[3]);
-	}
+		mem_read(vm->mem, process->tampon, (process->offset + nbr)
+				% MEM_SIZE, 2);
 	else
 		return (false);
 	return (true);
 }
 
-bool		ft_get_value_mod(ssize_t nbr, uint8_t type, t_process *process, t_vm *vm)
+bool		ft_get_value_mod(ssize_t nbr, uint8_t type, t_process *process,
+		t_vm *vm)
 {
 	if (type == OCP_REG)
 	{
@@ -90,10 +84,8 @@ bool		ft_get_value_mod(ssize_t nbr, uint8_t type, t_process *process, t_vm *vm)
 	else if (type == OCP_DIR)
 		conv_int_to_bin(nbr, process->tampon);
 	else if (type == OCP_IND)
-	{
-		mem_read(vm->mem, process->tampon, (process->offset + nbr % IDX_MOD) % MEM_SIZE, 4);
-		printf("read mod %.2x %.2x %.2x %.2x\n", process->tampon[0], process->tampon[1], process->tampon[2], process->tampon[3]);
-	}
+		mem_read(vm->mem, process->tampon, (process->offset + nbr % IDX_MOD)
+				% MEM_SIZE, 4);
 	else
 		return (false);
 	return (true);

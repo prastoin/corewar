@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/04 13:56:00 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/06 00:14:11 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ bool		insert_player(t_vm *vm, char *name, int n, bool flag)
 			player[n - 1] = true;
 		vm->champ[n - 1].fd = fd;
 		vm->nbr_champ++;
+		vm->live[n - 1] = true;
 	}
 	return (true);
 }
@@ -85,7 +86,6 @@ int		main_split(char *players[MAX_PLAYERS + 1], char *argv[], int argc, t_vm vm)
 		return (false);
 	else if (vm.flags.dump_c == 0)
 		vm.flags.dump_c = -1;
-	printf("TOUT est ok \n");
 	while (i < MAX_PLAYERS)
 	{
 		if (!insert_player(&vm, players[i], i, true))
@@ -100,12 +100,7 @@ int		main_split(char *players[MAX_PLAYERS + 1], char *argv[], int argc, t_vm vm)
 		i++;
 	}
 	if (vm.nbr_champ > 0 && vm.nbr_champ <= MAX_PLAYERS)
-	{
-		i = 0;
-		while (i < MAX_PLAYERS)
-			vm.live[i++] = true;
 		ft_play(vm);
-	}
 	return (0);
 }
 
