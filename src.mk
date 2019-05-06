@@ -1,4 +1,3 @@
-SRCS += ft_putf.c
 SRCS += src/asm/asm.c
 SRCS += src/asm/asm_header.c
 SRCS += src/asm/asm_inst.c
@@ -22,6 +21,7 @@ SRCS += src/common/args_error.c
 SRCS += src/common/argv_management.c
 SRCS += src/common/ft_putf.c
 SRCS += src/common/ft_putf_2.c
+SRCS += src/common/ft_putf_handle.c
 SRCS += src/common/mem.c
 SRCS += src/common/op.c
 SRCS += src/common/string.c

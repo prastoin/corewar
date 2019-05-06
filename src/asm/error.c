@@ -6,25 +6,24 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 17:54:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/05 23:03:27 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/06 10:27:01 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_string.h"
 #include "asm.h"
 
-t_write	init_write_error(void)
+t_write	init_write_error(uint8_t *buffer, size_t size)
 {
 	t_write	err;
-	uint8_t	buffer[4096];
 
 	err = (t_write){
-	.buffer = buffer,
-	.index = 0,
-	.nbr_write = 0,
-	.flushable = true,
-	.fd = 2,
-	.buffer_size = sizeof(buffer)
+		.buffer = buffer,
+		.index = 0,
+		.nbr_write = 0,
+		.flushable = true,
+		.fd = 2,
+		.buffer_size = size
 	};
 	return (err);
 }
@@ -33,8 +32,9 @@ int		print_small_error(t_read *in, t_severity severity, char *error
 		, char *expected)
 {
 	t_write	err;
+	uint8_t	buffer[4096];
 
-	err = init_write_error();
+	err = init_write_error(buffer, sizeof(buffer));
 	if (severity == ERR || in->werror)
 	{
 		severity = ERR;
@@ -57,8 +57,9 @@ void	print_error(t_read *in, t_severity severity, char *erro, char *expected)
 {
 	size_t	i;
 	t_write	err;
+	uint8_t	buffer[4096];
 
-	err = init_write_error();
+	err = init_write_error(buffer, sizeof(buffer));
 	i = 0;
 	if (severity == ERR || in->werror)
 	{

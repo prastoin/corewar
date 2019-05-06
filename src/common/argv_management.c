@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 14:51:06 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 00:14:04 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/06 10:28:18 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,10 @@ static int	args_players(const t_arg *opt, char *value, char *argv[], int i[2])
 	if (!(value = argv[++i[0]]))
 		return (NO_ARG);
 	if (player > 0 && player <= MAX_PLAYERS)
+	{
 		((char **)opt->value)[player] = value;
+		return (0);
+	}
 	else
 		return (INVALID_VALUE);
 }
@@ -34,11 +37,11 @@ int			get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2])
 	char	*value;
 
 	arg = *c_arg + i[1];
+	value = NULL;
 	if (opt->type == ARG_BOOLEAN)
 		*(bool *)opt->value = true;
 	else if (opt->type == ARG_INT)
 	{
-		value = NULL;
 		if (*arg == '=')
 		{
 			value = arg + 1;
