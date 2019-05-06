@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 01:33:28 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 11:05:14 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,6 @@ int			main_split(char *players[MAX_PLAYERS + 1], char *argv[], int argc,
 	size_t i;
 
 	i = 0;
-	if (vm.flags.dump_c < 0)
-		return (false);
-	else if (vm.flags.dump_c == 0)
-		vm.flags.dump_c = -1;
 	while (i < MAX_PLAYERS)
 	{
 		if (!insert_player(&vm, players[i], i, true))
@@ -96,11 +92,11 @@ t_vm		init_vm(void)
 	t_vm vm;
 
 	return (
-			vm = (t_vm) {
-		.cycle_to_die = CYCLE_TO_DIE,
-		.flags = {
-			.dump_c = 0
-		}
+		vm = (t_vm) {
+			.cycle_to_die = CYCLE_TO_DIE,
+			.flags = {
+				.dump_c = -1
+			}
 	});
 }
 

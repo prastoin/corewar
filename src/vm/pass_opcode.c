@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/05 13:47:57 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/05 23:56:07 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 11:26:15 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,6 @@ bool	read_opcode(t_vm *game, t_process *process)
 		return (false);
 	}
 	process->has_read = true;
-	process->cycle_to_do = g_ops[stck[0]].cycle - 1;
+	process->cycle_to_do = g_ops[stck[0]].cycle;
 	return (true);
 }

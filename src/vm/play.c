@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 10:39:37 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/06 11:30:11 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,15 @@ void		exec_process(t_vm *vm)
 		process = vm->vec->processes + i;
 		if (process->is_alive)
 		{
-			if (process->cycle_to_do == 0 && process->has_read)
+			if (process->cycle_to_do == 0)
 			{
-				vm->c_pc = i + 1;
-				ft_pass(vm, process);
-				process = vm->vec->processes + i;
+				if (process->has_read)
+				{
+					vm->c_pc = i + 1;
+					ft_pass(vm, process);
+					process = vm->vec->processes + i;
+				}
+				read_opcode(vm, process);
 			}
 			if (process->cycle_to_do > 0)
 				process->cycle_to_do--;
@@ -45,14 +49,18 @@ void		david_needs_to_work(t_vm *vm)
 	vm->continu = true;
 	while (vm->continu)
 	{
+		i = vm->vec->len;
 		exec_process(vm);
-		i = 0;
 		while ((size_t)i < vm->vec->len)
 		{
 			vm->c_pc = i + 1;
 			process = vm->vec->processes + i;
 			if (process->cycle_to_do == 0 && !process->has_read)
+			{
 				read_opcode(vm, process);
+				if (process->cycle_to_do > 0)
+					process->cycle_to_do--;
+			}
 			i++;
 		}
 		if (vm->cycle == (uintmax_t)vm->flags.dump_c)
