@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 10:33:55 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 10:39:37 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,10 @@ void		david_needs_to_work(t_vm *vm)
 			i++;
 		}
 		if (vm->cycle == (uintmax_t)vm->flags.dump_c)
+		{
 			dump_mem(vm);
+			break ;
+		}
 		vm->continu = vm_cycle_to_die(vm);
 	}
-	return ;
 }

@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:45:36 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/06 01:51:16 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 10:40:03 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ bool		bin_parse_header(size_t fd, t_champ *header)
 	return (true);
 }
 
-void		init_process(t_vm *vm)
+void		init_processes(t_vm *vm)
 {
 	size_t		nbr_champ;
 	t_process	*process;
@@ -80,7 +80,7 @@ bool		ft_play(t_vm vm)
 		}
 		i++;
 	}
-	init_process(&vm);
+	init_processes(&vm);
 	i = 0;
 	if (vm.flags.verbose)
 		affstart_verbose(vm);

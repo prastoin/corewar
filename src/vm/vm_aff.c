@@ -6,12 +6,11 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:48:59 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/06 01:51:10 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 10:39:05 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
-#include <stdlib.h>
 
 void		dump_mem(t_vm *vm)
 {
@@ -33,7 +32,6 @@ void		dump_mem(t_vm *vm)
 		i++;
 	}
 	ft_putf_fd(fd, "\n");
-	exit(0);
 }
 
 void		affstart_verbose(t_vm vm)
