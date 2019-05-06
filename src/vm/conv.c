@@ -1,31 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hashtable_create.c                                 :+:      :+:    :+:   */
+/*   conv.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/04 13:37:30 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 10:32:51 by fbecerri         ###   ########.fr       */
+/*   Created: 2019/05/06 01:44:33 by fbecerri          #+#    #+#             */
+/*   Updated: 2019/05/06 01:44:56 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "asm.h"
-#include <stdlib.h>
+#include "vm.h"
 
-t_hashtable		*create_hashtable(size_t size)
+intmax_t	conv_bin_num(uint8_t *mem, size_t len)
 {
-	t_hashtable *hash;
+	uintmax_t	num;
 	size_t		i;
 
-	if (!(hash = malloc(sizeof(*hash) + size * sizeof(*hash->bucket))))
-		return (NULL);
 	i = 0;
-	while (i < size)
+	num = 0;
+	while (i < len)
 	{
-		hash->bucket[i].key = NULL;
+		num <<= 8;
+		num |= mem[i];
 		i++;
 	}
-	hash->size = size;
-	return (hash);
+	if (mem[0] & 0x80)
+	{
+		while (i < sizeof(num))
+		{
+			num |= ((uintmax_t)0xFF << (i * 8));
+			i++;
+		}
+	}
+	return (num);
 }

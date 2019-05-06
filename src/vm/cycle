@@ -1,0 +1,133 @@
+close_fd.c:23:		fd = vm->champ[i].fd;
+close_fd.c:28:	if (vm->flags.verbose)
+close_fd.c:29:		close(vm->v_fd);
+aff_fcnt_vm.c:18:	ft_putf_fd(vm->v_fd, "P%5d | lldi %D %D r%D\n       | -> load from %d",
+aff_fcnt_vm.c:19:			vm->c_pc, conv_bin_num(op1, REG_SIZE), conv_bin_num(tampon,
+aff_fcnt_vm.c:26:	ft_putf_fd(vm->v_fd, " + %D = %D (with pc %D)\n",
+aff_fcnt_vm.c:39:	mem_read(vm->mem, process->registre[param[2] - 1],
+aff_fcnt_vm.c:43:	if (vm->flags.verbose)
+aff_fcnt_vm.c:45:		ft_putf_fd(vm->v_fd, "P%5d | ldi %D %D r%d\n", vm->c_pc,
+aff_fcnt_vm.c:48:		ft_putf_fd(vm->v_fd,
+aff_fcnt_vm.c:65:	mem_write(vm->mem, process->registre[param[0] - 1],
+aff_fcnt_vm.c:67:	if (vm->flags.verbose)
+aff_fcnt_vm.c:69:		ft_putf_fd(vm->v_fd, "P%5d | sti r%d %D %D\n", vm->c_pc, param[0],
+aff_fcnt_vm.c:72:		ft_putf_fd(vm->v_fd,
+exec_vm.c:32:	if (vm->flags.verbose)
+exec_vm.c:33:		ft_putf_fd(vm->v_fd, "Contestant %U, \"%s\", has won !\n", winner + 1,
+exec_vm.c:42:	if (vm->nbr_live >= NBR_LIVE || vm->check + 1 == MAX_CHECKS)
+exec_vm.c:44:		vm->cycle_to_die -= CYCLE_DELTA;
+exec_vm.c:45:		if (vm->flags.verbose)
+exec_vm.c:46:			ft_putf_fd(vm->v_fd, "Cycle to die is now %d\n", vm->cycle_to_die);
+exec_vm.c:47:		vm->check = 0;
+exec_vm.c:50:		vm->check++;
+exec_vm.c:51:	if (vm->cycle_to_die <= 0)
+exec_vm.c:53:		return (ft_winner(vm->champ, vm));
+exec_vm.c:55:	vm->nbr_live = 0;
+exec_vm.c:66:		if (vm->said_live[i] == true)
+exec_vm.c:67:			vm->said_live[i] = false;
+exec_vm.c:69:			vm->live[i] = false;
+exec_vm.c:78:	i = vm->vec->len - 1;
+exec_vm.c:81:		if (vm->vec->processes[i].said_live == true)
+exec_vm.c:82:			vm->vec->processes[i].said_live = false;
+exec_vm.c:83:		else if (vm->vec->processes[i].is_alive == true)
+exec_vm.c:85:			if (vm->flags.verbose)
+exec_vm.c:86:				ft_putf_fd(vm->v_fd,
+exec_vm.c:88:						i + 1, vm->cycle
+exec_vm.c:89:						- vm->vec->processes[i].last_cycle_live,
+exec_vm.c:90:						vm->cycle_to_die);
+exec_vm.c:91:			vm->vec->processes[i].is_alive = false;
+exec_vm.c:93:		if (vm->vec->processes[i].is_alive == false)
+exec_vm.c:95:		if (dead == vm->vec->len)
+exec_vm.c:96:			return (ft_winner(vm->champ, vm));
+exec_vm.c:104:	if (vm->i_to_die >= vm->cycle_to_die)
+exec_vm.c:111:		vm->i_to_die = 0;
+exec_vm.c:113:	vm->i_to_die++;
+exec_vm.c:114:	vm->cycle++;
+exec_vm.c:115:	if (vm->flags.verbose)
+exec_vm.c:116:		ft_putf_fd(vm->v_fd, "It is now cycle %d\n", vm->cycle);
+fcnt_01_04.c:24:	process->last_cycle_live = vm->cycle;
+fcnt_01_04.c:27:		if (vm->live[player - 1])
+fcnt_01_04.c:29:			vm->said_live[player - 1] = true;
+fcnt_01_04.c:30:			vm->champ[player - 1].last_cycle_live = vm->cycle;
+fcnt_01_04.c:33:	vm->nbr_live++;
+fcnt_01_04.c:34:	if (vm->flags.verbose)
+fcnt_01_04.c:35:		ft_putf_fd(vm->v_fd, "P%5d | live %d\n", vm->c_pc, param[0]);
+fcnt_01_04.c:46:	if (vm->flags.verbose)
+fcnt_01_04.c:47:		ft_putf_fd(vm->v_fd, "P%5d | ld %D r%d\n", vm->c_pc,
+fcnt_01_04.c:68:		mem_write(vm->mem, process->registre[param[0] - 1],
+fcnt_01_04.c:70:	if (vm->flags.verbose)
+fcnt_01_04.c:71:		ft_putf_fd(vm->v_fd, "P%5d | st r%d %d\n", vm->c_pc,
+fcnt_01_04.c:88:	if (vm->flags.verbose)
+fcnt_01_04.c:89:		ft_putf_fd(vm->v_fd, "P%5d | add r%d r%d r%d\n", vm->c_pc, param[0],
+fcnt_05_08.c:28:	if (vm->flags.verbose)
+fcnt_05_08.c:29:		ft_putf_fd(vm->v_fd, "P%5d | sub r%d r%d r%d\n", vm->c_pc, param[0],
+fcnt_05_08.c:49:	if (vm->flags.verbose)
+fcnt_05_08.c:50:		ft_putf_fd(vm->v_fd, "P%5d | and %d %d r%d\n", vm->c_pc,
+fcnt_05_08.c:71:	if (vm->flags.verbose)
+fcnt_05_08.c:72:		ft_putf_fd(vm->v_fd, "P%5d | or %d %d r%d\n", vm->c_pc,
+fcnt_05_08.c:93:	if (vm->flags.verbose)
+fcnt_05_08.c:94:		ft_putf_fd(vm->v_fd, "P%5d | xor %d %d r%d\n", vm->c_pc,
+fcnt_09_12.c:22:	if (vm->flags.verbose)
+fcnt_09_12.c:23:		ft_putf_fd(vm->v_fd, "P%5d | zjmp %d %s\n", vm->c_pc,
+fcnt_09_12.c:75:	index = (process - vm->vec->processes);
+fcnt_09_12.c:76:	new_process = add_process(&vm->vec);
+fcnt_09_12.c:77:	process = vm->vec->processes + index;
+fcnt_09_12.c:83:	if (vm->flags.verbose)
+fcnt_09_12.c:84:		ft_putf_fd(vm->v_fd, "P%5d | fork %d (%d)\n", vm->c_pc, save,
+fcnt_13_16.c:24:	if (vm->flags.verbose)
+fcnt_13_16.c:25:		ft_putf_fd(vm->v_fd, "P%5d | lld %D r%d\n", vm->c_pc,
+fcnt_13_16.c:50:	mem_read(vm->mem, process->registre[param[2] - 1],
+fcnt_13_16.c:52:	if (vm->flags.verbose)
+fcnt_13_16.c:54:	if (vm->flags.verbose)
+fcnt_13_16.c:72:	index = (process - vm->vec->processes);
+fcnt_13_16.c:73:	new_process = add_process(&vm->vec);
+fcnt_13_16.c:74:	process = vm->vec->processes + index;
+fcnt_13_16.c:80:	if (vm->flags.verbose)
+fcnt_13_16.c:81:		ft_putf_fd(vm->v_fd, "P%5d | lfork %d (%d)\n", vm->c_pc, save,
+get_ocp_values.c:69:		mem_read(vm->mem, process->tampon + (REG_SIZE - 2),
+get_ocp_values.c:90:		mem_read(vm->mem, process->tampon, (process->offset + nbr % IDX_MOD)
+pass_opcode.c:35:		mem_read(vm->mem, stck, process->offset + tmp, size);
+pass_opcode.c:55:	mem_read(vm->mem, stck, process->offset + 1, size);
+pass_opcode.c:67:		mem_read(vm->mem, tampom, process->offset + 1, 1);
+play.c:22:	i = vm->vec->len - 1;
+play.c:25:		process = vm->vec->processes + i;
+play.c:30:				vm->c_pc = i + 1;
+play.c:32:				process = vm->vec->processes + i;
+play.c:46:	vm->continu = true;
+play.c:47:	while (vm->continu)
+play.c:51:		while ((size_t)i < vm->vec->len)
+play.c:53:			vm->c_pc = i + 1;
+play.c:54:			process = vm->vec->processes + i;
+play.c:59:		if (vm->cycle == (uintmax_t)vm->flags.dump_c)
+play.c:61:		vm->continu = vm_cycle_to_die(vm);
+pre_start.c:47:	vm->vec = create_process(MAX_PLAYERS);
+pre_start.c:48:	while (nbr_champ < vm->nbr_champ)
+pre_start.c:50:		if (vm->champ[i].fd)
+pre_start.c:52:			ft_memcpy((vm->mem) + ((MEM_SIZE / vm->nbr_champ) * nbr_champ),
+pre_start.c:53:					vm->champ[i].prog, vm->champ[i].size);
+pre_start.c:54:			process = add_process(&vm->vec);
+pre_start.c:56:				.offset = (MEM_SIZE / vm->nbr_champ) * nbr_champ,
+tools_fcnt.c:49:	if (vm->flags.verbose)
+tools_fcnt.c:51:		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale,
+tools_fcnt.c:55:			ft_putf_fd(vm->v_fd, "%2x ", vm->mem[(process->offset + i)
+tools_fcnt.c:59:		ft_putf_fd(vm->v_fd, "\n");
+tools_fcnt.c:73:	if (vm->flags.verbose)
+tools_fcnt.c:75:		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale,
+tools_fcnt.c:79:			ft_putf_fd(vm->v_fd, "%2x ", vm->mem[(process->offset + i)
+tools_fcnt.c:83:		ft_putf_fd(vm->v_fd, "\n");
+tools_fcnt.c:96:	if (vm->flags.verbose)
+tools_fcnt.c:98:		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale,
+tools_fcnt.c:102:			ft_putf_fd(vm->v_fd, "%2x ",
+tools_fcnt.c:103:					vm->mem[(process->offset + i) % MEM_SIZE]);
+tools_fcnt.c:106:		ft_putf_fd(vm->v_fd, "\n");
+tools_fcnt.c:119:	if (vm->flags.verbose)
+tools_fcnt.c:121:		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale,
+tools_fcnt.c:125:			ft_putf_fd(vm->v_fd, "%2x ",
+tools_fcnt.c:126:					vm->mem[(process->offset + i) % MEM_SIZE]);
+tools_fcnt.c:129:		ft_putf_fd(vm->v_fd, "\n");
+vm.c:45:		vm->champ[n - 1].fd = fd;
+vm.c:46:		vm->nbr_champ++;
+vm.c:47:		vm->live[n - 1] = true;
+vm_aff.c:21:	if (!vm->flags.verbose)
+vm_aff.c:24:		fd = vm->v_fd;
+vm_aff.c:32:		ft_putf_fd(fd, "%2x ", vm->mem[i]);

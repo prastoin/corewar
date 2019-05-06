@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 01:10:50 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 01:33:28 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,23 +61,6 @@ static bool	is_empty(char *players[MAX_PLAYERS + 1])
 		i++;
 	}
 	return (true);
-}
-
-void		close_fd(t_vm *vm)
-{
-	size_t i;
-	size_t fd;
-
-	i = 0;
-	while (i < MAX_PLAYERS)
-	{
-		fd = vm->champ[i].fd;
-		if (fd)
-			close(fd);
-		i++;
-	}
-	if (vm->flags.verbose)
-		close(vm->v_fd);
 }
 
 int			main_split(char *players[MAX_PLAYERS + 1], char *argv[], int argc,

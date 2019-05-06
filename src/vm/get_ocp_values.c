@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 15:21:34 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/05 23:53:51 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 02:58:57 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,11 @@ bool		ft_get_value(ssize_t nbr, uint8_t type, t_process *process,
 	else if (type == OCP_DIR)
 		conv_int_to_bin(nbr, process->tampon);
 	else if (type == OCP_IND)
-		mem_read(vm->mem, process->tampon, (process->offset + nbr)
-				% MEM_SIZE, 2);
+	{
+		ft_memset(process->tampon, 0, REG_SIZE);
+		mem_read(vm->mem, process->tampon + (REG_SIZE - 2),
+				(process->offset + nbr) % MEM_SIZE, 2);
+	}
 	else
 		return (false);
 	return (true);

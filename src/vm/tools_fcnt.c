@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 11:18:42 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 01:05:19 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 01:37:27 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,11 +105,7 @@ bool	invalid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 		}
 		ft_putf_fd(vm->v_fd, "\n");
 	}
-	if (vm->c_pc == 50)
-		printf("offset %ld cycle %ld\n", process->offset, vm->cycle);
 	process->offset = (process->offset + decale) % MEM_SIZE;
-	if (vm->c_pc == 50)
-		printf("offset %ld should have decale %ld\n", process->offset, decale);
 	return (false);
 }
 
@@ -130,12 +126,8 @@ bool	valid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 					vm->mem[(process->offset + i) % MEM_SIZE]);
 			i++;
 		}
-		dprintf(vm->v_fd, "\n");
+		ft_putf_fd(vm->v_fd, "\n");
 	}
-	if (vm->c_pc == 50)
-		printf("offset %ld cycle %ld\n", process->offset, vm->cycle);
 	process->offset = (process->offset + decale) % MEM_SIZE;
-	if (vm->c_pc == 50)
-		printf("offset %ld should have decale %ld\n", process->offset, decale);
 	return (true);
 }

@@ -6,12 +6,13 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 00:15:38 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 03:00:08 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 #include "ft_string.h"
+#include "stdio.h"
 
 bool		lld(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 {
@@ -19,30 +20,14 @@ bool		lld(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		return (invalid(vm, process, ocp, 13));
 	if (!ft_get_value(param[0], ocp >> 6 & 0b11, process, vm))
 		return (invalid(vm, process, ocp, 13));
-	ft_memcpy(process->registre[param[1] - 1], process->tampon, 2);
+	ft_memcpy(process->registre[param[1] - 1], process->tampon, REG_SIZE);
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "P%5d | lld %D r%d\n", vm->c_pc,
-				conv_bin_num(process->tampon, 2), param[1]);
+				conv_bin_num(process->tampon, REG_SIZE), param[1]);
 	if ((conv_bin_num(process->tampon, REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 13));
 	else
 		return (carry_down(vm, process, ocp, 13));
-}
-
-static void	print_a(t_vm *vm, uint8_t op1[REG_SIZE], uint8_t tampon[REG_SIZE],
-		int32_t param)
-{
-	ft_putf_fd(vm->v_fd, "P%5d | lldi %D %D r%D\n       | -> load from %d",
-			vm->c_pc, conv_bin_num(op1, REG_SIZE), conv_bin_num(tampon,
-				REG_SIZE), param, conv_bin_num(op1, REG_SIZE));
-}
-
-static void	print_b(t_vm *vm, t_process *process, uint8_t adr[REG_SIZE],
-		int64_t adress)
-{
-	ft_putf_fd(vm->v_fd, " + %D = %D (with pc %D)\n",
-			conv_bin_num(process->tampon, REG_SIZE), conv_bin_num(adr,
-				REG_SIZE), (process->offset + adress) % MEM_SIZE);
 }
 
 bool		lldi(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
@@ -83,10 +68,7 @@ bool		lfork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	(void)ocp;
 	save = param[0];
 	while (param[0] + process->offset < 0)
-	{
-		printf("it was the case with the %ld process\n", vm->c_pc);
 		param[0] += MEM_SIZE;
-	}
 	index = (process - vm->vec->processes);
 	new_process = add_process(&vm->vec);
 	process = vm->vec->processes + index;

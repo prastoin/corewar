@@ -6,43 +6,54 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 15:15:12 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/05 23:54:23 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 02:51:26 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
+void	*vm_regcpy(void *dst, const void *src)
+{
+	ssize_t	i;
+
+	i = REG_SIZE - 1;
+	while (i >= 0)
+	{
+		((char *)dst)[i] = ((char *)src)[i];
+		i--;
+	}
+	return (dst);
+}
+
 void		mem_read(const uint8_t mem[MEM_SIZE], uint8_t *dst,
 		ssize_t offset, size_t n)
 {
-	size_t i;
+	ssize_t i;
 
 	while (offset < 0)
 		offset += MEM_SIZE;
-	i = 0;
-	while (i < n)
+	i = n - 1;
+	while (i >= 0)
 	{
 		offset = offset % MEM_SIZE;
-		(dst)[i] = mem[offset];
-		i++;
-		offset++;
+		(dst)[i] = mem[offset + i];
+		i--;
 	}
 }
 
 void		mem_write(uint8_t mem[MEM_SIZE], const uint8_t *src,
 		ssize_t offset, size_t n)
 {
-	size_t i;
+	ssize_t i;
 
-	i = 0;
+	i = n - 1;
 	while (offset < 0)
 		offset += MEM_SIZE;
-	while (i < n)
+	while (i >= 0)
 	{
 		offset %= MEM_SIZE;
-		mem[offset] = (src)[i];
-		i++;
-		offset++;
+		mem[offset + i] = (src)[i];
+		i--;
 	}
 }
 

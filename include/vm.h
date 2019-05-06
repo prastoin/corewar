@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 00:39:49 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/06 01:54:11 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ void			copy_process(t_process *dest, t_process *src);
 /*
 ** op.c
 */
+
 typedef	bool	(*t_core_fcnt)(t_vm *, t_process *, int32_t *, uint8_t);
 
 bool			live(t_vm *vm, t_process *prc, int32_t param[4], uint8_t ocp);
@@ -147,6 +148,42 @@ bool			lld(t_vm *vm, t_process *prc, int32_t param[4], uint8_t ocp);
 bool			lldi(t_vm *vm, t_process *prc, int32_t param[4], uint8_t ocp);
 bool			lfork(t_vm *vm, t_process *prc, int32_t param[4], uint8_t ocp);
 bool			aff(t_vm *vm, t_process *prc, int32_t param[4], uint8_t ocp);
+
+/*
+** aff_fcnt_vm.c
+*/
+
+void			print_a(t_vm *vm, uint8_t op1[REG_SIZE],
+		uint8_t tampon[REG_SIZE], int32_t param);
+void			print_b(t_vm *vm, t_process *process, uint8_t adr[REG_SIZE],
+		int64_t adress);
+void			affsti(t_vm *vm, uint8_t op1[REG_SIZE], t_process *process,
+		int32_t param[4]);
+void			affldi(t_vm *vm, uint8_t op1[REG_SIZE], t_process *process,
+		int32_t param[4]);
+
+/*
+** exec_vm.c
+*/
+
+bool			ft_winner(t_champ champ[MAX_PLAYERS], t_vm *vm);
+bool			cycle_decremente_die(t_vm *vm);
+void			kill_player(t_vm *vm);
+bool			kill_process(t_vm *vm, size_t dead);
+bool			vm_cycle_to_die(t_vm *vm);
+
+/*
+ ** vm_aff.c
+*/
+
+void			dump_mem(t_vm *vm);
+void			affstart_verbose(t_vm vm);
+
+/*
+ ** play.c
+*/
+
+void			david_needs_to_work(t_vm *vm);
 
 extern t_core_fcnt g_fcnt[17];
 
