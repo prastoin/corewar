@@ -1,0 +1,20 @@
+language: node_js
+os: osx
+node_js:
+  - "10"
+before_script:
+  - npm -C tests install
+script: 
+  - make
+  - mkdir championship
+  - env EXPORT_CHAMPIONSHIP=$(pwd)/championship npm -C tests test
+  - ls -R championship
+deploy:
+  provider: pages
+  local_dir: championship
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  target_branch: championship
+  committer_from_gh: true
+  on:
+    branch: travis
