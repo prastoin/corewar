@@ -22,7 +22,6 @@ SRCS += src/common/args_error.c
 SRCS += src/common/argv_management.c
 SRCS += src/common/ft_putf.c
 SRCS += src/common/ft_putf_2.c
-SRCS += src/common/itoa_base.c
 SRCS += src/common/mem.c
 SRCS += src/common/op.c
 SRCS += src/common/string.c

@@ -6,13 +6,12 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 00:44:26 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 10:16:18 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 #include "ft_string.h"
-#include <stdlib.h>
 
 intmax_t	conv_bin_num(uint8_t *mem, size_t len)
 {
@@ -262,7 +261,7 @@ void		affstart_verbose(t_vm vm)
 	}
 }
 
-void		init_process(t_vm *vm)
+void		init_processes(t_vm *vm)
 {
 	size_t		nbr_champ;
 	t_process	*process;
@@ -306,7 +305,7 @@ bool		ft_play(t_vm vm)
 		}
 		i++;
 	}
-	init_process(&vm);
+	init_processes(&vm);
 	i = 0;
 	if (vm.flags.verbose)
 		affstart_verbose(vm);
