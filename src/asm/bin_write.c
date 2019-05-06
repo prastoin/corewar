@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   asm_write.c                                        :+:      :+:    :+:   */
+/*   bin_write.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/05 23:09:03 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/06 15:01:13 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,10 @@ bool	bin_write_header(t_header head, t_write *out)
 {
 	io_write_int(out, COREWAR_EXEC_MAGIC, 4);
 	io_write(out, head.name, sizeof(head.name));
-	io_write(out, (uint8_t [4]){0, 0, 0, 0}, 4 - sizeof(head.name) % 4); //to norm
+	io_write(out, (uint8_t[4]){0, 0, 0, 0}, 4 - sizeof(head.name) % 4);
 	io_write_int(out, 0, 4);
 	io_write(out, head.comment, sizeof(head.comment));
-	io_write(out, (uint8_t [4]){0, 0, 0, 0}, 4 - sizeof(head.comment) % 4); //to norm
+	io_write(out, (uint8_t[4]){0, 0, 0, 0}, 4 - sizeof(head.comment) % 4);
 	return (true);
 }
 

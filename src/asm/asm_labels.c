@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   asm_content_parse.c                                :+:      :+:    :+:   */
+/*   asm_labels.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 14:19:25 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/04 13:36:38 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/06 14:39:02 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ t_entry	*asm_swap_off(t_instruction *inst, t_write *out, size_t i,
 	return (entry);
 }
 
-size_t	asm_resolve_label(t_hashtable **table, t_instruction *inst
-		, t_write *out, t_read *in)
+size_t	asm_resolve_label(t_hashtable **table, t_instruction *inst,
+		t_write *out, t_read *in)
 {
 	size_t	i;
 	size_t	last_label;

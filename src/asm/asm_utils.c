@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   asm_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 13:23:44 by prastoin          #+#    #+#             */
-/*   Updated: 2019/04/30 14:40:16 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/06 15:00:37 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,11 @@ bool		asm_skip_ws(t_read *rd)
 {
 	int16_t	c;
 
-	while ((c = io_peek(rd)) == ' ' || c == '\t' || c == '#' || c == '\n')
+	while ((c = io_peek(rd)) == ' ' || c == '\t' || c == '#'
+			|| c == ';' || c == '\n')
 	{
 		io_next(rd);
-		if (c == '#')
+		if (c == '#' || c == ';')
 			if (!io_skip(rd, '\n'))
 				return (false);
 	}
@@ -35,7 +36,7 @@ bool		asm_read_quoted(t_read *rd, char data[], size_t len)
 	i = 0;
 	if (!(io_expect(rd, "\"")))
 		return (false);
-	while ((c = io_peek(rd)) != '"' && c != '\n' && c != -1)
+	while ((c = io_peek(rd)) != '"' && c != -1)
 	{
 		if (c == '\\')
 			if (!escape(rd, c))

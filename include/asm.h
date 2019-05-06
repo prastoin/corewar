@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   asm.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 00:32:06 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/06 14:19:06 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # define FLAG_S_MSG "Turn on streaming reading mode"
 # define BUFFER_SIZE  4096
 # define HEADER_SIZE (16 + PROG_NAME_LENGTH + COMMENT_LENGTH)
-# define EXT ".cro"
+# define EXT ".cor"
 
 typedef struct	s_flag
 {

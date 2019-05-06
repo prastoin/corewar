@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   asm_parse_params.c                                 :+:      :+:    :+:   */
+/*   asm_params.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/30 13:48:34 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/04 13:36:46 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/06 15:00:21 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,13 @@ bool	asm_read_params(t_read *in, t_instruction *inst)
 					from_int_to_type(g_ops[inst->opcode].params[i]));
 		}
 		if (!(g_ops[inst->opcode].params[i] & inst->params[i].type))
+		{
 			print_error(in, WARN, "Type for param is invalid",
 					from_int_to_type(g_ops[inst->opcode].params[i]));
-		i++;
-		asm_comma_check(in, inst, i);
+			if (!g_ops[inst->opcode].ocp)
+				inst->params[i].type = g_ops[inst->opcode].params[i] & 0b111;
+		}
+		asm_comma_check(in, inst, ++i);
 	}
 	return (true);
 }

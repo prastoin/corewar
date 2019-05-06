@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   asm_read.c                                         :+:      :+:    :+:   */
+/*   asm.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/04 13:36:08 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/06 14:21:35 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,5 +102,5 @@ int			main(int argc, char *argv[])
 	in = init_read(fd, files[IN], in.werror);
 	(flag.streaming ? read_streaming : read_fixed)(&in, files[OUT]);
 	close(fd);
-	return (0);
+	return (!in.write_able);
 }
