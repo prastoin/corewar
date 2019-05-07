@@ -17,4 +17,4 @@ deploy:
   target_branch: championship
   committer_from_gh: true
   on:
-    branch: travis
+    branch: master
