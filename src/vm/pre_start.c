@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:45:36 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/06 10:40:03 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/07 15:27:04 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ void		init_processes(t_vm *vm)
 			process = add_process(&vm->vec);
 			*process = (t_process) {
 				.offset = (MEM_SIZE / vm->nbr_champ) * nbr_champ,
-					.is_alive = true
+				.is_alive = true,
+				.cycle_to_do = 1
 			};
 			conv_int_to_bin(~i, process->registre[0]);
 			nbr_champ++;

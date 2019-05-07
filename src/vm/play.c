@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 14:00:53 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/07 15:24:35 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,14 @@ void		exec_process(t_vm *vm)
 		{
 			if (process->cycle_to_do == 0)
 			{
-				if (process->has_read)
+				vm->c_pc = i + 1;
+				if (!process->has_read)
+					read_opcode(vm, process);
+				else if (process->has_read)
 				{
-					vm->c_pc = i + 1;
 					ft_pass(vm, process);
 					process = vm->vec->processes + i;
 				}
-				read_opcode(vm, process);
 			}
 			if (process->cycle_to_do > 0)
 				process->cycle_to_do--;

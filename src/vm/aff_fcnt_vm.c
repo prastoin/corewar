@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:34:18 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/06 01:40:07 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/07 16:04:17 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	print_a(t_vm *vm, uint8_t op1[REG_SIZE], uint8_t tampon[REG_SIZE],
 		int32_t param)
 {
-	ft_putf_fd(vm->v_fd, "P%5d | lldi %D %D r%D\n       | -> load from %d",
+	ft_putf_fd(vm->v_fd, "P %4d | lldi %D %D r%D\n       | -> load from %d",
 			vm->c_pc, conv_bin_num(op1, REG_SIZE), conv_bin_num(tampon,
 				REG_SIZE), param, conv_bin_num(op1, REG_SIZE));
 }
@@ -42,7 +42,7 @@ void	affldi(t_vm *vm, uint8_t op1[REG_SIZE], t_process *process,
 		adress += MEM_SIZE;
 	if (vm->flags.verbose)
 	{
-		ft_putf_fd(vm->v_fd, "P%5d | ldi %D %D r%d\n", vm->c_pc,
+		ft_putf_fd(vm->v_fd, "P %4d | ldi %D %D r%d\n", vm->c_pc,
 				conv_bin_num(op1, REG_SIZE),
 				conv_bin_num(process->tampon, REG_SIZE), param[2]);
 		ft_putf_fd(vm->v_fd,
@@ -66,7 +66,7 @@ void	affsti(t_vm *vm, uint8_t op1[REG_SIZE], t_process *process,
 			process->offset + adress, REG_SIZE);
 	if (vm->flags.verbose)
 	{
-		ft_putf_fd(vm->v_fd, "P%5d | sti r%d %D %D\n", vm->c_pc, param[0],
+		ft_putf_fd(vm->v_fd, "P %4d | sti r%d %D %D\n", vm->c_pc, param[0],
 				conv_bin_num(op1, REG_SIZE), conv_bin_num(process->tampon,
 					REG_SIZE));
 		ft_putf_fd(vm->v_fd,

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:27:13 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 14:00:23 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/07 16:07:00 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ bool		zjmp(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	(void)ocp;
 	(void)vm;
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P%5d | zjmp %d %s\n", vm->c_pc,
+		ft_putf_fd(vm->v_fd, "P %4d | zjmp %d %s\n", vm->c_pc,
 				param[0], process->carry == true ? "OK" : "FAILED");
 	if (process->carry == false)
 		return (invalid(vm, process, 0b11000000, 9));
@@ -78,13 +78,14 @@ bool		ft_fork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	*new_process = (t_process) {
 		.offset = (process->offset + param[0]) % MEM_SIZE,
 		.is_alive = true,
+		.cycle_to_do = 1
 	};
 	copy_process(new_process, process);
 	read_opcode(vm, new_process);
-	if (new_process->cycle_to_do > 0)
-		new_process->cycle_to_do--;
+//	if (new_process->cycle_to_do != 0)
+//		new_process->cycle_to_do++;
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P%5d | fork %d (%d)\n", vm->c_pc, save,
+		ft_putf_fd(vm->v_fd, "P %4d | fork %d (%d)\n", vm->c_pc, save,
 				(save % IDX_MOD) + process->offset);
 	return (valid(vm, process, 0b11000000, 12));
 }

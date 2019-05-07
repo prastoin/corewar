@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 14:00:42 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/07 16:07:17 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ bool		lld(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		return (invalid(vm, process, ocp, 13));
 	ft_memcpy(process->registre[param[1] - 1], process->tampon, REG_SIZE);
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P%5d | lld %D r%d\n", vm->c_pc,
+		ft_putf_fd(vm->v_fd, "P %4d | lld %D r%d\n", vm->c_pc,
 				conv_bin_num(process->tampon, REG_SIZE), param[1]);
 	if ((conv_bin_num(process->tampon, REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 13));
@@ -75,13 +75,14 @@ bool		lfork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	*new_process = (t_process) {
 		.offset = (process->offset + param[0]) % MEM_SIZE,
 		.is_alive = true,
+		.cycle_to_do = 1
 	};
 	copy_process(new_process, process);
 	read_opcode(vm, new_process);
-	if (new_process->cycle_to_do > 0)
-		new_process->cycle_to_do--;
+//	if (new_process->cycle_to_do != 0)
+//		new_process->cycle_to_do++;
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P%5d | lfork %d (%d)\n", vm->c_pc, save,
+		ft_putf_fd(vm->v_fd, "P %4d | lfork %d (%d)\n", vm->c_pc, save,
 				save + process->offset);
 	return (valid(vm, process, 0b11000000, 15));
 }
