@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 03:00:08 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 14:00:42 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,9 @@ bool		lfork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		.is_alive = true,
 	};
 	copy_process(new_process, process);
+	read_opcode(vm, new_process);
+	if (new_process->cycle_to_do > 0)
+		new_process->cycle_to_do--;
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "P%5d | lfork %d (%d)\n", vm->c_pc, save,
 				save + process->offset);
@@ -95,7 +98,8 @@ bool		aff(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	while (i < REG_SIZE)
 	{
 		c = (process->registre[param[0] - 1][i] % 256);
-		write(1, &c, 1);
+		if (vm->flags.bin_o)
+			write(1, &c, 1);
 		i++;
 	}
 	return (valid(vm, process, ocp, 16));

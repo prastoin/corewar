@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:27:13 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 01:38:42 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 14:00:23 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,9 @@ bool		ft_fork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		.is_alive = true,
 	};
 	copy_process(new_process, process);
+	read_opcode(vm, new_process);
+	if (new_process->cycle_to_do > 0)
+		new_process->cycle_to_do--;
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "P%5d | fork %d (%d)\n", vm->c_pc, save,
 				(save % IDX_MOD) + process->offset);

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 11:30:11 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/06 14:00:53 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,15 +43,20 @@ void		exec_process(t_vm *vm)
 
 void		david_needs_to_work(t_vm *vm)
 {
-	ssize_t		i;
-	t_process	*process;
-
 	vm->continu = true;
 	while (vm->continu)
 	{
-		i = vm->vec->len;
 		exec_process(vm);
-		while ((size_t)i < vm->vec->len)
+		if (vm->cycle == (uintmax_t)vm->flags.dump_c)
+		{
+			dump_mem(vm);
+			break ;
+		}
+		vm->continu = vm_cycle_to_die(vm);
+	}
+}
+
+/*		while ((size_t)i < vm->vec->len)
 		{
 			vm->c_pc = i + 1;
 			process = vm->vec->processes + i;
@@ -63,11 +68,4 @@ void		david_needs_to_work(t_vm *vm)
 			}
 			i++;
 		}
-		if (vm->cycle == (uintmax_t)vm->flags.dump_c)
-		{
-			dump_mem(vm);
-			break ;
-		}
-		vm->continu = vm_cycle_to_die(vm);
-	}
-}
+*/

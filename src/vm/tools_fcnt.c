@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 11:18:42 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 01:37:27 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/06 14:47:08 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,8 @@ bool	carry_down(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (false);
 }
+
+#include <stdio.h>
 
 bool	invalid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 {
