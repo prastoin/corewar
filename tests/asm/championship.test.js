@@ -9,6 +9,10 @@ const RESSOURCES = 'https://projects.intra.42.fr/uploads/document/document/391/v
 
 const TESTED_BINARY = join(__dirname, '..', '..', 'asm')
 
+const {
+    EXPORT_CHAMPIONSHIP
+} = process.env;
+
 function run_process(command, args) {
     return new Promise((resolve, reject) => {
         const process = child_process.spawn(command, args, {
@@ -33,13 +37,26 @@ async function run_asm(asm, source, output) {
     await fs.unlink(out_path)
 }
 
-async function compare_asm(asm, file) {
+const decoder = new (require('util').TextDecoder)()
+const NAME_LENGTH = 128
+
+function read_name(buffer) {
+    return `${decoder.decode(buffer.slice(4, 4 + NAME_LENGTH)).replace(/\0*$/, "")}.cor`
+}
+
+async function compare_asm(asm, file, year) {
     await fs.access(asm, constants.X_OK);
     const out_ref = await tmp.file()
     await run_asm(asm, file, out_ref.path)
     const out_our = await tmp.file()
     await run_asm(TESTED_BINARY, file, out_our.path)
-    expect(await fs.readFile(out_our.path)).toEqual(await fs.readFile(out_ref.path))
+    const our_content = await fs.readFile(out_our.path)
+    expect(our_content).toEqual(await fs.readFile(out_ref.path))
+    if (EXPORT_CHAMPIONSHIP) {
+        const path = join(EXPORT_CHAMPIONSHIP, year)
+        await fs.mkdir(path).catch(() => {})
+        await fs.writeFile(join(path, read_name(our_content)), our_content);
+    }
     out_ref.cleanup()
     out_our.cleanup()
 }
@@ -83,7 +100,7 @@ it('Compiles champions of Corewar Championships', async () => {
                     fit(`${champion.student}'s ${champ}`, async () => {
                         const yearAsm = join(path, year, 'asm') 
                         const asm = await fs.access(yearAsm).then(() => yearAsm, () => join(dir.path, 'asm'))
-                        await compare_asm(asm, join(path, year, champion.student, champ))
+                        await compare_asm(asm, join(path, year, champion.student, champ), year)
                     })
                 }
             }
