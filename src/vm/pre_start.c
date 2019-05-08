@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:45:36 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/07 15:27:04 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/08 16:33:02 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,10 @@ bool		bin_parse_header(size_t fd, t_champ *header)
 		return (false);
 	lseek(fd, 4 - sizeof(header->comment) % 4, SEEK_CUR);
 	if (read(fd, header->prog, header->size + 1) != (ssize_t)header->size)
+	{
+		ft_putf_fd(2, "Declared prog size is false.\n");
 		return (false);
+	}
 	return (true);
 }
 
@@ -76,7 +79,10 @@ bool		ft_play(t_vm vm)
 		if (vm.champ[i].fd)
 		{
 			if (!bin_parse_header(vm.champ[i].fd, vm.champ + i))
+			{
+				ft_putf_fd(2, "Error in %s's header\n", vm.champ[i].name);
 				return (false);
+			}
 			nbr_champ++;
 		}
 		i++;

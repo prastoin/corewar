@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:40:50 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/06 01:53:35 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/08 16:44:28 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ bool		ft_winner(t_champ champ[MAX_PLAYERS], t_vm *vm)
 	max = -1;
 	while (i < MAX_PLAYERS)
 	{
-		if (max <= (ssize_t)champ[i].last_cycle_live)
+		if (max <= (ssize_t)champ[i].last_cycle_live && vm->champ[i].fd)
 		{
 			max = champ[i].last_cycle_live;
 			winner = i;
@@ -33,7 +33,7 @@ bool		ft_winner(t_champ champ[MAX_PLAYERS], t_vm *vm)
 		ft_putf_fd(vm->v_fd, "Contestant %U, \"%s\", has won !\n", winner + 1,
 				champ[winner].name);
 	else
-		ft_putf("%s a gagne avec le num %d\n", champ[winner].name, winner);
+		ft_putf("%s a gagne avec le num %d\n", champ[winner].name, winner + 1);
 	return (false);
 }
 

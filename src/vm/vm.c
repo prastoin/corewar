@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 11:05:14 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/08 16:38:10 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static bool	is_empty(char *players[MAX_PLAYERS + 1])
 	i = 0;
 	while (i < MAX_PLAYERS)
 	{
-		if (!players[i])
+		if (players[i])
 			return (false);
 		i++;
 	}
@@ -71,7 +71,7 @@ int			main_split(char *players[MAX_PLAYERS + 1], char *argv[], int argc,
 	i = 0;
 	while (i < MAX_PLAYERS)
 	{
-		if (!insert_player(&vm, players[i], i, true))
+		if (!insert_player(&vm, players[i], i + 1, true))
 			return (ft_putf("Error in input files\n"));
 		i++;
 	}
@@ -104,7 +104,7 @@ int			main(int argc, char *argv[])
 {
 	t_vm		vm;
 	ssize_t		ret;
-	char		*players[MAX_PLAYERS + 1];
+	char		*players[MAX_PLAYERS];
 	const t_arg args[] = {
 		{ARG_PLAYERS, 'n', "number", &players, FLAG_N_MSG},
 		{ARG_INT, 'd', "dump", &vm.flags.dump_c, FLAG_D_MSG},
