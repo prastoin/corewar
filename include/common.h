@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 11:30:59 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/07 14:57:56 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/13 14:30:09 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,8 @@ typedef enum	e_arg_type
 	ARG_END = 0,
 	ARG_PLAYERS,
 	ARG_BOOLEAN,
-	ARG_INT
+	ARG_INT,
+	ARG_STR
 }				t_type;
 
 typedef	struct	s_arg

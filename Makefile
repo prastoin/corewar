@@ -6,7 +6,7 @@
 #    By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/15 10:32:31 by dde-jesu          #+#    #+#              #
-#    Updated: 2019/05/07 15:33:32 by prastoin         ###   ########.fr        #
+#    Updated: 2019/05/13 14:13:03 by fbecerri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,8 +36,9 @@ OBJS = $(patsubst src/%.c, $(OBJS_DIR)/%.o, $(SRCS))
 OBJS_COMMON = $(filter $(OBJS_DIR)/common/%, $(OBJS))
 OBJS_VM = $(filter $(OBJS_DIR)/vm/%, $(OBJS))
 OBJS_ASM = $(filter $(OBJS_DIR)/asm/%, $(OBJS))
+OBJS_DISASM = $(filter $(OBJS_DIR)/disassembler/%, $(OBJS))
 
-all: vm asm
+all: vm asm disasm
 
 $(OBJS_DIR)/glue.o.wasm: wasm/glue.c Makefile
 	@$(PRECOMPILE)
@@ -51,8 +52,9 @@ $(OBJS_DIR)/%.o $(OBJS_DIR)/%.o.wasm: src/%.c Makefile
 
 vm: $(OBJS_VM) $(OBJS_COMMON)
 asm: $(OBJS_ASM) $(OBJS_COMMON)
+disasm: $(OBJS_DISASM) $(OBJS_COMMON)
 
-vm asm:
+vm asm disasm:
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 vm.wasm: CC = ${HOME}/.brew/opt/llvm/bin/clang

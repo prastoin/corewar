@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 14:51:06 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/08 16:37:09 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/13 14:39:00 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int			get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2])
 	value = NULL;
 	if (opt->type == ARG_BOOLEAN)
 		*(bool *)opt->value = true;
-	else if (opt->type == ARG_INT)
+	else if (opt->type == ARG_INT || opt->type == ARG_STR)
 	{
 		if (*arg == '=')
 		{
@@ -52,7 +52,8 @@ int			get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2])
 			value = argv[++i[0]];
 		if (!value)
 			return (NO_ARG);
-		*(int *)opt->value = ft_atoi(value);
+		(opt->type == ARG_INT) ? (void)(*(int *)opt->value = ft_atoi(value))
+			: (void)(*(char **)opt->value = value);
 	}
 	else if (opt->type == ARG_PLAYERS)
 		return (args_players(opt, value, argv, i));

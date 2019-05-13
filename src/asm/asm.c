@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 14:21:35 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/13 14:49:16 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int			main(int argc, char *argv[])
 {
 	t_flag		flag;
 	char		*files[2];
-	int			fd;
+	int			i;
 	t_read		in;
 	const t_arg	args[] = {
 		{ARG_BOOLEAN, 's', "streaming", &flag.streaming, FLAG_S_MSG},
@@ -92,15 +92,15 @@ int			main(int argc, char *argv[])
 
 	flag = (t_flag) {0, 0};
 	in.werror = false;
-	if ((fd = parse_args(args, argc, argv)) < 0 || argc == fd)
+	if ((i = parse_args(args, argc, argv)) < 0 || argc != i + 1)
 		return (args_usage(args, argv[0], "source_file", ARGS_MSG));
-	files[IN] = argv[fd];
+	files[IN] = argv[i];
 	if (!(files[OUT] = change_ext(files[IN])))
 		return (print_small_error(&in, ERR, "Invalid file name", files[IN]));
-	if ((fd = open(files[IN], O_RDONLY)) <= 0)
+	if ((i = open(files[IN], O_RDONLY)) <= 0)
 		return (print_small_error(&in, ERR, "Open failed", files[IN]));
-	in = init_read(fd, files[IN], in.werror);
+	in = init_read(i, files[IN], in.werror);
 	(flag.streaming ? read_streaming : read_fixed)(&in, files[OUT]);
-	close(fd);
+	close(i);
 	return (!in.write_able);
 }

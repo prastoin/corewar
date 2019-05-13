@@ -2,4 +2,5 @@ build
 /asm
 /vm
 /vm.wasm
+/disasm
 verbose*
