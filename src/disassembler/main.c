@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 11:13:26 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/13 14:49:40 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/14 11:01:21 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,26 +71,6 @@ bool		bin_parse_header(size_t fd, t_head *header)
 		return (false);
 	}
 	return (true);
-}
-
-char		*change_ext(char *name)
-{
-	static char	file[PATH_MAX - 1];
-	char		*dot;
-
-	if (!(dot = ft_strrchr(name, '.')))
-	{
-		printf("no .\n");
-		return (NULL);
-	}
-	if ((dot - name + (sizeof(DEXT) - 1)) > PATH_MAX)
-	{
-		printf("no .\n");
-		return (NULL);
-	}
-	ft_memcpy(file, name, dot - name);
-	ft_memcpy(file + (dot - name), DEXT, sizeof(DEXT));
-	return (file);
 }
 
 bool	begin_diss(t_diss diss)
