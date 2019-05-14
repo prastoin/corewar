@@ -6,7 +6,7 @@
 #    By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/15 10:32:31 by dde-jesu          #+#    #+#              #
-#    Updated: 2019/05/13 14:13:03 by fbecerri         ###   ########.fr        #
+#    Updated: 2019/05/14 11:11:31 by prastoin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,7 +68,7 @@ clean:
 	rm -rf build
 
 fclean: clean
-	rm -rf vm asm vm.wasm
+	rm -rf vm asm vm.wasm disasm
 
 re:
 	$(MAKE) fclean

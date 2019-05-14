@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/08 16:38:41 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/09 14:45:15 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,17 +56,3 @@ void		david_needs_to_work(t_vm *vm)
 		vm->continu = vm_cycle_to_die(vm);
 	}
 }
-
-/*		while ((size_t)i < vm->vec->len)
-		{
-			vm->c_pc = i + 1;
-			process = vm->vec->processes + i;
-			if (process->cycle_to_do == 0 && !process->has_read)
-			{
-				read_opcode(vm, process);
-				if (process->cycle_to_do > 0)
-					process->cycle_to_do--;
-			}
-			i++;
-		}
-*/
