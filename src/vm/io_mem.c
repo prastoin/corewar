@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 15:15:12 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/07 13:05:56 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/14 14:19:25 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,32 +15,32 @@
 void		mem_read(const uint8_t mem[MEM_SIZE], uint8_t *dst,
 		ssize_t offset, size_t n)
 {
-	ssize_t i;
+	size_t i;
 
 	while (offset < 0)
 		offset += MEM_SIZE;
-	i = n - 1;
-	while (i >= 0)
+	offset %= MEM_SIZE;
+	i = 0;
+	while (i < n)
 	{
-		offset = offset % MEM_SIZE;
-		(dst)[i] = mem[offset + i];
-		i--;
+		(dst)[i] = mem[(offset + i) % MEM_SIZE];
+		i++;
 	}
 }
 
 void		mem_write(uint8_t mem[MEM_SIZE], const uint8_t *src,
 		ssize_t offset, size_t n)
 {
-	ssize_t i;
+	size_t i;
 
-	i = n - 1;
 	while (offset < 0)
 		offset += MEM_SIZE;
-	while (i >= 0)
+	offset %= MEM_SIZE;
+	i = 0;
+	while (i < n)
 	{
-		offset %= MEM_SIZE;
-		mem[offset + i] = (src)[i];
-		i--;
+		mem[(offset + i) % MEM_SIZE] = (src)[i];
+		i++;
 	}
 }
 
