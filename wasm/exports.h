@@ -9,7 +9,7 @@
 
 # define export __attribute__((visibility("default")))
 
-export void david_needs_to_work(t_vm *vm);
+export bool david_needs_to_work(t_vm *vm);
 export t_process *add_process(t_vec **list);
 
 #endif

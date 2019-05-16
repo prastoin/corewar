@@ -77,7 +77,6 @@ typedef struct	s_vm
 	bool		live[MAX_PLAYERS];
 	size_t		nbr_champ;
 	size_t		nbr_live;
-	bool		continu;
 	size_t		check;
 	t_champ		champ[MAX_PLAYERS];
 	t_vec		*vec;
@@ -183,10 +182,20 @@ void			affstart_verbose(t_vm vm);
  ** play.c
 */
 
-void			david_needs_to_work(t_vm *vm);
+bool			david_needs_to_work(t_vm *vm);
 
 extern t_core_fcnt g_fcnt[17];
 
 void			ft_dump_mem(t_vm vm, bool ex);
 
+/*
+** Hooks
+*/
+void	hook_process_adv(t_vm *vm, t_process *process, size_t diff);
+void	hook_process_jump(t_vm *vm, t_process *process, uint32_t param, size_t offset);
+void	hook_process_spawn(t_process *process, t_process *parent, size_t offset);
+bool	hook_cycle_end();
+void	hook_process_wait_opcode(t_process *process, uint8_t opcode);
+void	hook_process_memory_write(t_process *process, size_t offset, size_t size);
+void	hook_cycle_to_die(size_t value);
 #endif

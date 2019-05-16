@@ -42,10 +42,9 @@ void		exec_process(t_vm *vm)
 	}
 }
 
-void		david_needs_to_work(t_vm *vm)
+bool		david_needs_to_work(t_vm *vm)
 {
-	vm->continu = true;
-	while (vm->continu)
+	while (true)
 	{
 		exec_process(vm);
 		if (vm->cycle == (uintmax_t)vm->flags.dump_c)
@@ -53,6 +52,10 @@ void		david_needs_to_work(t_vm *vm)
 			dump_mem(vm);
 			break ;
 		}
-		vm->continu = vm_cycle_to_die(vm);
+		if (!vm_cycle_to_die(vm))
+			return (true);
+		if (hook_cycle_end())
+			break ;
 	}
+	return (false);
 }

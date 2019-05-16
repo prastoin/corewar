@@ -94,9 +94,11 @@ bool	read_opcode(t_vm *game, t_process *process)
 
 	mem_read(game->mem, stck, process->offset, 1);
 	process->actual_opcode = stck[0];
+	hook_process_read_opcode(process, process->actual_opcode);
 	if (process->actual_opcode <= 0 || process->actual_opcode > 16)
 	{
 		process->offset = (process->offset + 1) % MEM_SIZE;
+		hook_process_adv(game, process, 1);
 		process->actual_opcode = 0;
 		return (false);
 	}

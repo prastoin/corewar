@@ -65,8 +65,12 @@ bool		st(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 					process->registre[param[0] - 1], REG_SIZE);
 	}
 	else
+	{
 		mem_write(vm->mem, process->registre[param[0] - 1],
 				(process->offset + (param[1] % IDX_MOD)), REG_SIZE);
+		hook_process_memory_write(process, process->offset
+				+ (param[1] % IDX_MOD), REG_SIZE);
+	}
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "P %4d | st r%d %d\n", vm->c_pc,
 				param[0], param[1]);

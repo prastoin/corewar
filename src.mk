@@ -47,4 +47,4 @@ SRCS += src/vm/pre_start.c
 SRCS += src/vm/tools_fcnt.c
 SRCS += src/vm/vm.c
 SRCS += src/vm/vm_aff.c
-SRCS += wasm/glue.c
+SRCS += src/vm/hooks.c

@@ -19,15 +19,14 @@ bool		zjmp(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 
 	(void)ocp;
 	(void)vm;
-	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P %4d | zjmp %d %s\n", vm->c_pc,
-				param[0], process->carry == true ? "OK" : "FAILED");
-	if (process->carry == false)
-		return (invalid(vm, process, 0b11000000, 9));
 	offset = (process->offset + param[0] % IDX_MOD);
 	while (offset < 0)
 		offset += MEM_SIZE;
-	process->offset = offset % MEM_SIZE;
+	offset %= MEM_SIZE;
+	hook_process_jump(vm, process, param[0], process->carry ? offset : 0);
+	if (process->carry == false)
+		return (invalid(vm, process, 0b11000000, 9));
+	process->offset = offset;
 	return (true);
 }
 
@@ -81,11 +80,10 @@ bool		ft_fork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		.cycle_to_do = 1
 	};
 	copy_process(new_process, process);
-	read_opcode(vm, new_process);
-//	if (new_process->cycle_to_do != 0)
-//		new_process->cycle_to_do++;
+	hook_process_spawn(new_process, process, new_process->offset);
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "P %4d | fork %d (%d)\n", vm->c_pc, save,
 				(save % IDX_MOD) + process->offset);
+	read_opcode(vm, new_process);
 	return (valid(vm, process, 0b11000000, 12));
 }

@@ -60,7 +60,7 @@ vm asm disasm:
 vm.wasm: CC = ${HOME}/.brew/opt/llvm/bin/clang
 vm.wasm: CFLAGS += --target=wasm32 -nostdlib -isystem ./wasm/libc -include wasm/exports.h -ffunction-sections -fdata-sections
 vm.wasm: LDFLAGS = -Wl,--no-entry -Wl,--allow-undefined -Wl,--export-dynamic -Wl,--import-memory
-vm.wasm: $(addsuffix .wasm, $(filter-out %/vm.o, $(OBJS_VM) $(OBJS_COMMON) $(OBJS_DIR)/glue.o))
+vm.wasm: $(addsuffix .wasm, $(filter-out %/vm.o %/hooks.o, $(OBJS_VM) $(OBJS_COMMON) $(OBJS_DIR)/glue.o))
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 	wasm-opt -Oz $@ -o $@
 

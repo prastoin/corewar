@@ -64,6 +64,7 @@ void	affsti(t_vm *vm, uint8_t op1[REG_SIZE], t_process *process,
 	adress = (conv_bin_num(adr, REG_SIZE)) % IDX_MOD;
 	mem_write(vm->mem, process->registre[param[0] - 1],
 			process->offset + adress, REG_SIZE);
+	hook_process_memory_write(process, process->offset + adress, REG_SIZE);
 	if (vm->flags.verbose)
 	{
 		ft_putf_fd(vm->v_fd, "P %4d | sti r%d %D %D\n", vm->c_pc, param[0],

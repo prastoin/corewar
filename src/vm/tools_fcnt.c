@@ -41,23 +41,10 @@ size_t	get_decale(uint8_t ocp, int opcode)
 bool	carry_up(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 {
 	size_t decale;
-	size_t i;
 
-	i = 0;
 	process->carry = true;
 	decale = get_decale(ocp, opcode);
-	if (vm->flags.verbose)
-	{
-		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale,
-				process->offset, ((process->offset + decale)));
-		while (i < decale)
-		{
-			ft_putf_fd(vm->v_fd, "%2x ", vm->mem[(process->offset + i)
-					% MEM_SIZE]);
-			i++;
-		}
-		ft_putf_fd(vm->v_fd, "\n");
-	}
+	hook_process_adv(vm, process, decale);
 	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (true);
 }
@@ -65,48 +52,20 @@ bool	carry_up(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 bool	carry_down(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 {
 	size_t decale;
-	size_t i;
 
-	i = 0;
 	decale = get_decale(ocp, opcode);
 	process->carry = false;
-	if (vm->flags.verbose)
-	{
-		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale,
-				process->offset, ((process->offset + decale)));
-		while (i < decale)
-		{
-			ft_putf_fd(vm->v_fd, "%2x ", vm->mem[(process->offset + i)
-					% MEM_SIZE]);
-			i++;
-		}
-		ft_putf_fd(vm->v_fd, "\n");
-	}
+	hook_process_adv(vm, process, decale);
 	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (false);
 }
 
-#include <stdio.h>
-
 bool	invalid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 {
 	size_t decale;
-	size_t i;
 
-	i = 0;
 	decale = get_decale(ocp, opcode);
-	if (vm->flags.verbose)
-	{
-		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale,
-				process->offset, ((process->offset + decale)));
-		while (i < decale)
-		{
-			ft_putf_fd(vm->v_fd, "%2x ",
-					vm->mem[(process->offset + i) % MEM_SIZE]);
-			i++;
-		}
-		ft_putf_fd(vm->v_fd, "\n");
-	}
+	hook_process_adv(vm, process, decale);
 	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (false);
 }
@@ -118,18 +77,7 @@ bool	valid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 
 	i = 0;
 	decale = get_decale(ocp, opcode);
-	if (vm->flags.verbose)
-	{
-		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", decale,
-				process->offset, ((process->offset + decale)));
-		while (i < decale)
-		{
-			ft_putf_fd(vm->v_fd, "%2x ",
-					vm->mem[(process->offset + i) % MEM_SIZE]);
-			i++;
-		}
-		ft_putf_fd(vm->v_fd, "\n");
-	}
+	hook_process_adv(vm, process, decale);
 	process->offset = (process->offset + decale) % MEM_SIZE;
 	return (true);
 }

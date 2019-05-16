@@ -78,6 +78,7 @@ bool		lfork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		.cycle_to_do = 1
 	};
 	copy_process(new_process, process);
+	hook_process_spawn(new_process, process, new_process->offset);
 	read_opcode(vm, new_process);
 //	if (new_process->cycle_to_do != 0)
 //		new_process->cycle_to_do++;
