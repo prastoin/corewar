@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/02 14:20:14 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/04 14:17:13 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/19 14:11:12 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,18 +60,17 @@ t_process	*add_process(t_vec **list)
 }
 
 #else
-# define P_CAPACITY (30000)
+# define PAGESIZE (1024*64)
 
-static uint8_t	g_memory[sizeof(t_vec) + P_CAPACITY * sizeof(t_process)];
+extern char __heap_base;
 
 t_vec		*create_process(size_t capacity)
 {
 	t_vec	*list;
 
-	(void)capacity;
-	list = (t_vec *)g_memory;
+	list = (t_vec *)&__heap_base;
 	*list = (t_vec) {
-		.capacity = P_CAPACITY,
+		.capacity = (__builtin_wasm_memory_size(0) * PAGESIZE - (uintptr_t)&__heap_base - sizeof(t_vec)) / sizeof(t_process),
 		.len = 0
 	};
 	return (list);
@@ -80,7 +79,13 @@ t_vec		*create_process(size_t capacity)
 t_process	*add_process(t_vec **list)
 {
 	if ((*list)->len == (*list)->capacity)
-		__builtin_trap();
+	{
+		if (((*list)->capacity * sizeof(t_vec)) / PAGESIZE)
+			__builtin_wasm_memory_grow(0, ((*list)->capacity * sizeof(t_vec)) / PAGESIZE);
+		else
+			__builtin_wasm_memory_grow(0, 1);
+		(*list)->capacity = (__builtin_wasm_memory_size(0) * PAGESIZE - (uintptr_t)&__heap_base - sizeof(t_vec)) / sizeof(t_process);
+	}
 	return ((*list)->processes + (*list)->len++);
 }
 
