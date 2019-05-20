@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/20 16:14:23 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/20 19:06:51 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,6 +192,8 @@ void			ft_dump_mem(t_vm vm, bool ex);
 void	hook_process_adv(t_vm *vm, t_process *process, size_t diff);
 void	hook_process_jump(t_vm *vm, t_process *process, uint32_t param, size_t offset);
 void	hook_process_spawn(t_process *process, t_process *parent, size_t offset);
+void	hook_process_live(t_process *process, size_t player);
+void	hook_process_die(t_process *process);
 bool	hook_cycle_end();
 void	hook_process_wait_opcode(t_process *process, uint8_t opcode);
 void	hook_process_memory_write(t_process *process, size_t offset, size_t size);

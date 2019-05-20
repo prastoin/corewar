@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:22:08 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/20 16:28:05 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/20 19:06:27 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ bool		live(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	(void)ocp;
 	player = param[0];
 	player = -player;
+	hook_process_live(process, player);
 	process->said_live = true;
 	process->last_cycle_live = vm->cycle;
 	if (player >= 1 && player <= MAX_PLAYERS)

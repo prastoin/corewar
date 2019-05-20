@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:40:50 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/20 16:14:54 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/20 19:06:41 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ bool		cycle_decremente_die(t_vm *vm)
 	if (vm->nbr_live >= NBR_LIVE || vm->check + 1 == MAX_CHECKS)
 	{
 		vm->cycle_to_die -= CYCLE_DELTA;
+		hook_cycle_to_die(vm->cycle_to_die);
 		if (vm->flags.verbose)
 			ft_putf_fd(vm->v_fd, "Cycle to die is now %d\n", vm->cycle_to_die);
 		vm->check = 0;
@@ -74,6 +75,7 @@ bool		kill_process(t_vm *vm, size_t dead)
 						- vm->vec->processes[i].last_cycle_live,
 						vm->cycle_to_die);
 			vm->vec->processes[i].is_alive = false;
+			hook_process_die(vm->vec->processes + i);
 		}
 		if (vm->vec->processes[i].is_alive == false)
 			dead++;

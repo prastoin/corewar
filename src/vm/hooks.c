@@ -60,3 +60,11 @@ void	hook_process_memory_write(t_process *process, size_t offset, size_t size)
 void	hook_cycle_to_die(size_t value)
 {
 }
+
+void	hook_process_live(t_process *process, size_t player)
+{
+}
+
+void	hook_process_die(t_process *process)
+{
+}
