@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/14 11:06:39 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/20 16:15:24 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 #include <limits.h>
 #define FLAG_N_MSG "Choose the number for a player"
 #define FLAG_D_MSG "Dump memory on 0 at N cycle"
-#define FLAG_R_MSG "On sait pas on parse"
-#define FLAG_B_MSG "Affichage binnaire"
 #define FLAG_C_MSG "Affichage Ncurse"
 #define FLAG_V_MSG "Enabled Verbose mode"
 
@@ -44,7 +42,6 @@ bool		insert_player(t_vm *vm, char *name, int n, bool flag)
 			player[n - 1] = true;
 		vm->champ[n - 1].fd = fd;
 		vm->nbr_champ++;
-		vm->live[n - 1] = true;
 	}
 	return (true);
 }
@@ -108,8 +105,6 @@ int			main(int argc, char *argv[])
 	const t_arg args[] = {
 		{ARG_PLAYERS, 'n', "number", &players, FLAG_N_MSG},
 		{ARG_INT, 'd', "dump", &vm.flags.dump_c, FLAG_D_MSG},
-		{ARG_INT, 'r', "run", &vm.flags.run_c, FLAG_R_MSG},
-		{ARG_BOOLEAN, 'b', "bin_aff", &vm.flags.bin_o, FLAG_B_MSG},
 		{ARG_BOOLEAN, 'c', "ncurse_aff", &vm.flags.ncurse_o, FLAG_C_MSG},
 		{ARG_BOOLEAN, 'v', "verbose", &vm.flags.verbose, FLAG_V_MSG},
 		{ARG_END, 0, 0, 0, 0}

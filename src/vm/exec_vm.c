@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:40:50 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/09 14:45:29 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/20 16:14:54 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,21 +56,6 @@ bool		cycle_decremente_die(t_vm *vm)
 	return (true);
 }
 
-void		kill_player(t_vm *vm)
-{
-	size_t i;
-
-	i = 0;
-	while (i < MAX_PLAYERS)
-	{
-		if (vm->said_live[i] == true)
-			vm->said_live[i] = false;
-		else
-			vm->live[i] = false;
-		i++;
-	}
-}
-
 bool		kill_process(t_vm *vm, size_t dead)
 {
 	ssize_t i;
@@ -103,7 +88,6 @@ bool		vm_cycle_to_die(t_vm *vm)
 {
 	if (vm->i_to_die >= vm->cycle_to_die)
 	{
-		kill_player(vm);
 		if (!kill_process(vm, 0))
 			return (false);
 		if (!cycle_decremente_die(vm))

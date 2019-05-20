@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/08 16:42:27 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/20 16:14:23 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,6 @@ typedef struct	s_vm
 	uintmax_t	cycle;
 	intmax_t	i_to_die;
 	intmax_t	cycle_to_die;
-	bool		said_live[MAX_PLAYERS];
-	bool		live[MAX_PLAYERS];
 	size_t		nbr_champ;
 	size_t		nbr_live;
 	size_t		check;

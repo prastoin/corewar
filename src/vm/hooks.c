@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   hooks.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/05/20 15:37:18 by prastoin          #+#    #+#             */
+/*   Updated: 2019/05/20 16:20:17 by prastoin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "vm.h"
 
 void	hook_process_adv(t_vm *vm, t_process *process, size_t diff)
@@ -23,7 +35,7 @@ void	hook_process_jump(t_vm *vm, t_process *process, uint32_t param, size_t offs
 {
 	if (vm->flags.verbose)
 	{
-		ft_putf_fd(vm->v_fd, "P %4d | zjmp %d %s\n", process - vm->vec->processes,
+		ft_putf_fd(vm->v_fd, "P %4d | zjmp %d %s\n", process - vm->vec->processes + 1,
 			param, process->carry == true ? "OK" : "FAILED");
 	}
 }
