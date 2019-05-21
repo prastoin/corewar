@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/20 19:06:51 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/21 14:30:23 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,17 +58,18 @@ typedef struct	s_vec
 
 typedef struct	s_champ
 {
+#ifndef __wasm__
 	char	name[PROG_NAME_LENGTH];
 	char	comment[COMMENT_LENGTH];
 	char	prog[CHAMP_MAX_SIZE];
 	size_t	size;
-	size_t	fd;
+#endif
+	int		fd;
 	size_t	last_cycle_live;
 }				t_champ;
 
 typedef struct	s_vm
 {
-	size_t		v_fd;
 	size_t		c_pc;
 	uintmax_t	cycle;
 	intmax_t	i_to_die;
@@ -76,10 +77,13 @@ typedef struct	s_vm
 	size_t		nbr_champ;
 	size_t		nbr_live;
 	size_t		check;
-	t_champ		champ[MAX_PLAYERS];
-	t_vec		*vec;
 	uint8_t		mem[MEM_SIZE];
+	t_vec		*vec;
+	t_champ		champ[MAX_PLAYERS];
+//#ifndef __wasm__ TODO
+	size_t		v_fd;
 	t_flags		flags;
+//#endif
 }				t_vm;
 
 bool			ft_check_ocp(uint8_t ocp, uint8_t opcode);
@@ -192,10 +196,11 @@ void			ft_dump_mem(t_vm vm, bool ex);
 void	hook_process_adv(t_vm *vm, t_process *process, size_t diff);
 void	hook_process_jump(t_vm *vm, t_process *process, uint32_t param, size_t offset);
 void	hook_process_spawn(t_process *process, t_process *parent, size_t offset);
-void	hook_process_live(t_process *process, size_t player);
-void	hook_process_die(t_process *process);
-bool	hook_cycle_end();
-void	hook_process_wait_opcode(t_process *process, uint8_t opcode);
+void	hook_process_live(t_vm *vm, t_process *process, size_t player);
+void	hook_process_die(t_vm *vm, t_process *process);
+bool	hook_cycle_end(t_vm *vm);
+void	hook_process_read_opcode(t_process *process, uint8_t opcode);
 void	hook_process_memory_write(t_process *process, size_t offset, size_t size);
-void	hook_cycle_to_die(size_t value);
+void	hook_cycle_to_die(t_vm *vm, size_t value);
+void	hook_win(t_vm *vm, size_t player);
 #endif

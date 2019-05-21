@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/20 16:14:34 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/21 14:37:24 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,9 @@ bool		david_needs_to_work(t_vm *vm)
 	while (true)
 	{
 		exec_process(vm);
-		if (vm->cycle == (uintmax_t)vm->flags.dump_c)
-		{
-			dump_mem(vm);
-			break ;
-		}
 		if (!vm_cycle_to_die(vm))
 			return (true);
-		if (hook_cycle_end())
+		if (hook_cycle_end(vm))
 			break ;
 	}
 	return (false);

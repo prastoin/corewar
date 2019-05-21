@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:22:08 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/20 19:06:27 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/21 14:30:41 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,14 @@ bool		live(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	(void)ocp;
 	player = param[0];
 	player = -player;
-	hook_process_live(process, player);
 	process->said_live = true;
 	process->last_cycle_live = vm->cycle;
+	hook_process_live(vm, process, player);
 	if (player >= 1 && player <= MAX_PLAYERS)
 	{
 		if (vm->champ[player].fd)
 		{
 			vm->champ[player - 1].last_cycle_live = vm->cycle;
-			if (!vm->flags.verbose)
-				ft_putf_fd(1,
-						"un processus dit que le joueur %d(%s) est en vie\n",
-						player + 1, vm->champ[player].name);
 		}
 	}
 	vm->nbr_live++;
