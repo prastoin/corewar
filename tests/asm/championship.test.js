@@ -25,7 +25,7 @@ function run_process(command, args) {
         process.once('error', reject)
         setTimeout(() => {
             process.kill()
-        }, 1000)
+        }, 500)
     })
 }
 
@@ -114,4 +114,4 @@ it('Compiles champions of Corewar Championships', async () => {
     } finally {
         dir.cleanup()
     }
-})
+}, 10000)

@@ -6,7 +6,7 @@
 #    By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/15 10:32:31 by dde-jesu          #+#    #+#              #
-#    Updated: 2019/05/21 14:31:50 by dde-jesu         ###   ########.fr        #
+#    Updated: 2019/05/22 09:41:12 by dde-jesu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -74,6 +74,12 @@ re:
 	$(MAKE) fclean
 	$(MAKE) all
 
+tests/node_modules: tests/package-lock.json
+	cd tests; npm ci
+
+test: tests/node_modules asm
+	npm -C tests run test
+
 include $(wildcard $(DEPS_DIR)/**/*.d)
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re test

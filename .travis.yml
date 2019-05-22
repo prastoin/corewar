@@ -3,11 +3,10 @@ os: osx
 node_js:
   - "10"
 before_script:
-  - npm -C tests install
+  - make tests/node_modules
 script: 
-  - make
   - mkdir championship
-  - env EXPORT_CHAMPIONSHIP=$(pwd)/championship npm -C tests test
+  - env EXPORT_CHAMPIONSHIP=$(pwd)/championship make test
   - ls -R championship
 deploy:
   provider: pages
