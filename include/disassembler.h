@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 11:46:37 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/13 13:16:18 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/22 20:28:01 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # define DISASSEMBLER_H
 
 # include "common.h"
+# include "ft_string.h"
 
 typedef struct		s_diss
 {

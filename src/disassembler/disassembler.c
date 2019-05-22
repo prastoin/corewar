@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 11:13:26 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/14 11:01:21 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/22 20:23:56 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ bool		bin_parse_header(size_t fd, t_head *header)
 	return (true);
 }
 
-bool	begin_diss(t_diss diss)
+bool		begin_diss(t_diss diss)
 {
 	t_head			header;
 	t_read_prog		prog;
@@ -93,12 +93,12 @@ bool	begin_diss(t_diss diss)
 	return (true);
 }
 
-int		main(int argc, char *argv[])
+int			main(int argc, char *argv[])
 {
-	t_diss	diss;
-	char	*name;
-	int		ret;
-	const t_arg args[] = {
+	t_diss			diss;
+	char			*name;
+	int				ret;
+	const t_arg		args[] = {
 		{ARG_STR, 'o', "output", &name, "Output file name"}
 	};
 
@@ -108,7 +108,8 @@ int		main(int argc, char *argv[])
 	if ((diss.fd_in = open(argv[ret], O_RDONLY)) <= 0)
 		return (error_message("Open failed"));
 	diss.fd_out = 1;
-	if (name && (diss.fd_out = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) <= 0)
+	if (name && (diss.fd_out = open(name, O_RDWR
+					| O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) <= 0)
 		return (error_message("Created failed"));
 	begin_diss(diss);
 	return (0);
