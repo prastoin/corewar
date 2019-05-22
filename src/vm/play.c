@@ -6,12 +6,11 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 10:13:41 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/21 14:37:24 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/22 23:15:22 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
-#include "ft_string.h"
 
 void		exec_process(t_vm *vm)
 {

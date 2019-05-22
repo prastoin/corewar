@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/04 14:58:16 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 22:21:32 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/22 23:22:12 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ void	locate_error(t_write *error, t_span begin)
 	io_write(error, "\n", 1);
 }
 
-void	underline_error(t_write *error, t_error pack, char *line, size_t line_len)
+void	underline_error(t_write *error, t_error pack, char *line,
+		size_t line_len)
 {
 	size_t i;
 
@@ -61,7 +62,8 @@ void	print_first(t_write *error, t_span *begin)
 	io_write(error, CSI_RESET, (sizeof(CSI_RESET) - 1));
 }
 
-void	print_second(t_write *error, t_error pack, char buffer[4096], size_t len)
+void	print_second(t_write *error, t_error pack, char buffer[4096],
+		size_t len)
 {
 	char	*last;
 	char	*tab;

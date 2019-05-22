@@ -6,19 +6,14 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 22:28:46 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/22 23:19:47 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
-#include "common.h"
 #include "ft_string.h"
 #include <fcntl.h>
 #include <limits.h>
-#define FLAG_N_MSG "Choose the number for a player"
-#define FLAG_D_MSG "Dump memory on 0 at N cycle"
-#define FLAG_C_MSG "Affichage Ncurse"
-#define FLAG_V_MSG "Enabled Verbose mode"
 
 bool		insert_player(t_vm *vm, char *name, int n, bool flag)
 {

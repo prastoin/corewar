@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 11:46:37 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/22 22:57:45 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/22 23:24:10 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@
 # include "common.h"
 # include "ft_string.h"
 
-typedef struct		s_diss
+typedef struct	s_diss
 {
-	int fd_in;
-	int fd_out;
-}					t_diss;
+	int	fd_in;
+	int	fd_out;
+}				t_diss;
 
 typedef struct	s_head
 {
@@ -38,15 +38,15 @@ typedef struct	s_read_prog
 	uint32_t	ocp;
 }				t_read_prog;
 
-size_t		diss_get_decale(uint8_t ocp, int opcode);
-void		diss_get_params_ocp(const uint8_t mem[CHAMP_MAX_SIZE],
+size_t			diss_get_decale(uint8_t ocp, int opcode);
+void			diss_get_params_ocp(const uint8_t mem[CHAMP_MAX_SIZE],
 		t_read_prog *prog, t_diss diss);
-void		diss_mem_read(const uint8_t mem[CHAMP_MAX_SIZE], uint8_t *dst,
+void			diss_mem_read(const uint8_t mem[CHAMP_MAX_SIZE], uint8_t *dst,
 		ssize_t offset, size_t n);
-intmax_t	conv_bin(uint8_t *mem, size_t len);
-bool		diss_read_opcode(const uint8_t mem[CHAMP_MAX_SIZE],
+intmax_t		conv_bin(uint8_t *mem, size_t len);
+bool			diss_read_opcode(const uint8_t mem[CHAMP_MAX_SIZE],
 		t_read_prog *prog);
-bool		diss_pass(const uint8_t mem[CHAMP_MAX_SIZE], t_read_prog *prog,
+bool			diss_pass(const uint8_t mem[CHAMP_MAX_SIZE], t_read_prog *prog,
 		t_diss diss);
 
 #endif

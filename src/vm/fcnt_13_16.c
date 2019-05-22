@@ -6,13 +6,12 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/07 16:07:17 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/22 23:15:00 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 #include "ft_string.h"
-#include "stdio.h"
 
 bool		lld(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 {
@@ -80,8 +79,6 @@ bool		lfork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	copy_process(new_process, process);
 	hook_process_spawn(new_process, process, new_process->offset);
 	read_opcode(vm, new_process);
-//	if (new_process->cycle_to_do != 0)
-//		new_process->cycle_to_do++;
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "P %4d | lfork %d (%d)\n", vm->c_pc, save,
 				save + process->offset);

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 15:37:18 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/21 14:39:29 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/22 23:31:07 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,13 @@ void	hook_process_adv(t_vm *vm, t_process *process, size_t diff)
 	}
 }
 
-void	hook_process_jump(t_vm *vm, t_process *process, uint32_t param, size_t offset)
+void	hook_process_jump(t_vm *vm, t_process *process, uint32_t param,
+		size_t offset)
 {
 	if (vm->flags.verbose)
 	{
-		ft_putf_fd(vm->v_fd, "P %4d | zjmp %d %s\n", process - vm->vec->processes + 1,
+		ft_putf_fd(vm->v_fd, "P %4d | zjmp %d %s\n",
+				process - vm->vec->processes + 1,
 			param, process->carry == true ? "OK" : "FAILED");
 	}
 }
@@ -60,7 +62,8 @@ void	hook_process_read_opcode(t_process *process, uint8_t opcode)
 {
 }
 
-void	hook_process_memory_write(t_process *process, size_t offset, size_t size)
+void	hook_process_memory_write(t_process *process, size_t offset,
+		size_t size)
 {
 }
 
@@ -100,5 +103,6 @@ void	hook_win(t_vm *vm, size_t winner)
 		ft_putf_fd(vm->v_fd, "Contestant %U, \"%s\", has won !\n", winner + 1,
 				vm->champ[winner].name);
 	else
-		ft_putf("%s a gagne avec le num %d\n", vm->champ[winner].name, winner + 1);
+		ft_putf("%s a gagne avec le num %d\n", vm->champ[winner].name,
+				winner + 1);
 }

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 22:08:38 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/22 23:26:08 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,15 @@
 # define OCP_DIR 0b10
 # define OCP_REG 0b01
 # define OCP_IND 0b11
+
+# define REG_T 0b01
+# define IND_T 0b11
+# define DIR_T 0b10
+
+# define FLAG_N_MSG "Choose the player's number"
+# define FLAG_D_MSG "Dump memory on 0 at N cycle"
+# define FLAG_C_MSG "Affichage Ncurse"
+# define FLAG_V_MSG "Enabled Verbose mod"
 
 typedef struct	s_datan
 {
@@ -58,12 +67,14 @@ typedef struct	s_vec
 
 typedef struct	s_champ
 {
-#ifndef __wasm__
+# ifndef __wasm__
+
 	char	name[PROG_NAME_LENGTH];
 	char	comment[COMMENT_LENGTH];
 	char	prog[CHAMP_MAX_SIZE];
 	size_t	size;
-#endif
+# endif
+
 	int		fd;
 	size_t	last_cycle_live;
 }				t_champ;
@@ -193,14 +204,17 @@ void			ft_dump_mem(t_vm vm, bool ex);
 /*
 ** Hooks
 */
-void	hook_process_adv(t_vm *vm, t_process *process, size_t diff);
-void	hook_process_jump(t_vm *vm, t_process *process, uint32_t param, size_t offset);
-void	hook_process_spawn(t_process *process, t_process *parent, size_t offset);
-void	hook_process_live(t_vm *vm, t_process *process, size_t player);
-void	hook_process_die(t_vm *vm, t_process *process);
-bool	hook_cycle_end(t_vm *vm);
-void	hook_process_read_opcode(t_process *process, uint8_t opcode);
-void	hook_process_memory_write(t_process *process, size_t offset, size_t size);
-void	hook_cycle_to_die(t_vm *vm, size_t value);
-void	hook_win(t_vm *vm, size_t player);
+void			hook_process_adv(t_vm *vm, t_process *process, size_t diff);
+void			hook_process_jump(t_vm *vm, t_process *process, uint32_t param,
+		size_t offset);
+void			hook_process_spawn(t_process *process, t_process *parent,
+		size_t offset);
+void			hook_process_live(t_vm *vm, t_process *process, size_t player);
+void			hook_process_die(t_vm *vm, t_process *process);
+bool			hook_cycle_end(t_vm *vm);
+void			hook_process_read_opcode(t_process *process, uint8_t opcode);
+void			hook_process_memory_write(t_process *process, size_t offset,
+		size_t size);
+void			hook_cycle_to_die(t_vm *vm, size_t value);
+void			hook_win(t_vm *vm, size_t player);
 #endif

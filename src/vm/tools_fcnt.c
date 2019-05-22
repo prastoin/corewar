@@ -6,15 +6,11 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 11:18:42 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 22:27:34 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/22 23:16:22 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
-
-#define REG_T 0b01
-#define IND_T 0b11
-#define DIR_T 0b10
 
 size_t	get_decale(uint8_t ocp, int opcode)
 {
