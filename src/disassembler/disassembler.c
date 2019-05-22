@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 11:13:26 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/22 20:23:56 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/22 22:37:44 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ int			main(int argc, char *argv[])
 	char			*name;
 	int				ret;
 	const t_arg		args[] = {
-		{ARG_STR, 'o', "output", &name, "Output file name"}
+		{Arg_Str, 'o', "output", &name, "Output file name"}
 	};
 
 	name = NULL;

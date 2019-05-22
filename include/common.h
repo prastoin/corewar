@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 11:30:59 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/13 14:30:09 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/22 22:42:37 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,12 @@
 # define INVALID_VALUE (-3)
 
 typedef enum	e_core_param {
-	PARAM_NONE = 0b0,
-	PARAM_DIRECT = 0b1,
-	PARAM_INDIRECT = 0b10,
-	PARAM_REGISTER = 0b100,
-	PARAM_ALL = 0b111,
-	PARAM_INDEX = 0b1000
+	Param_None = 0b0,
+	Param_Direct = 0b1,
+	Param_Indirect = 0b10,
+	Param_Register = 0b100,
+	Param_All = 0b111,
+	Param_Index = 0b1000
 }				t_core_param;
 
 typedef struct	s_core_tab
@@ -85,11 +85,11 @@ extern t_core_tab g_ops[17];
 
 typedef enum	e_arg_type
 {
-	ARG_END = 0,
-	ARG_PLAYERS,
-	ARG_BOOLEAN,
-	ARG_INT,
-	ARG_STR
+	Arg_End = 0,
+	Arg_Players,
+	Arg_Boolean,
+	Arg_Int,
+	Arg_Str
 }				t_type;
 
 typedef	struct	s_arg

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/05 13:47:57 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/07 15:25:26 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/22 22:27:09 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	get_params_ocp(t_vm *vm, t_process *process, uint8_t ocp,
 		if ((ocp >> ((3 - i) * 2) & 0b11) == 0b01)
 			size = 1;
 		else if ((ocp >> ((3 - i) * 2) & 0b11) == 0b10)
-			size = g_ops[opcode].params[i] & PARAM_INDEX ? 2 : 4;
+			size = g_ops[opcode].params[i] & Param_Index ? 2 : 4;
 		else if ((ocp >> ((3 - i) * 2) & 0b11) == 0b11)
 			size = 2;
 		mem_read(vm->mem, stck, process->offset + tmp, size);
@@ -46,11 +46,11 @@ void	get_params_no_ocp(t_vm *vm, t_process *process, size_t opcode,
 	uint8_t	stck[4];
 
 	size = 0;
-	if (g_ops[opcode].params[0] & PARAM_REGISTER)
+	if (g_ops[opcode].params[0] & Param_Register)
 		size = 1;
-	else if (g_ops[opcode].params[0] & PARAM_DIRECT)
-		size = g_ops[opcode].params[0] & PARAM_INDEX ? 2 : 4;
-	else if (g_ops[opcode].params[0] & PARAM_INDIRECT)
+	else if (g_ops[opcode].params[0] & Param_Direct)
+		size = g_ops[opcode].params[0] & Param_Index ? 2 : 4;
+	else if (g_ops[opcode].params[0] & Param_Indirect)
 		size = 2;
 	mem_read(vm->mem, stck, process->offset + 1, size);
 	params[0] = conv_bin_num(stck, size);

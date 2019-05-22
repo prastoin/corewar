@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/27 14:51:06 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/14 11:06:52 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/22 22:30:39 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ int			get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2])
 
 	arg = *c_arg + i[1];
 	value = NULL;
-	if (opt->type == ARG_BOOLEAN)
+	if (opt->type == Arg_Boolean)
 		*(bool *)opt->value = true;
-	else if (opt->type == ARG_INT || opt->type == ARG_STR)
+	else if (opt->type == Arg_Int || opt->type == Arg_Str)
 	{
 		if (*arg == '=')
 		{
@@ -55,10 +55,10 @@ int			get_value(char **c_arg, const t_arg *opt, char *argv[], int i[2])
 			value = argv[++i[0]];
 		if (!value)
 			return (NO_ARG);
-		(opt->type == ARG_INT) ? (void)(*(int *)opt->value = ft_atoi(value))
+		(opt->type == Arg_Int) ? (void)(*(int *)opt->value = ft_atoi(value))
 			: (void)(*(char **)opt->value = value);
 	}
-	else if (opt->type == ARG_PLAYERS)
+	else if (opt->type == Arg_Players)
 		return (args_players(opt, value, argv, i));
 	return (0);
 }
@@ -74,7 +74,7 @@ bool		parse_long(const t_arg opt[], char **arg, char *argv[], size_t *i)
 		len = res - *arg;
 	else
 		len = ft_strlen(*arg);
-	while (opt->type != ARG_END)
+	while (opt->type != Arg_End)
 	{
 		if (ft_strncmp((uint8_t*)opt->long_name, *arg, len) == 0)
 		{
@@ -94,7 +94,7 @@ bool		parse_short(const t_arg opt[], char **arg, char *argv[], size_t *i)
 	int		indexes[2];
 	int		err;
 
-	while (opt->type != ARG_END)
+	while (opt->type != Arg_End)
 	{
 		if (opt->short_name == **arg)
 		{

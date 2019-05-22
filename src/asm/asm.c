@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 12:17:46 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/22 22:33:35 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 #include "asm.h"
 #include <fcntl.h>
 #include <limits.h>
-
-#define FIX_SIZE_ERR "Program too big (Exceed CHAMP_MAX_SIZE)"
 
 char	*change_ext(char *name)
 {
@@ -43,7 +41,7 @@ int		read_fixed(t_read *in, char *name)
 	out.buffer = buffer;
 	out.fd = 0;
 	if (!asm_transform(&out, in) && out.fd == -1)
-		return (print_small_error(in, ERR, FIX_SIZE_ERR, 0));
+		return (print_small_error(in, Err, FIX_SIZE_ERR, 0));
 	else if (in->write_able)
 	{
 		if ((out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR))
@@ -55,7 +53,7 @@ int		read_fixed(t_read *in, char *name)
 			return (0);
 		}
 		else
-			return (print_small_error(in, ERR, "Cannot open output", name));
+			return (print_small_error(in, Err, "Cannot open output", name));
 	}
 	else
 		return (1);
@@ -80,7 +78,7 @@ int		read_streaming(t_read *in, char *name)
 		return (ret ? 0 : 1);
 	}
 	else
-		return (print_small_error(in, ERR, "Cannot open output file", name));
+		return (print_small_error(in, Err, "Cannot open output file", name));
 }
 
 int		main(int argc, char *argv[])
@@ -90,9 +88,9 @@ int		main(int argc, char *argv[])
 	int			i;
 	t_read		in;
 	const t_arg	args[] = {
-		{ARG_BOOLEAN, 's', "streaming", &flag.streaming, FLAG_S_MSG},
-		{ARG_BOOLEAN, 'e', "Werror", &in.werror, "Warnings become errors"},
-		{ARG_END, 0, 0, 0, 0}};
+		{Arg_Boolean, 's', "streaming", &flag.streaming, FLAG_S_MSG},
+		{Arg_Boolean, 'e', "Werror", &in.werror, "Warnings become errors"},
+		{Arg_End, 0, 0, 0, 0}};
 
 	flag = (t_flag) {0, 0};
 	in.werror = false;
@@ -100,9 +98,9 @@ int		main(int argc, char *argv[])
 		return (args_usage(args, argv[0], "source_file", ARGS_MSG));
 	files[IN] = argv[i];
 	if (!(files[OUT] = change_ext(files[IN])))
-		return (print_small_error(&in, ERR, "Invalid file name", files[IN]));
+		return (print_small_error(&in, Err, "Invalid file name", files[IN]));
 	if ((i = open(files[IN], O_RDONLY)) <= 0)
-		return (print_small_error(&in, ERR, "Open failed", files[IN]));
+		return (print_small_error(&in, Err, "Open failed", files[IN]));
 	in = init_read(i, files[IN], in.werror);
 	i = (flag.streaming ? read_streaming : read_fixed)(&in, files[OUT]);
 	close(i);

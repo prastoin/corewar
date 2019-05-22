@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 16:35:32 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/22 22:23:11 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,14 @@
 # define HEADER_SIZE (16 + PROG_NAME_LENGTH + COMMENT_LENGTH)
 # define EXT ".cor"
 
+# define FIX_SIZE_ERR "Program too big (Exceed CHAMP_MAX_SIZE)"
+
+# define SEPARATOR "│"
+
+# define MSG "Expected on of "
+# define SEV_ERROR CSI_RED "error: "
+# define SEV_WARNING CSI_YELLOW "warning: "
+
 typedef struct	s_flag
 {
 	bool	streaming;
@@ -35,8 +43,8 @@ typedef struct	s_flag
 
 typedef enum	e_severity
 {
-	WARN,
-	ERR
+	Warn,
+	Err
 }				t_severity;
 
 typedef struct	s_header
@@ -45,15 +53,6 @@ typedef struct	s_header
 	char	comment[COMMENT_LENGTH];
 	size_t	size;
 }				t_header;
-
-typedef enum	e_param_type
-{
-	TYPE_LABEL_INDIRECT,
-	TYPE_LABEL_DIRECT,
-	TYPE_OFFSET_DIRECT,
-	TYPE_OFFSET_INDIRECT,
-	TYPE_REGISTER
-}				t_param_type;
 
 typedef struct	s_label
 {

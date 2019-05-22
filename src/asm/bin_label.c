@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/04 15:25:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/04 16:25:11 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/22 22:35:14 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ void		bin_resolve_label(t_write *out, size_t offset)
 			bin_padding_ocp(ocp, out, &size, opcode);
 		}
 		else
-			size = g_ops[opcode].params[0] & PARAM_DIRECT
-				&& (!(g_ops[opcode].params[0] & PARAM_INDEX)) ? 4 : 2;
+			size = g_ops[opcode].params[0] & Param_Direct
+				&& (!(g_ops[opcode].params[0] & Param_Index)) ? 4 : 2;
 		out->nbr_write = src;
 		offset = bin_multi_label_case(offset, size, out, ocp);
 	}

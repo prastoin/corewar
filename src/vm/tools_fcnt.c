@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 11:18:42 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 14:47:08 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/22 22:27:34 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ size_t	get_decale(uint8_t ocp, int opcode)
 		if (type == 0b01)
 			size += 1;
 		else if (type == 0b10)
-			size += g_ops[opcode].params[i] & PARAM_INDEX ? 2 : 4;
+			size += g_ops[opcode].params[i] & Param_Index ? 2 : 4;
 		else if (type == 0b11)
 			size += 2;
 		i++;

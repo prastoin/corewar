@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 17:54:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 10:27:01 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/22 22:21:13 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 
 t_write	init_write_error(uint8_t *buffer, size_t size)
 {
-	t_write	err;
+	t_write	error;
 
-	err = (t_write){
+	error = (t_write){
 		.buffer = buffer,
 		.index = 0,
 		.nbr_write = 0,
@@ -25,56 +25,56 @@ t_write	init_write_error(uint8_t *buffer, size_t size)
 		.fd = 2,
 		.buffer_size = size
 	};
-	return (err);
+	return (error);
 }
 
-int		print_small_error(t_read *in, t_severity severity, char *error
+int		print_small_error(t_read *in, t_severity severity, char *error_str
 		, char *expected)
 {
-	t_write	err;
+	t_write	error;
 	uint8_t	buffer[4096];
 
-	err = init_write_error(buffer, sizeof(buffer));
-	if (severity == ERR || in->werror)
+	error = init_write_error(buffer, sizeof(buffer));
+	if (severity == Err || in->werror)
 	{
-		severity = ERR;
+		severity = Err;
 		in->write_able = false;
 	}
-	error_severity(&err, severity);
-	error_msg(&err, error);
+	error_severity(&error, severity);
+	error_msg(&error, error_str);
 	if (expected)
 	{
-		io_write(&err, ": ", 2);
-		io_write(&err, expected, ft_strlen(expected));
+		io_write(&error, ": ", 2);
+		io_write(&error, expected, ft_strlen(expected));
 	}
-	io_write(&err, CSI_RESET, (sizeof(CSI_RESET) - 1));
-	io_write(&err, "\n", 1);
-	io_flush(&err);
+	io_write(&error, CSI_RESET, (sizeof(CSI_RESET) - 1));
+	io_write(&error, "\n", 1);
+	io_flush(&error);
 	return (1);
 }
 
 void	print_error(t_read *in, t_severity severity, char *erro, char *expected)
 {
 	size_t	i;
-	t_write	err;
+	t_write	error;
 	uint8_t	buffer[4096];
 
-	err = init_write_error(buffer, sizeof(buffer));
+	error = init_write_error(buffer, sizeof(buffer));
 	i = 0;
-	if (severity == ERR || in->werror)
+	if (severity == Err || in->werror)
 	{
-		severity = ERR;
+		severity = Err;
 		in->write_able = false;
 	}
-	error_severity(&err, severity);
-	error_msg(&err, erro);
-	locate_error(&err, in->begin);
-	error_contxt_print(&err, (t_error){&in->begin, &in->span, &severity}, 0);
+	error_severity(&error, severity);
+	error_msg(&error, erro);
+	locate_error(&error, in->begin);
+	error_contxt_print(&error, (t_error){&in->begin, &in->span, &severity}, 0);
 	if (expected)
 	{
-		io_write(&err, " ", 1);
-		io_write(&err, expected, ft_strlen(expected));
+		io_write(&error, " ", 1);
+		io_write(&error, expected, ft_strlen(expected));
 	}
-	io_write(&err, CSI_RESET "\n\n", (sizeof(CSI_RESET) - 1 + 2));
-	io_flush(&err);
+	io_write(&error, CSI_RESET "\n\n", (sizeof(CSI_RESET) - 1 + 2));
+	io_flush(&error);
 }

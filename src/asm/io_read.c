@@ -6,12 +6,11 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:50:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/04 15:24:12 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/22 21:50:04 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "asm.h"
-#include "ft_string.h"
 
 ssize_t	io_fill(t_read *rd)
 {

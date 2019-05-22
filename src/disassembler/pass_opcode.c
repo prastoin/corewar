@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/05 13:47:57 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 20:56:55 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/22 22:46:28 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ size_t	diss_get_decale(uint8_t ocp, int opcode)
 		if (type == 0b01)
 			size += 1;
 		else if (type == 0b10)
-			size += g_ops[opcode].params[i] & PARAM_INDEX ? 2 : 4;
+			size += g_ops[opcode].params[i] & Param_Index ? 2 : 4;
 		else if (type == 0b11)
 			size += 2;
 		i++;
@@ -50,7 +50,7 @@ void		diss_mem_read(const uint8_t mem[MEM_SIZE], uint8_t *dst,
 	}
 }
 
-void	aff_atribute_ocp(t_diss diss, uint32_t ocp, size_t size, size_t i)
+void	aff_atribute_ocp(t_diss diss, uint32_t ocp, size_t i)
 {
 		if ((ocp >> ((3 - i) * 2) & 0b11) == 0b01)
 			ft_putf_fd(diss.fd_out, "r");
@@ -72,11 +72,11 @@ void	diss_get_params_ocp(const uint8_t mem[CHAMP_MAX_SIZE],
 	tmp = 2;
 	while (g_ops[prog->opcode].params[i])
 	{
-		aff_atribute_ocp(diss, ocp, size, i);
+		aff_atribute_ocp(diss, ocp, i);
 		if ((ocp >> ((3 - i) * 2) & 0b11) == 0b01)
 			size = 1;
 		else if ((ocp >> ((3 - i) * 2) & 0b11) == 0b10)
-			size = g_ops[prog->opcode].params[i] & PARAM_INDEX ? 2 : 4;
+			size = g_ops[prog->opcode].params[i] & Param_Index ? 2 : 4;
 		else if ((ocp >> ((3 - i) * 2) & 0b11) == 0b11)
 			size = 2;
 		diss_mem_read(mem, stck, prog->offset + tmp, size);
@@ -96,17 +96,17 @@ void	diss_get_params_no_ocp(const uint8_t mem[CHAMP_MAX_SIZE],
 	uint8_t			stck[4];
 
 	size = 0;
-	if (g_ops[opcode].params[0] & PARAM_REGISTER)
+	if (g_ops[opcode].params[0] & Param_Register)
 	{
 		ft_putf_fd(diss.fd_out, "r");
 		size = 1;
 	}
-	else if (g_ops[opcode].params[0] & PARAM_DIRECT)
+	else if (g_ops[opcode].params[0] & Param_Direct)
 	{
 		ft_putf_fd(diss.fd_out, "%");
-		size = g_ops[opcode].params[0] & PARAM_INDEX ? 2 : 4;
+		size = g_ops[opcode].params[0] & Param_Index ? 2 : 4;
 	}
-	else if (g_ops[opcode].params[0] & PARAM_INDIRECT)
+	else if (g_ops[opcode].params[0] & Param_Indirect)
 		size = 2;
 	diss_mem_read(mem, stck, prog->offset + 1, size);
 	ft_putf_fd(diss.fd_out, "%d\n", conv_bin(stck, size));
@@ -138,7 +138,7 @@ bool		diss_check_ocp(uint8_t ocp, uint8_t opcode)
 }
 
 bool	diss_read_params(const uint8_t mem[CHAMP_MAX_SIZE], t_read_prog *prog,
-		int32_t params[4], t_diss diss)
+		t_diss diss)
 {
 	const int	opcode = prog->opcode;
 	uint8_t		tampom[1];
@@ -159,8 +159,8 @@ bool	diss_read_params(const uint8_t mem[CHAMP_MAX_SIZE], t_read_prog *prog,
 		ft_putf_fd(diss.fd_out, "	%s%s", g_ops[opcode].name,
 				&"        "[ft_strlen(g_ops[opcode].name)]);
 		diss_get_params_no_ocp(mem, prog, diss);
-		prog->offset +=
-			diss_get_decale(opcode == 1 ? 0b10000000 : 0b11000000, opcode);
+		prog->offset += diss_get_decale(opcode == 1 ? 0b10000000 : 0b11000000,
+				opcode);
 	}
 	return (true);
 }
@@ -168,9 +168,7 @@ bool	diss_read_params(const uint8_t mem[CHAMP_MAX_SIZE], t_read_prog *prog,
 bool	diss_pass(const uint8_t mem[CHAMP_MAX_SIZE],
 		t_read_prog *prog, t_diss diss)
 {
-	int32_t params[4];
-
-	if (!(diss_read_params(mem, prog, params, diss)))
+	if (!(diss_read_params(mem, prog, diss)))
 		return (false);
 	return (true);
 }

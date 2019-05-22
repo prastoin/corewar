@@ -6,14 +6,12 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 15:01:13 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/22 22:36:24 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "common.h"
 #include "asm.h"
 #include "ft_string.h"
-#include <assert.h>
 
 void	bin_write_params(t_write *out, t_instruction *inst)
 {
@@ -22,12 +20,12 @@ void	bin_write_params(t_write *out, t_instruction *inst)
 	i = 0;
 	while (g_ops[inst->opcode].params[i])
 	{
-		if (inst->params[i].type == PARAM_DIRECT)
+		if (inst->params[i].type == Param_Direct)
 			io_write_int(out, inst->params[i].offset.offset,
-					g_ops[inst->opcode].params[i] & PARAM_INDEX ? 2 : 4);
-		else if (inst->params[i].type == PARAM_INDIRECT)
+					g_ops[inst->opcode].params[i] & Param_Index ? 2 : 4);
+		else if (inst->params[i].type == Param_Indirect)
 			io_write_int(out, inst->params[i].offset.offset, 2);
-		else if (inst->params[i].type == PARAM_REGISTER)
+		else if (inst->params[i].type == Param_Register)
 			io_write_int(out, inst->params[i].reg.reg, 1);
 		i++;
 	}
@@ -43,11 +41,11 @@ void	bin_write_inst(t_write *out, t_instruction *inst, uint8_t lst_label)
 	io_write_int(out, inst->opcode, 1);
 	while (g_ops[inst->opcode].params[i])
 	{
-		if (inst->params[i].type == PARAM_DIRECT)
+		if (inst->params[i].type == Param_Direct)
 			ocp |= 0b10 << ((3 - i) * 2);
-		else if (inst->params[i].type == PARAM_INDIRECT)
+		else if (inst->params[i].type == Param_Indirect)
 			ocp |= 0b11 << ((3 - i) * 2);
-		else if (inst->params[i].type == PARAM_REGISTER)
+		else if (inst->params[i].type == Param_Register)
 			ocp |= 0b01 << ((3 - i) * 2);
 		i++;
 	}
@@ -98,7 +96,7 @@ void	bin_padding_ocp(uint8_t ocp, t_write *out, int8_t *size,
 		if (type == 0b01)
 			(*size) += 1;
 		else if (type == 0b10)
-			(*size) += g_ops[opcode].params[i] & PARAM_INDEX ? 2 : 4;
+			(*size) += g_ops[opcode].params[i] & Param_Index ? 2 : 4;
 		else if (type == 0b11)
 			(*size) += 2;
 		i++;
@@ -109,6 +107,6 @@ void	bin_padding_ocp(uint8_t ocp, t_write *out, int8_t *size,
 	io_seek(out, (*size), false);
 	(*size) = 2;
 	type = (ocp >> ((3 - i) * 2)) & 0b11;
-	if (type == 0b10 && (!(g_ops[opcode].params[i] & PARAM_INDEX)))
+	if (type == 0b10 && (!(g_ops[opcode].params[i] & Param_Index)))
 		(*size) = 4;
 }

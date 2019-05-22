@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/20 16:15:24 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/22 22:28:46 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,11 +103,11 @@ int			main(int argc, char *argv[])
 	ssize_t		ret;
 	char		*players[MAX_PLAYERS];
 	const t_arg args[] = {
-		{ARG_PLAYERS, 'n', "number", &players, FLAG_N_MSG},
-		{ARG_INT, 'd', "dump", &vm.flags.dump_c, FLAG_D_MSG},
-		{ARG_BOOLEAN, 'c', "ncurse_aff", &vm.flags.ncurse_o, FLAG_C_MSG},
-		{ARG_BOOLEAN, 'v', "verbose", &vm.flags.verbose, FLAG_V_MSG},
-		{ARG_END, 0, 0, 0, 0}
+		{Arg_Players, 'n', "number", &players, FLAG_N_MSG},
+		{Arg_Int, 'd', "dump", &vm.flags.dump_c, FLAG_D_MSG},
+		{Arg_Boolean, 'c', "ncurse_aff", &vm.flags.ncurse_o, FLAG_C_MSG},
+		{Arg_Boolean, 'v', "verbose", &vm.flags.verbose, FLAG_V_MSG},
+		{Arg_End, 0, 0, 0, 0}
 	};
 
 	vm = init_vm();

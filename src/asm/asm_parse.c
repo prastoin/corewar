@@ -6,11 +6,10 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 12:46:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 16:38:51 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/22 22:20:42 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_string.h"
 #include "asm.h"
 #include <stdlib.h>
 
@@ -33,7 +32,7 @@ bool		asm_transform(t_write *out, t_read *in)
 	ssize_t			idx;
 
 	if (!(table = create_hashtable(8)))
-		return (!print_small_error(in, ERR, "Table creation failed", 0));
+		return (!print_small_error(in, Err, "Table creation failed", 0));
 	bin_write_header(asm_read_header(in), out);
 	while (io_peek(in) != -1 && out->fd != -1)
 	{
@@ -48,7 +47,7 @@ bool		asm_transform(t_write *out, t_read *in)
 			bin_write_inst(out, &inst, idx);
 		}
 		if (!inst.label && inst.opcode == -1 && io_skip_until(in, " \t\n#") | 1)
-			print_error(in, ERR, "Unknown Instructions", NULL);
+			print_error(in, Err, "Unknown Instructions", NULL);
 		asm_skip_ws(in);
 	}
 	return (asm_transform_end(out, in, table, out->fd != -1));

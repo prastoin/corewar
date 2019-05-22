@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 14:19:25 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 12:14:57 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/22 22:34:12 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,13 @@ ssize_t	asm_resolve_label(t_hashtable **table, t_instruction *inst,
 	while (g_ops[inst->opcode].params[i])
 	{
 		mark_span(in);
-		if ((inst->params[i].type == PARAM_DIRECT
-					|| inst->params[i].type == PARAM_INDIRECT)
+		if ((inst->params[i].type == Param_Direct
+					|| inst->params[i].type == Param_Indirect)
 						&& inst->params[i].offset.label)
 		{
 			if (!(entry = asm_swap_off(inst, out, i, table)))
 			{
-				print_small_error(in, ERR, "Malloc failed\n", 0);
+				print_small_error(in, Err, "Malloc failed\n", 0);
 				return (-1);
 			}
 			if (!entry->resolve)
@@ -77,7 +77,7 @@ bool	asm_store_label(t_hashtable **table, char *label, t_write *out
 	else if ((entry = hashtable_get((*table), label)))
 	{
 		if (entry->resolve)
-			print_error(in, WARN, "Label already exists: ", NULL);
+			print_error(in, Warn, "Label already exists: ", NULL);
 		else
 		{
 			bin_resolve_label(out, entry->offset);
@@ -86,7 +86,7 @@ bool	asm_store_label(t_hashtable **table, char *label, t_write *out
 		}
 	}
 	else
-		return (print_small_error(in, ERR, "Malloc failed\n", 0) && false);
+		return (print_small_error(in, Err, "Malloc failed\n", 0) && false);
 	return (true);
 }
 
@@ -101,7 +101,7 @@ void	asm_check_labels(t_hashtable *table, t_read *in)
 		{
 			if (!table->bucket[i].resolve)
 			{
-				print_small_error(in, ERR, "Undeclared label",
+				print_small_error(in, Err, "Undeclared label",
 						table->bucket[i].key);
 			}
 		}
