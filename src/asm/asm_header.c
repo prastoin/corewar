@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/30 13:46:44 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/08 16:44:42 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/22 12:12:07 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,5 +68,6 @@ t_header	asm_read_header(t_read *rd)
 	asm_skip_ws(rd);
 	mark_span(rd);
 	asm_read_comment(rd, &header);
+	asm_skip_ws(rd);
 	return (header);
 }

@@ -114,4 +114,4 @@ it('Compiles champions of Corewar Championships', async () => {
     } finally {
         dir.cleanup()
     }
-}, 10000)
+}, 20000)

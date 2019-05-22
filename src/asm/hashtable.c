@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/20 13:58:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/05 23:03:00 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/22 12:03:40 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ bool			grow_hashtable(t_hashtable **old)
 	return (true);
 }
 
-t_entry			*insert_hashtable(t_hashtable **table, t_entry entry) //TODO error management
+t_entry			*insert_hashtable(t_hashtable **table, t_entry entry)
 {
 	size_t			i;
 	size_t			j;

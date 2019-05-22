@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/20 16:26:33 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/22 16:35:32 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,10 +215,10 @@ ssize_t			parse_args(const t_arg args[], int argc, char *argv[]);
 */
 
 bool			asm_read_inst(t_read *in, t_instruction *inst);
-void			asm_transform(t_write *out, t_read *in);
-void			asm_store_label(t_hashtable **table, char *label, t_write *out,
+bool			asm_transform(t_write *out, t_read *in);
+bool			asm_store_label(t_hashtable **table, char *label, t_write *out,
 		t_read *in);
-size_t			asm_resolve_label(t_hashtable **table, t_instruction *inst,
+ssize_t			asm_resolve_label(t_hashtable **table, t_instruction *inst,
 		t_write *out, t_read *in);
 void			asm_check_labels(t_hashtable *table, t_read *in);
 

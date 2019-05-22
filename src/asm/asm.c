@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/13 14:49:16 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/05/22 12:17:46 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 #define FIX_SIZE_ERR "Program too big (Exceed CHAMP_MAX_SIZE)"
 
-char		*change_ext(char *name)
+char	*change_ext(char *name)
 {
 	static char	file[PATH_MAX - 1];
 	char		*dot;
@@ -33,7 +33,7 @@ char		*change_ext(char *name)
 	return (file);
 }
 
-void		read_fixed(t_read *in, char *name)
+int		read_fixed(t_read *in, char *name)
 {
 	uint8_t		buffer[CHAMP_MAX_SIZE + HEADER_SIZE];
 	t_write		out;
@@ -42,9 +42,8 @@ void		read_fixed(t_read *in, char *name)
 	out.buffer_size = CHAMP_MAX_SIZE + HEADER_SIZE;
 	out.buffer = buffer;
 	out.fd = 0;
-	asm_transform(&out, in);
-	if (out.fd == -1)
-		print_small_error(in, ERR, FIX_SIZE_ERR, 0);
+	if (!asm_transform(&out, in) && out.fd == -1)
+		return (print_small_error(in, ERR, FIX_SIZE_ERR, 0));
 	else if (in->write_able)
 	{
 		if ((out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR))
@@ -53,16 +52,20 @@ void		read_fixed(t_read *in, char *name)
 			write(out.fd, out.buffer, out.nbr_write);
 			close(out.fd);
 			ft_putf("done static\n");
+			return (0);
 		}
 		else
-			print_small_error(in, ERR, "Cannot open output file", name);
+			return (print_small_error(in, ERR, "Cannot open output", name));
 	}
+	else
+		return (1);
 }
 
-void		read_streaming(t_read *in, char *name)
+int		read_streaming(t_read *in, char *name)
 {
 	uint8_t		buffer[BUFFER_SIZE];
 	t_write		out;
+	bool		ret;
 
 	out = init_write();
 	out.buffer_size = BUFFER_SIZE;
@@ -71,15 +74,16 @@ void		read_streaming(t_read *in, char *name)
 	if ((out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR))
 			!= -1)
 	{
-		asm_transform(&out, in);
+		if ((ret = asm_transform(&out, in)))
+			ft_putf("done streaming\n");
 		close(out.fd);
-		ft_putf("done streaming\n");
+		return (ret ? 0 : 1);
 	}
 	else
-		print_small_error(in, ERR, "Cannot open output file", name);
+		return (print_small_error(in, ERR, "Cannot open output file", name));
 }
 
-int			main(int argc, char *argv[])
+int		main(int argc, char *argv[])
 {
 	t_flag		flag;
 	char		*files[2];
@@ -100,7 +104,7 @@ int			main(int argc, char *argv[])
 	if ((i = open(files[IN], O_RDONLY)) <= 0)
 		return (print_small_error(&in, ERR, "Open failed", files[IN]));
 	in = init_read(i, files[IN], in.werror);
-	(flag.streaming ? read_streaming : read_fixed)(&in, files[OUT]);
+	i = (flag.streaming ? read_streaming : read_fixed)(&in, files[OUT]);
 	close(i);
-	return (!in.write_able);
+	return (i);
 }

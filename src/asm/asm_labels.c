@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 14:19:25 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/06 14:39:02 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/22 12:14:57 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,9 @@ t_entry	*asm_swap_off(t_instruction *inst, t_write *out, size_t i,
 		else
 			inst->params[i].offset.offset -= (ssize_t)out->nbr_write;
 	}
-	else
+	else if ((entry = insert_hashtable(table,
+				create_entry(inst->params[i].offset.label))))
 	{
-		entry = insert_hashtable(table,
-				create_entry(inst->params[i].offset.label));
 		entry->resolve = false;
 		entry->offset = out->nbr_write;
 		inst->params[i].offset.offset = 0;
@@ -36,7 +35,7 @@ t_entry	*asm_swap_off(t_instruction *inst, t_write *out, size_t i,
 	return (entry);
 }
 
-size_t	asm_resolve_label(t_hashtable **table, t_instruction *inst,
+ssize_t	asm_resolve_label(t_hashtable **table, t_instruction *inst,
 		t_write *out, t_read *in)
 {
 	size_t	i;
@@ -52,21 +51,20 @@ size_t	asm_resolve_label(t_hashtable **table, t_instruction *inst,
 					|| inst->params[i].type == PARAM_INDIRECT)
 						&& inst->params[i].offset.label)
 		{
-			entry = asm_swap_off(inst, out, i, table);
-			if (!entry->resolve)
+			if (!(entry = asm_swap_off(inst, out, i, table)))
 			{
-				if (last_label == 1)
-					last_label = 3;
-				else
-					last_label = i;
+				print_small_error(in, ERR, "Malloc failed\n", 0);
+				return (-1);
 			}
+			if (!entry->resolve)
+				last_label = last_label == 1 ? 3 : i;
 		}
 		i++;
 	}
 	return (last_label);
 }
 
-void	asm_store_label(t_hashtable **table, char *label, t_write *out
+bool	asm_store_label(t_hashtable **table, char *label, t_write *out
 		, t_read *in)
 {
 	t_entry *entry;
@@ -76,9 +74,8 @@ void	asm_store_label(t_hashtable **table, char *label, t_write *out
 		entry->offset = out->nbr_write;
 		entry->resolve = true;
 	}
-	else
+	else if ((entry = hashtable_get((*table), label)))
 	{
-		entry = hashtable_get((*table), label);
 		if (entry->resolve)
 			print_error(in, WARN, "Label already exists: ", NULL);
 		else
@@ -88,6 +85,9 @@ void	asm_store_label(t_hashtable **table, char *label, t_write *out
 			entry->offset = out->nbr_write;
 		}
 	}
+	else
+		return (print_small_error(in, ERR, "Malloc failed\n", 0) && false);
+	return (true);
 }
 
 void	asm_check_labels(t_hashtable *table, t_read *in)
