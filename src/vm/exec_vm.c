@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:40:50 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/21 14:15:37 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/23 16:24:47 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,6 @@ bool		cycle_decremente_die(t_vm *vm)
 	}
 	else
 		vm->check++;
-	if (vm->cycle_to_die <= 0)
-	{
-		return (find_winner(vm));
-	}
 	vm->nbr_live = 0;
 	return (true);
 }
