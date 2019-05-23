@@ -7,6 +7,7 @@ vm en corewar david needs to work (a la norme meme regle pour la creation des ex
 //resurection des champions //fait
 MAJS DANS LES ENUMS + define dans les headers a mettre + reagarder les includes inutiles //david dark magic
 diasm to norm and to verify //fredo
+CREER LE CHAMPION A RENDRE pas oublier quoi
 }
 
 things {
