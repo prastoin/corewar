@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 22:33:35 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/23 11:41:33 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "asm.h"
 #include <fcntl.h>
 #include <limits.h>
+#include <errno.h>
+#include <string.h>
 
 char	*change_ext(char *name)
 {
@@ -100,7 +102,7 @@ int		main(int argc, char *argv[])
 	if (!(files[OUT] = change_ext(files[IN])))
 		return (print_small_error(&in, Err, "Invalid file name", files[IN]));
 	if ((i = open(files[IN], O_RDONLY)) <= 0)
-		return (print_small_error(&in, Err, "Open failed", files[IN]));
+		return (print_small_error(&in, Err, strerror(errno), files[IN]));
 	in = init_read(i, files[IN], in.werror);
 	i = (flag.streaming ? read_streaming : read_fixed)(&in, files[OUT]);
 	close(i);

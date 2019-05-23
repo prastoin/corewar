@@ -6,13 +6,14 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/04 14:58:16 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 23:22:12 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/23 11:41:50 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "asm.h"
 #include <fcntl.h>
 #include "ft_string.h"
+#include <sys/stat.h>
 
 void	locate_error(t_write *error, t_span begin)
 {
@@ -87,27 +88,26 @@ void	print_second(t_write *error, t_error pack, char buffer[4096],
 
 void	error_contxt_print(t_write *error, t_error pack, size_t i)
 {
-	const uint16_t	columns = get_columns(2);
-	size_t			fd;
+	int16_t			columns;
+	int				fd;
 	size_t			len;
-	size_t			size;
 	char			buffer[4096];
+	struct stat		stats;
 
 	i = 0;
 	fd = open(pack.begin->file_name, O_RDONLY);
+	if (fstat(fd, &stats) == -1 || !S_ISREG(stats.st_mode))
+		return ;
 	lseek(fd, pack.begin->offset - pack.begin->col + 1, SEEK_SET);
 	len = pack.end->col + 100 > sizeof(buffer)
 		? sizeof(buffer) : pack.end->col + 100;
 	len = read(fd, buffer, len);
-	size = 6;
-	while (i < len && buffer[i] != '\n' && size < (columns - 1))
-	{
-		if (buffer[i] == '\t')
-			size += 4;
+	columns = get_columns(STDERR_FILENO) - 6;
+	while (i < len && buffer[i] != '\n' && columns > 1)
+		if (buffer[i++] == '\t')
+			columns -= 4;
 		else
-			size++;
-		i++;
-	}
+			columns--;
 	len = i;
 	print_first(error, pack.begin);
 	print_second(error, pack, buffer, len);
