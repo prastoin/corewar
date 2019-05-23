@@ -6,66 +6,11 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 15:37:18 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 23:31:07 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/23 12:55:00 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
-
-void	hook_process_adv(t_vm *vm, t_process *process, size_t diff)
-{
-	size_t	i;
-
-	if (vm->flags.verbose && diff > 1)
-	{
-		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", diff,
-				process->offset, ((process->offset + diff)));
-		i = 0;
-		while (i < diff)
-		{
-			ft_putf_fd(vm->v_fd, "%2x ",
-					vm->mem[(process->offset + i) % MEM_SIZE]);
-			i++;
-		}
-		ft_putf_fd(vm->v_fd, "\n");
-	}
-}
-
-void	hook_process_jump(t_vm *vm, t_process *process, uint32_t param,
-		size_t offset)
-{
-	if (vm->flags.verbose)
-	{
-		ft_putf_fd(vm->v_fd, "P %4d | zjmp %d %s\n",
-				process - vm->vec->processes + 1,
-			param, process->carry == true ? "OK" : "FAILED");
-	}
-}
-
-void	hook_process_spawn(t_process *process, t_process *parent, size_t offset)
-{
-}
-
-bool	hook_cycle_end(t_vm *vm)
-{
-	if (vm->cycle - 1 == (uintmax_t)vm->flags.dump_c)
-	{
-		dump_mem(vm);
-		return (true);
-	}
-	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "It is now cycle %d\n", vm->cycle);
-	return (false);
-}
-
-void	hook_process_read_opcode(t_process *process, uint8_t opcode)
-{
-}
-
-void	hook_process_memory_write(t_process *process, size_t offset,
-		size_t size)
-{
-}
 
 void	hook_cycle_to_die(t_vm *vm, size_t value)
 {
@@ -75,6 +20,7 @@ void	hook_cycle_to_die(t_vm *vm, size_t value)
 
 void	hook_process_live(t_vm *vm, t_process *process, size_t player)
 {
+	(void)process;
 	if (player >= 1 && player <= MAX_PLAYERS)
 	{
 		if (vm->champ[player].fd)
@@ -95,6 +41,14 @@ void	hook_process_die(t_vm *vm, t_process *process)
 				process - vm->vec->processes + 1, vm->cycle
 				- process->last_cycle_live,
 				vm->cycle_to_die);
+}
+
+void	hook_process_memory_write(t_process *process, size_t offset,
+		size_t size)
+{
+	(void)process;
+	(void)offset;
+	(void)size;
 }
 
 void	hook_win(t_vm *vm, size_t winner)

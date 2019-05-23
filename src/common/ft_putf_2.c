@@ -6,12 +6,11 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 15:39:21 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/05 23:59:05 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/23 12:49:54 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_string.h"
-#include <unistd.h>
 
 int	ft_putf(char *fmt, ...)
 {
