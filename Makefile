@@ -6,7 +6,7 @@
 #    By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/15 10:32:31 by dde-jesu          #+#    #+#              #
-#    Updated: 2019/05/22 09:41:12 by dde-jesu         ###   ########.fr        #
+#    Updated: 2019/05/24 15:47:05 by prastoin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ OBJS_VM = $(filter $(OBJS_DIR)/vm/%, $(OBJS))
 OBJS_ASM = $(filter $(OBJS_DIR)/asm/%, $(OBJS))
 OBJS_DISASM = $(filter $(OBJS_DIR)/disassembler/%, $(OBJS))
 
-all: vm asm disasm
+all: corewar  asm disasm
 
 $(OBJS_DIR)/glue.o.wasm: wasm/glue.c Makefile
 	@$(PRECOMPILE)
@@ -50,11 +50,11 @@ $(OBJS_DIR)/%.o $(OBJS_DIR)/%.o.wasm: src/%.c Makefile
 	$(CC) $(CFLAGS) -c -o $@ $<
 	@$(POSTCOMPILE)
 
-vm: $(OBJS_VM) $(OBJS_COMMON)
+corewar: $(OBJS_VM) $(OBJS_COMMON)
 asm: $(OBJS_ASM) $(OBJS_COMMON)
 disasm: $(OBJS_DISASM) $(OBJS_COMMON)
 
-vm asm disasm:
+corewar asm disasm:
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 vm.wasm: CC = ${HOME}/.brew/opt/llvm/bin/clang
@@ -68,7 +68,7 @@ clean:
 	rm -rf build
 
 fclean: clean
-	rm -rf vm asm vm.wasm disasm
+	rm -rf corewar asm vm.wasm disasm
 
 re:
 	$(MAKE) fclean

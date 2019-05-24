@@ -1,6 +1,6 @@
 build
 /asm
-/vm
+/corewar
 /vm.wasm
 /disasm
 verbose*

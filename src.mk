@@ -41,6 +41,7 @@ SRCS += src/vm/fcnt_09_12.c
 SRCS += src/vm/fcnt_13_16.c
 SRCS += src/vm/get_ocp_values.c
 SRCS += src/vm/hooks.c
+SRCS += src/vm/hooks_2.c
 SRCS += src/vm/io_mem.c
 SRCS += src/vm/op.c
 SRCS += src/vm/pass_opcode.c
