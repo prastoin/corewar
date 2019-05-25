@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 23:26:08 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/25 11:41:46 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ typedef struct	s_vec
 typedef struct	s_champ
 {
 # ifndef __wasm__
-
 	char	name[PROG_NAME_LENGTH];
 	char	comment[COMMENT_LENGTH];
 	char	prog[CHAMP_MAX_SIZE];
@@ -81,20 +80,20 @@ typedef struct	s_champ
 
 typedef struct	s_vm
 {
-	size_t		c_pc;
 	uintmax_t	cycle;
 	intmax_t	i_to_die;
 	intmax_t	cycle_to_die;
-	size_t		nbr_champ;
 	size_t		nbr_live;
-	size_t		check;
-	uint8_t		mem[MEM_SIZE];
-	t_vec		*vec;
 	t_champ		champ[MAX_PLAYERS];
+	size_t		nbr_champ;
+	size_t		check;
+	t_vec		*vec;
+	size_t		c_pc;
 //#ifndef __wasm__ TODO
 	size_t		v_fd;
 	t_flags		flags;
 //#endif
+	uint8_t		mem[MEM_SIZE];
 }				t_vm;
 
 bool			ft_check_ocp(uint8_t ocp, uint8_t opcode);
