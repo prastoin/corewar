@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 23:19:47 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/05/29 04:35:39 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,6 @@ int			main(int argc, char *argv[])
 	const t_arg args[] = {
 		{Arg_Players, 'n', "number", &players, FLAG_N_MSG},
 		{Arg_Int, 'd', "dump", &vm.flags.dump_c, FLAG_D_MSG},
-		{Arg_Boolean, 'c', "ncurse_aff", &vm.flags.ncurse_o, FLAG_C_MSG},
 		{Arg_Boolean, 'v', "verbose", &vm.flags.verbose, FLAG_V_MSG},
 		{Arg_End, 0, 0, 0, 0}
 	};

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/25 11:41:46 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/05/29 04:50:13 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@
 
 # define FLAG_N_MSG "Choose the player's number"
 # define FLAG_D_MSG "Dump memory on 0 at N cycle"
-# define FLAG_C_MSG "Affichage Ncurse"
 # define FLAG_V_MSG "Enabled Verbose mod"
 
 typedef struct	s_datan
@@ -40,7 +39,6 @@ typedef struct	s_flags
 	int		dump_c;
 	int		run_c;
 	bool	bin_o;
-	bool	ncurse_o;
 	bool	verbose;
 }				t_flags;
 
