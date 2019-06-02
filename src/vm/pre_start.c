@@ -6,12 +6,13 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:45:36 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/22 23:15:34 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/02 17:13:13 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 #include "ft_string.h"
+#include <stdlib.h>
 
 bool		bin_parse_header(size_t fd, t_champ *header)
 {
@@ -92,5 +93,6 @@ bool		ft_play(t_vm vm)
 	if (vm.flags.verbose)
 		affstart_verbose(vm);
 	david_needs_to_work(&vm);
+	free(vm.vec);
 	return (true);
 }
