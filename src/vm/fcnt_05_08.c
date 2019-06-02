@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:24:34 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 23:14:37 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/02 18:32:59 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ bool		ft_or(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	if ((conv_bin_num(process->registre[param[2] - 1], REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 7));
 	else
-		return (carry_up(vm, process, ocp, 7));
+		return (carry_down(vm, process, ocp, 7));
 }
 
 bool		ft_xor(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)

@@ -1,13 +1,13 @@
 const { OP, runVm, ocp, dumpReg, dumpCarry, direct } = require("../utils/vm")
 
-describe("xor", () => {
+describe("and", () => {
     test("basic", async () => {
         const {
             code: cCode,
             readCarry,
             cycles: cCycles,
         } = dumpCarry([
-            OP.XOR.code, ocp("DIRECT", "DIRECT", "REGISTER"), ...direct(42), ...direct(36), 1,
+            OP.AND.code, ocp("DIRECT", "DIRECT", "REGISTER"), ...direct(42), ...direct(36), 1,
         ])
 
         const {
@@ -18,7 +18,7 @@ describe("xor", () => {
 
         const dump = await runVm(code, OP.AND.cycles + cycles + cCycles);
         expect(readCarry(dump)).toBe(false);
-        expect(readRegValue(dump)).toBe(42 ^ 36);
+        expect(readRegValue(dump)).toBe(42 & 36);
     })
     test("carry up", async () => {
         const {
@@ -26,7 +26,7 @@ describe("xor", () => {
             readCarry,
             cycles: cCycles,
         } = dumpCarry([
-            OP.XOR.code, ocp("DIRECT", "DIRECT", "REGISTER"), ...direct(0), ...direct(0), 1,
+            OP.AND.code, ocp("DIRECT", "DIRECT", "REGISTER"), ...direct(0), ...direct(0), 1,
         ])
 
         const {
@@ -37,6 +37,6 @@ describe("xor", () => {
 
         const dump = await runVm(code, OP.AND.cycles + cycles + cCycles);
         expect(readCarry(dump)).toBe(true);
-        expect(readRegValue(dump)).toBe(1 ^ 1);
+        expect(readRegValue(dump)).toBe(0 & 0);
     })
 })

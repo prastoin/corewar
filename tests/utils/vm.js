@@ -5,6 +5,7 @@ const child_process = require('child_process')
 
 const VM_BIN = join(__dirname, '..', '..', 'corewar')
 
+
 const OP = {
     LIVE: { code: 0x01, cycles: 10 },
     LD: { code: 0x02, cycles: 5 },
@@ -75,8 +76,9 @@ const COMMENT = Array.from({ length: COMMENT_LENGTH + COMMENT_PADDING }).fill(0)
 
 async function runVm(memory, dumpAt) {
     const file = await tmp.file()
-    if (!memory.every(e => typeof e === 'number'))
-        throw new Error("Invalid memory not all elem are numbers")
+    const err = memory.findIndex(e => typeof e !== 'number')
+    if (err != -1)
+        throw new Error(`Invalid memory not all elem are numbers at ${err} value = "${memory[err]}"`)
 
     const length = new Uint8Array(4)
     new DataView(length.buffer).setUint32(0, memory.length);
@@ -88,20 +90,60 @@ async function runVm(memory, dumpAt) {
     }
 }
 
+
 function dumpReg(code, reg) {
     const offset = code.length;
     return {
         code: code.concat([OP.ST.code, ocp("REGISTER", "INDIRECT"), reg, 0, 0]),
         readRegValue(dump) {
-            return new DataView(dump.buffer).getUint32(offset);
+            return new DataView(dump.buffer).getInt32(offset);
         },
         cycles: OP.ST.cycles
     }
+}
+
+function dumpCarry(code) {
+    const newCode = code.concat([
+        OP.ZJMP.code, 0, 10,
+        OP.LD.code, ocp("DIRECT", "REGISTER"), 0, 0, 0, 1, 15,
+    ])
+
+    const {
+        code: rCode,
+        readRegValue,
+        cycles
+    } = dumpReg(newCode, 15);
+
+    return {
+        code: rCode,
+        readCarry(dump) {
+            const val = readRegValue(dump);
+            if (val !== 0 && val !== 1)
+                throw new Error(`Invalid value ${val}`);
+            return !Boolean(val);
+        },
+        cycles: OP.ZJMP.cycles + OP.LD.cycles + cycles
+    }
+}
+
+function direct(val) {
+    const buff = new Uint8Array(4)
+    new DataView(buff.buffer).setInt32(0, val);
+    return Array.from(buff)
+}
+
+function indirect(val) {
+    const buff = new Uint8Array(2)
+    new DataView(buff.buffer).setInt16(0, val);
+    return Array.from(buff)
 }
 
 module.exports = {
     OP,
     ocp,
     runVm,
-    dumpReg
+    dumpReg,
+    dumpCarry,
+    direct,
+    indirect
 };
