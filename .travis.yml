@@ -7,7 +7,6 @@ before_script:
 script: 
   - mkdir championship
   - env EXPORT_CHAMPIONSHIP=$(pwd)/championship make test
-  - ls -R championship
 deploy:
   provider: pages
   local_dir: championship

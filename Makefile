@@ -6,7 +6,7 @@
 #    By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/15 10:32:31 by dde-jesu          #+#    #+#              #
-#    Updated: 2019/06/02 15:48:14 by dde-jesu         ###   ########.fr        #
+#    Updated: 2019/06/02 15:52:36 by dde-jesu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -78,7 +78,7 @@ tests/node_modules: tests/package-lock.json
 	cd tests; npm ci
 
 test: tests/node_modules asm corewar
-	npm -C tests run test
+	npm -C tests run test -- --verbose
 
 include $(wildcard $(DEPS_DIR)/**/*.d)
 
