@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/15 10:32:31 by dde-jesu          #+#    #+#              #
-#    Updated: 2019/05/24 20:28:13 by prastoin         ###   ########.fr        #
+#    Updated: 2019/06/02 15:48:14 by dde-jesu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -77,7 +77,7 @@ re:
 tests/node_modules: tests/package-lock.json
 	cd tests; npm ci
 
-test: tests/node_modules asm
+test: tests/node_modules asm corewar
 	npm -C tests run test
 
 include $(wildcard $(DEPS_DIR)/**/*.d)
