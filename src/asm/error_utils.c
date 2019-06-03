@@ -40,7 +40,7 @@ char		*from_int_to_type(size_t type)
 		return ("Expected Registre");
 	if (type == Param_Indirect)
 		return ("Expected Indirect");
-	return (NULL);
+	return ("");
 }
 
 void		error_severity(t_write *error, t_severity severity)

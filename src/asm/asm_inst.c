@@ -60,10 +60,8 @@ bool		asm_read_inst(t_read *in, t_instruction *inst)
 {
 	char	*tmp;
 	char	c;
-	size_t	i;
 
 	mark_span(in);
-	i = 0;
 	if (!(tmp = asm_get_inst(in)))
 		return (print_small_error(in, Err, "Malloc failed\n", 0) && false);
 	c = io_peek(in);

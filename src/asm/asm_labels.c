@@ -13,12 +13,6 @@
 #include "asm.h"
 #include <stdlib.h>
 
-int		ffree(void *ptr)
-{
-	free(ptr);
-	return (0);
-}
-
 t_entry	*asm_swap_off(t_instruction *inst, t_write *out, size_t i,
 		t_hashtable **table)
 {
@@ -41,7 +35,7 @@ t_entry	*asm_swap_off(t_instruction *inst, t_write *out, size_t i,
 		inst->params[i].offset.offset = 0;
 	}
 	else
-		return ((void *)(uintptr_t)ffree(inst->params[i].offset.label));
+		free(inst->params[i].offset.label);
 	return (entry);
 }
 
@@ -74,8 +68,8 @@ ssize_t	asm_resolve_label(t_hashtable **table, t_instruction *inst,
 	return (last_label);
 }
 
-bool	asm_store_label(t_hashtable **table, char *label, t_write *out
-		, t_read *in)
+bool	asm_store_label(t_hashtable **table, char *label, t_write *out,
+		t_read *in)
 {
 	t_entry *entry;
 
@@ -99,7 +93,8 @@ bool	asm_store_label(t_hashtable **table, char *label, t_write *out
 	else
 	{
 		print_small_error(in, Err, "Malloc failed\n", 0);
-		return (ffree(label));
+		free(label);
+		return (false);
 	}
 	return (true);
 }
