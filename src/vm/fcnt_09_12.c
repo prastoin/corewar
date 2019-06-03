@@ -84,7 +84,7 @@ bool		ft_fork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	hook_process_spawn(new_process, process, new_process->offset);
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "P %4d | fork %d (%d)\n", vm->c_pc, save,
-				(save % IDX_MOD) + process->offset);
+			(save % IDX_MOD) + process->offset);
 	read_opcode(vm, new_process);
 	return (valid(vm, process, 0b11000000, 12));
 }

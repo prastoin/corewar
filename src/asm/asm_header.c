@@ -19,8 +19,8 @@ static void	asm_read_comment(t_read *rd, t_header *header)
 		if (!io_expect(rd, "comment"))
 		{
 			io_skip_until(rd, " #\t\n\"");
-			print_error(rd, Err, "Expected \".comment\""
-					, "Replace by .comment");
+			print_error(rd, Err, "Expected \".comment\"",
+				"Replace by .comment");
 		}
 		else
 		{

@@ -81,14 +81,11 @@ int			main_split(char *players[MAX_PLAYERS + 1], char *argv[], int argc,
 
 t_vm		init_vm(void)
 {
-	t_vm vm;
-
-	return (
-		vm = (t_vm) {
-			.cycle_to_die = CYCLE_TO_DIE,
-			.flags = {
-				.dump_c = -1
-			}
+	return ((t_vm) {
+		.cycle_to_die = CYCLE_TO_DIE,
+		.flags = {
+			.dump_c = -1
+		}
 	});
 }
 
@@ -107,7 +104,7 @@ int			main(int argc, char *argv[])
 	vm = init_vm();
 	ft_memset(players, 0, sizeof(players));
 	if ((ret = parse_args(args, argc, argv)) < 0
-			|| (is_empty(players) && argc == ret))
+		|| (is_empty(players) && argc == ret))
 		return (args_usage(args, argv[0], "source_file", "Launch corewar vm"));
 	if (vm.flags.verbose == true)
 		vm.v_fd = open("verbose", O_RDWR | O_CREAT | O_TRUNC,

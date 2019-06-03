@@ -22,7 +22,7 @@ bool		lld(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	ft_memcpy(process->registre[param[1] - 1], process->tampon, REG_SIZE);
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "P %4d | lld %D r%d\n", vm->c_pc,
-				conv_bin_num(process->tampon, REG_SIZE), param[1]);
+			conv_bin_num(process->tampon, REG_SIZE), param[1]);
 	if ((conv_bin_num(process->tampon, REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 13));
 	else
@@ -47,7 +47,7 @@ bool		lldi(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	while ((process->offset + adress) < 0)
 		adress += MEM_SIZE;
 	mem_read(vm->mem, process->registre[param[2] - 1],
-			(process->offset + adress) % MEM_SIZE, REG_SIZE);
+		(process->offset + adress) % MEM_SIZE, REG_SIZE);
 	if (vm->flags.verbose)
 		print_a(vm, op1, process->tampon, param[2]);
 	if (vm->flags.verbose)
@@ -82,7 +82,7 @@ bool		lfork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	read_opcode(vm, new_process);
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "P %4d | lfork %d (%d)\n", vm->c_pc, save,
-				save + process->offset);
+			save + process->offset);
 	return (valid(vm, process, 0b11000000, 15));
 }
 

@@ -28,7 +28,7 @@ t_entry	*asm_swap_off(t_instruction *inst, t_write *out, size_t i,
 		free(inst->params[i].offset.label);
 	}
 	else if ((entry = insert_hashtable(table,
-				create_entry(inst->params[i].offset.label))))
+					create_entry(inst->params[i].offset.label))))
 	{
 		entry->resolve = false;
 		entry->offset = out->nbr_write;
@@ -52,8 +52,8 @@ ssize_t	asm_resolve_label(t_hashtable **table, t_instruction *inst,
 	{
 		mark_span(in);
 		if ((inst->params[i].type == Param_Direct
-					|| inst->params[i].type == Param_Indirect)
-						&& inst->params[i].offset.label)
+				|| inst->params[i].type == Param_Indirect)
+			&& inst->params[i].offset.label)
 		{
 			if (!(entry = asm_swap_off(inst, out, i, table)))
 			{
@@ -110,7 +110,7 @@ void	asm_check_labels(t_hashtable *table, t_read *in)
 			if (!table->bucket[i].resolve)
 			{
 				print_small_error(in, Err, "Undeclared label",
-						table->bucket[i].key);
+					table->bucket[i].key);
 			}
 			free(table->bucket[i].key);
 		}

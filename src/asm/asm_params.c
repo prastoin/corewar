@@ -30,7 +30,7 @@ bool	asm_check_type(t_read *in, t_instruction *inst, uint16_t c, size_t i)
 		inst->params[i].reg.reg = io_readnum(in);
 	}
 	else if (c == LABEL_CHAR || (c >= '0' && c <= '9')
-			|| (c == '+' || c == '-'))
+		|| (c == '+' || c == '-'))
 	{
 		inst->params[i].type = Param_Indirect;
 		asm_read_offset_value(in, inst->params + i);
@@ -66,12 +66,12 @@ bool	asm_read_params(t_read *in, t_instruction *inst)
 		{
 			io_skip_until(in, SEPARATOR_CHAR);
 			print_error(in, Err, "Invalid param",
-					from_int_to_type(g_ops[inst->opcode].params[i]));
+				from_int_to_type(g_ops[inst->opcode].params[i]));
 		}
 		if (!(g_ops[inst->opcode].params[i] & inst->params[i].type))
 		{
 			print_error(in, Warn, "Type for param is invalid",
-					from_int_to_type(g_ops[inst->opcode].params[i]));
+				from_int_to_type(g_ops[inst->opcode].params[i]));
 			if (!g_ops[inst->opcode].ocp)
 				inst->params[i].type = g_ops[inst->opcode].params[i] & 0b111;
 		}

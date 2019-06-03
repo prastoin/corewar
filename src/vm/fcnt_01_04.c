@@ -45,7 +45,7 @@ bool		ld(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	ft_memcpy(process->registre[param[1] - 1], process->tampon, REG_SIZE);
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "P %4d | ld %D r%d\n", vm->c_pc,
-				conv_bin_num(process->tampon, REG_SIZE), param[1]);
+			conv_bin_num(process->tampon, REG_SIZE), param[1]);
 	if ((conv_bin_num(process->tampon, REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 2));
 	else
@@ -62,18 +62,18 @@ bool		st(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 			return (invalid(vm, process, ocp, 3));
 		else
 			ft_memcpy(process->registre[param[1] - 1],
-					process->registre[param[0] - 1], REG_SIZE);
+				process->registre[param[0] - 1], REG_SIZE);
 	}
 	else
 	{
 		mem_write(vm->mem, process->registre[param[0] - 1],
-				(process->offset + (param[1] % IDX_MOD)), REG_SIZE);
+			(process->offset + (param[1] % IDX_MOD)), REG_SIZE);
 		hook_process_memory_write(process, process->offset
-				+ (param[1] % IDX_MOD), REG_SIZE);
+			+ (param[1] % IDX_MOD), REG_SIZE);
 	}
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "P %4d | st r%d %d\n", vm->c_pc,
-				param[0], param[1]);
+			param[0], param[1]);
 	return (valid(vm, process, ocp, 3));
 }
 
@@ -91,7 +91,7 @@ bool		add(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	bin_add(op1, process->tampon, process->registre[param[2] - 1]);
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "P %4d | add r%d r%d r%d\n", vm->c_pc, param[0],
-				param[1], param[2]);
+			param[1], param[2]);
 	if ((conv_bin_num(process->registre[param[2] - 1], REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 4));
 	else

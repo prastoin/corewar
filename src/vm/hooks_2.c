@@ -19,12 +19,12 @@ void	hook_process_adv(t_vm *vm, t_process *process, size_t diff)
 	if (vm->flags.verbose && diff > 1)
 	{
 		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", diff,
-				process->offset, ((process->offset + diff)));
+			process->offset, ((process->offset + diff)));
 		i = 0;
 		while (i < diff)
 		{
 			ft_putf_fd(vm->v_fd, "%2x ",
-					vm->mem[(process->offset + i) % MEM_SIZE]);
+				vm->mem[(process->offset + i) % MEM_SIZE]);
 			i++;
 		}
 		ft_putf_fd(vm->v_fd, "\n");
@@ -38,7 +38,7 @@ void	hook_process_jump(t_vm *vm, t_process *process, uint32_t param,
 	if (vm->flags.verbose)
 	{
 		ft_putf_fd(vm->v_fd, "P %4d | zjmp %d %s\n",
-				process - vm->vec->processes + 1,
+			process - vm->vec->processes + 1,
 			param, process->carry == true ? "OK" : "FAILED");
 	}
 }

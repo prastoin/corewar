@@ -27,8 +27,8 @@ void	hook_process_live(t_vm *vm, t_process *process, size_t player)
 		{
 			if (!vm->flags.verbose)
 				ft_putf_fd(1,
-						"un processus dit que le joueur %d(%s) est en vie\n",
-						player, vm->champ[player - 1].name);
+					"un processus dit que le joueur %d(%s) est en vie\n",
+					player, vm->champ[player - 1].name);
 		}
 	}
 }
@@ -37,10 +37,10 @@ void	hook_process_die(t_vm *vm, t_process *process)
 {
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd,
-				"Process %d hasn't lived for %d cycles (CTD %d)\n",
-				process - vm->vec->processes + 1, vm->cycle
-				- process->last_cycle_live,
-				vm->cycle_to_die);
+			"Process %d hasn't lived for %d cycles (CTD %d)\n",
+			process - vm->vec->processes + 1, vm->cycle
+			- process->last_cycle_live,
+			vm->cycle_to_die);
 }
 
 void	hook_process_memory_write(t_process *process, size_t offset,
@@ -55,8 +55,8 @@ void	hook_win(t_vm *vm, size_t winner)
 {
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "Contestant %U, \"%s\", has won !\n", winner + 1,
-				vm->champ[winner].name);
+			vm->champ[winner].name);
 	else
 		ft_putf("le joueur %d(%s) a gagne\n", winner + 1,
-				vm->champ[winner].name);
+			vm->champ[winner].name);
 }

@@ -18,7 +18,7 @@ bool		asm_skip_ws(t_read *rd)
 	int16_t	c;
 
 	while ((c = io_peek(rd)) == ' ' || c == '\t' || c == '#'
-			|| c == ';' || c == '\n')
+		|| c == ';' || c == '\n')
 	{
 		io_next(rd);
 		if (c == '#' || c == ';')

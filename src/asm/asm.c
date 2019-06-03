@@ -47,7 +47,7 @@ int		read_fixed(t_read *in, char *name)
 	else if (in->write_able)
 	{
 		if ((out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR))
-				!= -1)
+			!= -1)
 		{
 			write(out.fd, out.buffer, out.nbr_write);
 			close(out.fd);
@@ -72,7 +72,7 @@ int		read_streaming(t_read *in, char *name)
 	out.flushable = true;
 	out.buffer = buffer;
 	if ((out.fd = open(name, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR))
-			!= -1)
+		!= -1)
 	{
 		if ((ret = asm_transform(&out, in)))
 			ft_putf("done streaming\n");

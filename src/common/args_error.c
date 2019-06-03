@@ -41,7 +41,7 @@ int	args_usage(const t_arg args[], char *name, char *usge, char *desc)
 	{
 		if (args->short_name && args->long_name)
 			ft_putf_fd(1, "  -%c, --%s", args->short_name,
-					args->long_name);
+				args->long_name);
 		else if (args->short_name)
 			ft_putf_fd(1, "  -%c", args->short_name);
 		else if (args->long_name)

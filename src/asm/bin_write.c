@@ -22,7 +22,7 @@ void	bin_write_params(t_write *out, t_instruction *inst)
 	{
 		if (inst->params[i].type == Param_Direct)
 			io_write_int(out, inst->params[i].offset.offset,
-					g_ops[inst->opcode].params[i] & Param_Index ? 2 : 4);
+				g_ops[inst->opcode].params[i] & Param_Index ? 2 : 4);
 		else if (inst->params[i].type == Param_Indirect)
 			io_write_int(out, inst->params[i].offset.offset, 2);
 		else if (inst->params[i].type == Param_Register)

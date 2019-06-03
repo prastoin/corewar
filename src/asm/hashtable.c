@@ -65,7 +65,7 @@ t_entry			*insert_hashtable(t_hashtable **table, t_entry entry)
 	j = 0;
 	i = entry.hash % (*table)->size;
 	while (curr[i % (*table)->size].key != NULL
-			&& j < (*table)->size / 2)
+		&& j < (*table)->size / 2)
 	{
 		if (entry.hash == curr[i % (*table)->size].hash)
 			if (ft_strcmp(entry.key, curr[i % (*table)->size].key) == 0)
@@ -94,9 +94,9 @@ t_entry			*hashtable_get(t_hashtable *table, char *name)
 	i = hash_name % table->size;
 	j = 0;
 	while (j < table->size
-			&& curr[i % table->size].key
-			&& (curr[i % table->size].hash != hash_name
-				|| ft_strcmp(curr[i % table->size].key, name) != 0))
+		&& curr[i % table->size].key
+		&& (curr[i % table->size].hash != hash_name
+			|| ft_strcmp(curr[i % table->size].key, name) != 0))
 	{
 		i++;
 		j++;

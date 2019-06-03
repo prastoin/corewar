@@ -87,8 +87,8 @@ t_process	*add_process(t_vec **list)
 	if ((*list)->len == (*list)->capacity)
 	{
 		if (((*list)->capacity * sizeof(t_vec)) / WASM_PAGE_SIZE)
-			__builtin_wasm_memory_grow(0, ((*list)->capacity
-						* sizeof(t_vec)) / WASM_PAGE_SIZE);
+			__builtin_wasm_memory_grow(0, ((*list)->capacity 
+					* sizeof(t_vec)) / WASM_PAGE_SIZE);
 		else
 			__builtin_wasm_memory_grow(0, 1);
 		(*list)->capacity = (__builtin_wasm_memory_size(0)

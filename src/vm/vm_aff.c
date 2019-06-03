@@ -54,8 +54,8 @@ void		affstart_verbose(t_vm vm)
 		{
 			champ = vm.champ[i];
 			ft_putf_fd(vm.v_fd,
-					"* Player %U, weighing %U bytes, \"%s\" (\"%s\") !\n",
-					i + 1, champ.size, champ.name, champ.comment);
+				"* Player %U, weighing %U bytes, \"%s\" (\"%s\") !\n",
+				i + 1, champ.size, champ.name, champ.comment);
 		}
 		i++;
 	}

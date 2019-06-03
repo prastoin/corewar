@@ -51,7 +51,7 @@ bool		init_processes(t_vm *vm, size_t nbr_champ, size_t i)
 		if (vm->champ[i].fd)
 		{
 			ft_memcpy((vm->mem) + ((MEM_SIZE / vm->nbr_champ) * nbr_champ),
-					vm->champ[i].prog, vm->champ[i].size);
+				vm->champ[i].prog, vm->champ[i].size);
 			if (!(process = add_process(&vm->vec)))
 				return (false);
 			*process = (t_process) {
