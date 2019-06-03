@@ -1,0 +1,72 @@
+#!/usr/bin/env node
+const { promises: fs } = require("fs");
+const child_process = require('child_process')
+const { resolve, join } = require('path')
+const tmp = require("tmp-promise");
+
+const [dir] = process.argv.slice(2);
+
+const ZAZ_COREWAR_PATH = join(__dirname, "..", "ressources", "corewar");
+const OUR_COREWAR_PATH = join(__dirname, "..", "corewar");
+
+function diff(path1, path2) {
+	return new Promise((resolve, reject) => {
+		child_process.exec(`diff -q ${path1} ${path2}`, (err) => {
+			if (err) reject(err)
+			else resolve();
+		})
+	})
+
+}
+
+function runOurVM(cwd, champions) {
+	return new Promise((resolve) => {
+		const process = child_process.spawn(OUR_COREWAR_PATH, ['-v'].concat(champions), {
+			stdio: 'ignore',
+			cwd
+		});
+		process.once('close', resolve)
+	})
+}
+
+function runZazVM(cwd, champions) {
+	return new Promise((resolve) => {
+		const process = child_process.spawn(ZAZ_COREWAR_PATH, ['-v', '30'].concat(champions), {
+			stdio: 'ignore',
+			cwd
+		});
+		process.once('close', resolve)
+	})
+}
+
+(async () => {
+	const champions = await fs.readdir(dir)
+	const promises = [];
+	big: for (const [i, first] of champions.slice(0, -1).entries()) {
+		for (const second of champions.slice(i + 1)) {
+			promises.push((async () => {
+				const directory = await tmp.dir({ unsafeCleanup: true });
+				try {
+					const champions = [
+							resolve(dir, first),
+							resolve(dir, second)
+					]
+					await Promise.all([
+						runOurVM(directory.path, champions),
+						runZazVm(directory.path, champions)
+					])
+					try {
+						await diff(join(directory.path, "verbose"), join(directory.path, "verbose_zaz"))
+						console.log(first, "vs", secomd, "no diff !");
+					} catch {
+						console.log(first, "vs", second, "diff !");
+					}
+				} finally {
+					directory.cleanup()
+				} 
+			})())
+			break big;
+		}
+	 }
+	 await Promise.all(promises);
+})()

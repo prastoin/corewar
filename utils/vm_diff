@@ -5,7 +5,7 @@ const fs = require('fs')
 const path = require('path')
 
 const ZAZ_COREWAR_PATH = path.join(__dirname, "..", "ressources", "corewar");
-const OUR_COREWAR_PATH = path.join(__dirname, "..", "vm");
+const OUR_COREWAR_PATH = path.join(__dirname, "..", "corewar");
 
 function dumpZazMemory(cycle, champs) {
 	const process = child_process.spawn(ZAZ_COREWAR_PATH, ["-d", cycle, ...champs]);
