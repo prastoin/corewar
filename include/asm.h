@@ -17,7 +17,6 @@
 # include <unistd.h>
 # include <stdint.h>
 # include <stdbool.h>
-# include <stdio.h>
 
 # define IN 0
 # define OUT 1
