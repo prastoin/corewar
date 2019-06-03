@@ -12,6 +12,8 @@
 
 #include "vm.h"
 
+
+
 void		exec_process(t_vm *vm)
 {
 	ssize_t		i;

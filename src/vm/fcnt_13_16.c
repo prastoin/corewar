@@ -69,7 +69,8 @@ bool		lfork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	while (param[0] + process->offset < 0)
 		param[0] += MEM_SIZE;
 	index = (process - vm->vec->processes);
-	new_process = add_process(&vm->vec);
+	if (!(new_process = add_process(&vm->vec)))
+		return (false);
 	process = vm->vec->processes + index;
 	*new_process = (t_process) {
 		.offset = (process->offset + param[0]) % MEM_SIZE,

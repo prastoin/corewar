@@ -84,8 +84,7 @@ bool	ft_pass(t_vm *vm, t_process *process)
 	if (!(read_params_and_ocp(vm, process, params, &ocp)))
 		return (false);
 	process->cycle_to_do = 0;
-	g_fcnt[process->actual_opcode](vm, process, params, ocp);
-	return (true);
+	return (g_fcnt[process->actual_opcode](vm, process, params, ocp));
 }
 
 bool	read_opcode(t_vm *game, t_process *process)

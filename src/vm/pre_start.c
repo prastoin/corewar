@@ -40,22 +40,20 @@ bool		bin_parse_header(size_t fd, t_champ *header)
 	return (true);
 }
 
-void		init_processes(t_vm *vm)
+bool		init_processes(t_vm *vm, size_t nbr_champ, size_t i)
 {
-	size_t		nbr_champ;
 	t_process	*process;
-	size_t		i;
 
-	i = 0;
-	nbr_champ = 0;
-	vm->vec = create_process(MAX_PLAYERS);
+	if (!(vm->vec = create_process(MAX_PLAYERS)))
+		return (false);
 	while (nbr_champ < vm->nbr_champ)
 	{
 		if (vm->champ[i].fd)
 		{
 			ft_memcpy((vm->mem) + ((MEM_SIZE / vm->nbr_champ) * nbr_champ),
 					vm->champ[i].prog, vm->champ[i].size);
-			process = add_process(&vm->vec);
+			if (!(process = add_process(&vm->vec)))
+				return (false);
 			*process = (t_process) {
 				.offset = (MEM_SIZE / vm->nbr_champ) * nbr_champ,
 				.is_alive = true,
@@ -66,6 +64,7 @@ void		init_processes(t_vm *vm)
 		}
 		i++;
 	}
+	return (true);
 }
 
 bool		ft_play(t_vm vm)
@@ -88,8 +87,8 @@ bool		ft_play(t_vm vm)
 		}
 		i++;
 	}
-	init_processes(&vm);
-	i = 0;
+	if (!(init_processes(&vm, 0, 0)))
+		return (ft_putf_fd(2, "Malloc failed.\n"));
 	if (vm.flags.verbose)
 		affstart_verbose(vm);
 	david_needs_to_work(&vm);

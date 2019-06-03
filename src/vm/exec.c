@@ -37,7 +37,8 @@ t_vec		*create_process(size_t capacity)
 {
 	t_vec	*list;
 
-	list = malloc(sizeof(t_vec) + capacity * sizeof(t_process));
+	if (!(list = malloc(sizeof(t_vec) + capacity * sizeof(t_process))))
+		return (NULL);
 	*list = (t_vec) {
 		.capacity = capacity,
 		.len = 0
@@ -48,15 +49,19 @@ t_vec		*create_process(size_t capacity)
 t_process	*add_process(t_vec **list)
 {
 	size_t	new_capacity;
+	t_vec	*tmp;
 
-	if ((*list)->len == (*list)->capacity)
+	tmp = *list;
+	if (tmp->len == tmp->capacity)
 	{
-		new_capacity = (*list)->capacity * 2;
-		*list = realloc(*list, sizeof(t_vec)
-				+ new_capacity * sizeof(t_process));
-		(*list)->capacity = new_capacity;
+		new_capacity = tmp->capacity * 2;
+		if (!(tmp = realloc(tmp, sizeof(t_vec)
+				+ new_capacity * sizeof(t_process))))
+			return (NULL);
+		tmp->capacity = new_capacity;
+		*list = tmp;
 	}
-	return ((*list)->processes + (*list)->len++);
+	return (tmp->processes + tmp->len++);
 }
 
 #else

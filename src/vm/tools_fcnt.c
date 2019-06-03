@@ -63,15 +63,13 @@ bool	invalid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 	decale = get_decale(ocp, opcode);
 	hook_process_adv(vm, process, decale);
 	process->offset = (process->offset + decale) % MEM_SIZE;
-	return (false);
+	return (true);
 }
 
 bool	valid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 {
 	size_t decale;
-	size_t i;
 
-	i = 0;
 	decale = get_decale(ocp, opcode);
 	hook_process_adv(vm, process, decale);
 	process->offset = (process->offset + decale) % MEM_SIZE;
