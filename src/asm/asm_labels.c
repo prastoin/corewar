@@ -92,9 +92,8 @@ bool	asm_store_label(t_hashtable **table, char *label, t_write *out,
 	}
 	else
 	{
-		print_small_error(in, Err, "Malloc failed\n", 0);
 		free(label);
-		return (false);
+		return (!(print_small_error(in, Err, "Malloc failed\n", 0)));
 	}
 	return (true);
 }
