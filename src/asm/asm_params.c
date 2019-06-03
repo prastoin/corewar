@@ -14,6 +14,9 @@
 
 bool	asm_check_type(t_read *in, t_instruction *inst, uint16_t c, size_t i)
 {
+	inst->params[i] = (t_param) {
+		.type = Param_None
+	};
 	if (c == DIRECT_CHAR)
 	{
 		io_next(in);
@@ -33,10 +36,7 @@ bool	asm_check_type(t_read *in, t_instruction *inst, uint16_t c, size_t i)
 		asm_read_offset_value(in, inst->params + i);
 	}
 	else
-	{
-		inst->params[i].type = Param_None;
 		return (false);
-	}
 	return (true);
 }
 
