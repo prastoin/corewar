@@ -25,6 +25,21 @@ const OP = {
     AFF: { code: 0x10, cycles: 2 }
 };
 
+function mem(index) {
+    const MEM_SIZE = 4096;
+    while (index < 0) {
+        index += MEM_SIZE;
+    }
+    return (index % MEM_SIZE);
+}
+
+function idx(index) {
+    const IDX_MOD = 4096 / 8;
+    index %= IDX_MOD;
+    index = mem(index);
+    return(index);
+}
+
 function ocp(...types) {
     if (types.length > 4)
         throw new Error("Too much arguments");
@@ -145,5 +160,7 @@ module.exports = {
     dumpReg,
     dumpCarry,
     direct,
-    indirect
+    indirect,
+    mem,
+    idx
 };
