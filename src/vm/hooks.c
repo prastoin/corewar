@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 15:37:18 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/23 12:55:00 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/03 18:19:39 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	hook_process_live(t_vm *vm, t_process *process, size_t player)
 			if (!vm->flags.verbose)
 				ft_putf_fd(1,
 						"un processus dit que le joueur %d(%s) est en vie\n",
-						player + 1, vm->champ[player].name);
+						player, vm->champ[player - 1].name);
 		}
 	}
 }
@@ -57,6 +57,6 @@ void	hook_win(t_vm *vm, size_t winner)
 		ft_putf_fd(vm->v_fd, "Contestant %U, \"%s\", has won !\n", winner + 1,
 				vm->champ[winner].name);
 	else
-		ft_putf("%s a gagne avec le num %d\n", vm->champ[winner].name,
-				winner + 1);
+		ft_putf("le joueur %d(%s) a gagne\n", winner + 1,
+				vm->champ[winner].name);
 }

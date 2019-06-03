@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:22:08 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 23:14:31 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/03 18:19:24 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ bool		live(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	hook_process_live(vm, process, player);
 	if (player >= 1 && player <= MAX_PLAYERS)
 	{
-		if (vm->champ[player].fd)
+		if (vm->champ[player - 1].fd)
 		{
 			vm->champ[player - 1].last_cycle_live = vm->cycle;
 		}

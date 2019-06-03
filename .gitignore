@@ -3,4 +3,5 @@ build
 /corewar
 /vm.wasm
 /disasm
+ressources
 verbose*
