@@ -53,7 +53,7 @@ bool	carry_down(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
 	process->carry = false;
 	hook_process_adv(vm, process, decale);
 	process->offset = (process->offset + decale) % MEM_SIZE;
-	return (false);
+	return (true);
 }
 
 bool	invalid(t_vm *vm, t_process *process, uint8_t ocp, int opcode)
