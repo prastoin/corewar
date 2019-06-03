@@ -6,11 +6,18 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 14:19:25 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 22:34:12 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/03 11:51:56 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "asm.h"
+#include <stdlib.h>
+
+int		ffree(void *ptr)
+{
+	free(ptr);
+	return (0);
+}
 
 t_entry	*asm_swap_off(t_instruction *inst, t_write *out, size_t i,
 		t_hashtable **table)
@@ -24,6 +31,7 @@ t_entry	*asm_swap_off(t_instruction *inst, t_write *out, size_t i,
 			entry->offset = out->nbr_write;
 		else
 			inst->params[i].offset.offset -= (ssize_t)out->nbr_write;
+		free(inst->params[i].offset.label);
 	}
 	else if ((entry = insert_hashtable(table,
 				create_entry(inst->params[i].offset.label))))
@@ -32,6 +40,8 @@ t_entry	*asm_swap_off(t_instruction *inst, t_write *out, size_t i,
 		entry->offset = out->nbr_write;
 		inst->params[i].offset.offset = 0;
 	}
+	else
+		return ((void *)(uintptr_t)ffree(inst->params[i].offset.label));
 	return (entry);
 }
 
@@ -84,9 +94,13 @@ bool	asm_store_label(t_hashtable **table, char *label, t_write *out
 			entry->resolve = true;
 			entry->offset = out->nbr_write;
 		}
+		free(label);
 	}
 	else
-		return (print_small_error(in, Err, "Malloc failed\n", 0) && false);
+	{
+		print_small_error(in, Err, "Malloc failed\n", 0);
+		return (ffree(label));
+	}
 	return (true);
 }
 
@@ -104,6 +118,7 @@ void	asm_check_labels(t_hashtable *table, t_read *in)
 				print_small_error(in, Err, "Undeclared label",
 						table->bucket[i].key);
 			}
+			free(table->bucket[i].key);
 		}
 		i++;
 	}
