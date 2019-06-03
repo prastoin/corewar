@@ -74,14 +74,14 @@ bool		diss_read_params(const uint8_t mem[CHAMP_MAX_SIZE],
 		if (!(diss_check_ocp(prog->ocp, opcode)))
 			return (false);
 		ft_putf_fd(diss.fd_out, "	%s%s", g_ops[opcode].name,
-				&"        "[ft_strlen(g_ops[opcode].name)]);
+			&"        "[ft_strlen(g_ops[opcode].name)]);
 		diss_get_params_ocp(mem, prog, diss);
 		prog->offset += diss_get_decale(prog->ocp, opcode);
 	}
 	else
 	{
 		ft_putf_fd(diss.fd_out, "	%s%s", g_ops[opcode].name,
-				&"        "[ft_strlen(g_ops[opcode].name)]);
+			&"        "[ft_strlen(g_ops[opcode].name)]);
 		diss_get_params_no_ocp(mem, prog, diss);
 		prog->offset += diss_get_decale(opcode == 1 ? 0b10000000 : 0b11000000,
 				opcode);
