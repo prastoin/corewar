@@ -28,6 +28,7 @@ int32_t	io_readnum(t_read *rd)
 	bool		sign;
 
 	res = 0;
+	sign = false;
 	if ((c = io_peek(rd)) == '-' || c == '+')
 	{
 		sign = c == '-';
