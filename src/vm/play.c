@@ -12,42 +12,37 @@
 
 #include "vm.h"
 
-
-
-void		exec_process(t_vm *vm)
+bool		exec_process(t_vm *vm)
 {
 	ssize_t		i;
-	t_process	*process;
 
-	i = vm->vec->len - 1;
-	while (i >= 0)
+	i = vm->vec->len;
+	while (--i >= 0)
 	{
-		process = vm->vec->processes + i;
-		if (process->is_alive)
+		if (vm->vec->processes[i].is_alive)
 		{
-			if (process->cycle_to_do == 0)
+			if (vm->vec->processes[i].cycle_to_do == 0)
 			{
 				vm->c_pc = i + 1;
-				if (!process->has_read)
-					read_opcode(vm, process);
-				else if (process->has_read)
-				{
-					ft_pass(vm, process);
-					process = vm->vec->processes + i;
-				}
+				if (!vm->vec->processes[i].has_read)
+					read_opcode(vm, vm->vec->processes + i);
+				else if (vm->vec->processes[i].has_read)
+					if (!ft_pass(vm, vm->vec->processes + i))
+						return (false);
 			}
-			if (process->cycle_to_do > 0)
-				process->cycle_to_do--;
+			if (vm->vec->processes[i].cycle_to_do > 0)
+				vm->vec->processes[i].cycle_to_do--;
 		}
-		i--;
 	}
+	return (true);
 }
 
 bool		david_needs_to_work(t_vm *vm)
 {
 	while (true)
 	{
-		exec_process(vm);
+		if (!exec_process(vm))
+			return (true);
 		if (!vm_cycle_to_die(vm))
 			return (true);
 		if (hook_cycle_end(vm))
