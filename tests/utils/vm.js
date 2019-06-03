@@ -75,6 +75,13 @@ function execVm(args) {
                         .filter(l => l.length > 0)
                         .map(l => l.slice(l.indexOf(":") + 1).trim().split(" ").map(n => parseInt(n, 16)))
                         .reduce((c,v) => c.concat(v), [])))
+                    /* Zaz vm format
+                    resolve(new Uint8Array(stdout
+                        .slice(stdout.indexOf('0x0000'))
+                        .split('\n')
+                        .filter(l => l.length > 0)
+                        .map(l => l.slice(l.indexOf(":") + 1).trim().split(" ").map(n => parseInt(n, 16)))
+                        .reduce((c,v) => c.concat(v), [])));*/
                 }
             }
         })
