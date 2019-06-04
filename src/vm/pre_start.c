@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:45:36 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/06/02 17:13:13 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 15:39:37 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ bool		init_processes(t_vm *vm, size_t nbr_champ, size_t i)
 			};
 			conv_int_to_bin(~i, process->registre[0]);
 			nbr_champ++;
+			vm->last_champ_alive = i;
 		}
 		i++;
 	}

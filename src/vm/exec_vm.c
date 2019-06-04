@@ -6,32 +6,11 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:40:50 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/23 16:24:47 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 15:42:26 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
-
-static bool	find_winner(t_vm *vm)
-{
-	ssize_t		max;
-	size_t		i;
-	size_t		winner;
-
-	i = 0;
-	max = -1;
-	while (i < MAX_PLAYERS)
-	{
-		if (max <= (ssize_t)vm->champ[i].last_cycle_live && vm->champ[i].fd)
-		{
-			max = vm->champ[i].last_cycle_live;
-			winner = i;
-		}
-		i++;
-	}
-	hook_win(vm, winner);
-	return (false);
-}
 
 bool		cycle_decremente_die(t_vm *vm)
 {
@@ -54,17 +33,20 @@ bool		kill_process(t_vm *vm, size_t dead)
 	i = vm->vec->len - 1;
 	while (i >= 0)
 	{
-		if (vm->vec->processes[i].said_live == true)
+		if (vm->vec->processes[i].said_live || vm->cycle_to_die <= 0)
 			vm->vec->processes[i].said_live = false;
-		else if (vm->vec->processes[i].is_alive == true)
+		else if (vm->vec->processes[i].is_alive)
 		{
 			vm->vec->processes[i].is_alive = false;
 			hook_process_die(vm, vm->vec->processes + i);
 		}
-		if (vm->vec->processes[i].is_alive == false)
+		if (!vm->vec->processes[i].is_alive)
 			dead++;
 		if (dead == vm->vec->len)
-			return (find_winner(vm));
+		{
+			hook_win(vm, vm->last_champ_alive);
+			return (false);
+		}
 		i--;
 	}
 	return (true);

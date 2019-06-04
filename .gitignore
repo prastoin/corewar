@@ -5,3 +5,4 @@ build
 /disasm
 ressources
 verbose*
+*.cor

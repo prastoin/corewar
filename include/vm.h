@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 09:22:54 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 15:36:39 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ typedef struct	s_champ
 # endif
 
 	int		fd;
-	size_t	last_cycle_live;
 }				t_champ;
 
 typedef struct	s_vm
@@ -84,6 +83,7 @@ typedef struct	s_vm
 	intmax_t	cycle_to_die;
 	size_t		nbr_live;
 	t_champ		champ[MAX_PLAYERS];
+	size_t		last_champ_alive;
 	size_t		nbr_champ;
 	size_t		check;
 	t_vec		*vec;

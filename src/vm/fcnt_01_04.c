@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:22:08 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/03 18:19:24 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 15:36:52 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ bool		live(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	{
 		if (vm->champ[player - 1].fd)
 		{
-			vm->champ[player - 1].last_cycle_live = vm->cycle;
+			vm->last_champ_alive = player - 1;
 		}
 	}
 	vm->nbr_live++;
