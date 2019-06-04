@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 15:36:39 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:01:18 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,11 @@
 
 # include "common.h"
 
-# define OCP_DIR 0b10
-# define OCP_REG 0b01
-# define OCP_IND 0b11
-
-# define REG_T 0b01
-# define IND_T 0b11
-# define DIR_T 0b10
-
 # define FLAG_N_MSG "Choose the player's number"
 # define FLAG_D_MSG "Dump memory on 0 at N cycle"
 # define FLAG_V_MSG "Enabled Verbose mod"
+
+# define V_FILE "verbose"
 
 typedef struct	s_datan
 {
@@ -88,8 +82,8 @@ typedef struct	s_vm
 	size_t		check;
 	t_vec		*vec;
 	size_t		c_pc;
-	size_t		v_fd;
 	t_flags		flags;
+	t_write		v;
 	uint8_t		mem[MEM_SIZE];
 }				t_vm;
 
@@ -106,7 +100,7 @@ void			mem_read(const uint8_t mem[MEM_SIZE], uint8_t str[],
 void			mem_write_one(uint8_t mem[MEM_SIZE], uint8_t c, ssize_t offset);
 void			mem_write_int(uint8_t mem[MEM_SIZE], size_t nb, size_t len,
 		ssize_t offset);
-bool			ft_play(t_vm vm);
+bool			ft_play(t_vm *vm);
 t_vec			*create_process(size_t capacity);
 t_process		*add_process(t_vec **list);
 
@@ -186,7 +180,7 @@ bool			vm_cycle_to_die(t_vm *vm);
 */
 
 void			dump_mem(t_vm *vm);
-void			affstart_verbose(t_vm vm);
+void			affstart_verbose(t_vm *vm);
 
 /*
  ** play.c

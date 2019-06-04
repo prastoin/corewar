@@ -6,42 +6,55 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/04 15:09:06 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 18:14:15 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/06/04 18:37:54 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "asm.h"
 #include "ft_string.h"
 
-void	io_write_number(t_write *w, uintmax_t n)
+void	io_flush(t_write *out)
 {
-	uintmax_t	tmp;
-	uintmax_t	pow;
-	char		c;
-
-	tmp = n;
-	pow = 1;
-	while (tmp /= 10)
-		pow *= 10;
-	while (pow)
+	if (out->flushable == true)
 	{
-		c = n / pow + '0';
-		io_write(w, &c, 1);
-		n %= pow;
-		pow /= 10;
+		if (out->index)
+			write(out->fd, out->buffer, out->index);
 	}
+	else
+		out->fd = -1;
+	out->index = 0;
 }
 
-void	io_write_one(t_write *out, char c)
+void	io_write(t_write *out, void *o_data, size_t size)
 {
-	io_write(out, &c, 1);
-}
+	size_t	space;
+	uint8_t	*data;
 
-void	io_write_int(t_write *out, uintmax_t nb, size_t nb_bytes)
-{
-	while (nb_bytes != 0)
+	data = o_data;
+	space = out->buffer_size - out->index;
+	while (space < size)
 	{
-		nb_bytes--;
-		io_write_one(out, (nb >> (nb_bytes * 8)) & 0xFF);
+		ft_memcpy(out->buffer + out->index, data, space);
+		out->index += space;
+		io_flush(out);
+		data += space;
+		size -= space;
+		out->nbr_write += space;
+		space = out->buffer_size;
+	}
+	ft_memcpy(out->buffer + out->index, data, size);
+	out->index += size;
+	out->nbr_write += size;
+}
+
+void	io_pad(t_write *out, char c, ssize_t value)
+{
+	ssize_t	i;
+
+	i = 0;
+	while (i < value)
+	{
+		io_write(out, &c, 1);
+		i++;
 	}
 }

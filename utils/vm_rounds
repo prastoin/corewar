@@ -53,7 +53,7 @@ async function runZazVM(cwd, champions) {
 }
 
 (async () => {
-	const champions = await fs.readdir(dir)
+	const champions = (await fs.readdir(dir)).reverse()
 	const promises = [];
 	let runs = 0;
 	big: for (const [i, first] of champions.slice(0, -1).entries()) {
@@ -80,7 +80,7 @@ async function runZazVM(cwd, champions) {
 				} 
 			})())
 			runs++;
-			if (runs === 50) {
+			if (runs === 4) {
 				const i = await Promise.race(promises.map((p, i) => p.then(() => i)));
 				promises.splice(i, 1);
 				runs--;

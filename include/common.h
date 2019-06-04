@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 11:30:59 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 09:37:07 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 08:57:37 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,10 @@
 # define UNKNOWN_OPTION (-1)
 # define NO_ARG (-2)
 # define INVALID_VALUE (-3)
+
+# define OCP_DIR 0b10
+# define OCP_REG 0b01
+# define OCP_IND 0b11
 
 typedef enum	e_core_param {
 	Param_None = 0b0,
@@ -92,7 +96,7 @@ typedef enum	e_arg_type
 	Arg_Str
 }				t_type;
 
-typedef	struct	s_arg
+typedef struct	s_arg
 {
 	t_type		type;
 	uint8_t		short_name;
@@ -101,10 +105,20 @@ typedef	struct	s_arg
 	const char	*help;
 }				t_arg;
 
+typedef struct	s_write
+{
+	uint8_t		*buffer;
+	size_t		index;
+	size_t		nbr_write;
+	bool		flushable;
+	int			fd;
+	size_t		buffer_size;
+}				t_write;
+
 int				show_err(int err, char *name, char *option, size_t len);
 
+int				io_putf(t_write *out, char *fmt, ...);
 int				ft_putf_fd(int fd, char *fmt, ...);
-int				ft_putf(char *fmt, ...);
 
 int				args_usage(const t_arg args[], char *name, char *usage,
 		char *desc);
@@ -115,5 +129,9 @@ bool			parse_long(const t_arg opt[], char **arg, char *argv[],
 bool			parse_short(const t_arg opt[], char **arg, char *argv[],
 		size_t *i);
 ssize_t			parse_args(const t_arg args[], int argc, char *argv[]);
+
+void			io_pad(t_write *out, char c, ssize_t value);
+void			io_write(t_write *out, void *o_data, size_t size);
+void			io_flush(t_write *out);
 
 #endif

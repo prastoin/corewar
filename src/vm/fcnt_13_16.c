@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 17:16:18 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:00:15 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ bool		lld(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 		return (invalid(vm, process, ocp, 13));
 	ft_memcpy(process->registre[param[1] - 1], process->tampon, REG_SIZE);
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P %4d | lld %D r%d\n", vm->c_pc,
+		io_putf(&vm->v, "P %4d | lld %D r%d\n", vm->c_pc,
 			conv_bin_num(process->tampon, REG_SIZE), param[1]);
 	if ((conv_bin_num(process->tampon, REG_SIZE)) == 0)
 		return (carry_up(vm, process, ocp, 13));
@@ -79,7 +79,7 @@ bool		lfork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	copy_process(new_process, process);
 	hook_process_spawn(new_process, process, new_process->offset);
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "P %4d | lfork %d (%d)\n", vm->c_pc, save,
+		io_putf(&vm->v, "P %4d | lfork %d (%d)\n", vm->c_pc, save,
 			save + process->offset);
 	return (valid(vm, process, 0b11000000, 15));
 }

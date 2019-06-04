@@ -28,6 +28,7 @@ SRCS += src/common/mem.c
 SRCS += src/common/op.c
 SRCS += src/common/string.c
 SRCS += src/common/string_2.c
+SRCS += src/common/io.c
 SRCS += src/disassembler/dis_conv_params.c
 SRCS += src/disassembler/dis_params.c
 SRCS += src/disassembler/disassembler.c

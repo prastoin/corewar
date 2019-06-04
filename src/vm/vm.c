@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 09:37:46 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:00:52 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,26 +56,28 @@ static bool		is_empty(char *players[MAX_PLAYERS + 1])
 }
 
 int				main_split(char *players[MAX_PLAYERS + 1], char *argv[],
-		int argc, t_vm vm)
+		int argc, t_vm *vm)
 {
 	size_t i;
 
 	i = 0;
 	while (i < MAX_PLAYERS)
 	{
-		if (!insert_player(&vm, players[i], i + 1, true))
-			return (ft_putf("Error in input files\n"));
+		if (!insert_player(vm, players[i], i + 1, true))
+			return (ft_putf_fd(STDERR_FILENO, "Error in input files\n"));
 		i++;
 	}
 	i = 0;
 	while (i < (size_t)argc)
 	{
-		if (!insert_player(&vm, argv[i], i + 1, false))
-			return (ft_putf("Error in input files\n"));
+		if (!insert_player(vm, argv[i], i + 1, false))
+			return (ft_putf_fd(STDERR_FILENO, "Error in input files\n"));
 		i++;
 	}
-	if (vm.nbr_champ > 0 && vm.nbr_champ <= MAX_PLAYERS)
+	if (vm->nbr_champ > 0 && vm->nbr_champ <= MAX_PLAYERS)
 		ft_play(vm);
+	if (vm->flags.verbose)
+		io_flush(&vm->v);
 	return (0);
 }
 
@@ -104,6 +106,7 @@ int				main(int argc, char *argv[])
 	ssize_t		ret;
 	char		*players[MAX_PLAYERS];
 	t_arg		*args;
+	uint8_t		buffer[4096];
 
 	vm = init_vm();
 	ft_memset(players, 0, sizeof(players));
@@ -112,7 +115,11 @@ int				main(int argc, char *argv[])
 		|| (is_empty(players) && argc == ret))
 		return (args_usage(args, argv[0], "source_file", "Launch corewar vm"));
 	if (vm.flags.verbose == true)
-		vm.v_fd = open("verbose", O_RDWR | O_CREAT | O_TRUNC,
-				S_IRUSR | S_IWUSR);
-	return (main_split(players, argv + ret, argc - ret, vm));
+		vm.v = (t_write) {
+			.buffer = buffer,
+			.flushable = true,
+			.fd = open(V_FILE, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR),
+			.buffer_size = sizeof(buffer)
+		};
+	return (main_split(players, argv + ret, argc - ret, &vm));
 }

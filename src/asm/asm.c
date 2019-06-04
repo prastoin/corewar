@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 09:40:29 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 08:58:15 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int				read_fixed(t_read *in, char *name)
 		{
 			write(out.fd, out.buffer, out.nbr_write);
 			close(out.fd);
-			ft_putf("done static\n");
+			ft_putf_fd(STDOUT_FILENO, "done static\n");
 			return (0);
 		}
 		else
@@ -75,7 +75,7 @@ int				read_streaming(t_read *in, char *name)
 		!= -1)
 	{
 		if ((ret = asm_transform(&out, in)))
-			ft_putf("done streaming\n");
+			ft_putf_fd(STDOUT_FILENO, "done streaming\n");
 		close(out.fd);
 		return (ret ? 0 : 1);
 	}

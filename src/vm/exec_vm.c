@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:40:50 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/06/05 08:37:31 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:00:15 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ bool		kill_process(t_vm *vm, size_t dead)
 			dead++;
 		if (dead == vm->vec->len)
 		{
+			if (vm->cycle_to_die > 0)
+				cycle_decremente_die(vm);
 			hook_win(vm, vm->last_champ_alive);
 			return (false);
 		}

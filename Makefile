@@ -6,12 +6,12 @@
 #    By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/15 10:32:31 by dde-jesu          #+#    #+#              #
-#    Updated: 2019/06/04 11:51:41 by prastoin         ###   ########.fr        #
+#    Updated: 2019/06/05 10:03:14 by dde-jesu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude -g
+CFLAGS = -Wall -Wextra -Iinclude -flto -O2
 LDFLAGS =
 
 BUILD_DIR = build

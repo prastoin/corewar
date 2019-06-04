@@ -6,14 +6,14 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 00:15:15 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/23 12:49:59 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 18:07:25 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "common.h"
 #include "ft_string.h"
 
-void			ft_putnbr_hexa_fd(uintmax_t nb, size_t fd, size_t padd)
+void			putnbr_hexa_fd(t_write *out, uintmax_t nb, size_t padd)
 {
 	const char	*base = "0123456789abcdef";
 	uintmax_t	tmp;
@@ -30,10 +30,10 @@ void			ft_putnbr_hexa_fd(uintmax_t nb, size_t fd, size_t padd)
 		str[i] = base[nb % 16];
 		nb /= 16;
 	}
-	str_hexa_fd(str, fd, padd);
+	str_hexa_fd(out, str, padd);
 }
 
-void			handle_hexa(size_t fd, va_list args, size_t padd, char *flag)
+void			handle_hexa(t_write *out, va_list args, size_t padd, char *flag)
 {
 	uintmax_t	nb;
 
@@ -41,10 +41,10 @@ void			handle_hexa(size_t fd, va_list args, size_t padd, char *flag)
 		nb = va_arg(args, uint32_t);
 	else
 		nb = va_arg(args, uint64_t);
-	ft_putnbr_hexa_fd(nb, fd, padd);
+	putnbr_hexa_fd(out, nb, padd);
 }
 
-void			handle_dlu(size_t fd, va_list args, size_t padd, char *flag)
+void			handle_dlu(t_write *out, va_list args, size_t padd, char *flag)
 {
 	intmax_t	nb;
 
@@ -59,6 +59,6 @@ void			handle_dlu(size_t fd, va_list args, size_t padd, char *flag)
 	else
 		return ;
 	while (padd && padd-- > (nb < 0 ? nb_len(nb) + 1 : nb_len(nb)))
-		char_fd(fd, ' ', 0);
-	ft_putnbr_fd(fd, nb);
+		char_fd(out, ' ', 0);
+	putnbr_fd(out, nb);
 }

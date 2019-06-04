@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:48:59 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/06/04 09:22:46 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:02:38 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,47 +15,47 @@
 void		dump_mem(t_vm *vm)
 {
 	size_t i;
-	size_t fd;
-	size_t mod;
 
+	i = 0;
 	if (!vm->flags.verbose)
 	{
-		mod = 32;
-		fd = 1;
+		while (i < MEM_SIZE)
+		{
+			if (i % 32 == 0 && i != 0)
+				ft_putf_fd(STDOUT_FILENO, "\n");
+			if (i % 32 == 0)
+				ft_putf_fd(STDOUT_FILENO, "0x%4x : ", i);
+			ft_putf_fd(STDOUT_FILENO, "%2x ", vm->mem[i++]);
+		}
+		ft_putf_fd(STDOUT_FILENO, "\n");
+		return ;
 	}
-	else
-	{
-		fd = vm->v_fd;
-		mod = 64;
-	}
-	i = 0;
 	while (i < MEM_SIZE)
 	{
-		if (i % mod == 0 && i != 0)
-			ft_putf_fd(fd, "\n");
-		if (i % mod == 0)
-			ft_putf_fd(fd, "0x%4x : ", i);
-		ft_putf_fd(fd, "%2x ", vm->mem[i]);
-		i++;
+		if (i % 64 == 0 && i != 0)
+			io_putf(&vm->v, "\n");
+		if (i % 64 == 0)
+			io_putf(&vm->v, "0x%4x : ", i);
+		io_putf(&vm->v, "%2x ", vm->mem[i++]);
 	}
-	ft_putf_fd(fd, "\n");
+	io_putf(&vm->v, "\n");
 }
 
-void		affstart_verbose(t_vm vm)
+void		affstart_verbose(t_vm *vm)
 {
 	size_t		i;
-	t_champ		champ;
+	t_champ		*champ;
 
 	i = 0;
-	ft_putf_fd(vm.v_fd, "Introducing contestants...\n");
+	io_putf(&vm->v, "Introducing contestants...\n");
 	while (i < MAX_PLAYERS)
 	{
-		if (vm.champ[i].fd)
+		if (vm->champ[i].fd)
 		{
-			champ = vm.champ[i];
-			ft_putf_fd(vm.v_fd,
+			champ = vm->champ + i;
+			io_putf(&vm->v,
 				"* Player %U, weighing %U bytes, \"%s\" (\"%s\") !\n",
-				i + 1, champ.size, champ.name, champ.comment);
+				i + 1, champ->size, champ->name, champ->comment);
 		}
 		i++;
 	}

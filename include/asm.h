@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 13:27:53 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 18:09:47 by fbecerri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,6 @@ typedef struct	s_label
 	size_t	offset;
 }				t_label;
 
-typedef struct	s_write
-{
-	uint8_t		*buffer;
-	size_t		index;
-	size_t		nbr_write;
-	bool		flushable;
-	int			fd;
-	size_t		buffer_size;
-}				t_write;
 
 typedef union	u_param
 {

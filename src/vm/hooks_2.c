@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/23 12:53:31 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 15:23:15 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:00:15 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,16 @@ void	hook_process_adv(t_vm *vm, t_process *process, size_t diff)
 
 	if (vm->flags.verbose && diff > 1)
 	{
-		ft_putf_fd(vm->v_fd, "ADV %d (0x%4X -> 0x%4X) ", diff,
+		io_putf(&vm->v, "ADV %d (0x%4X -> 0x%4X) ", diff,
 			process->offset, ((process->offset + diff)));
 		i = 0;
 		while (i < diff)
 		{
-			ft_putf_fd(vm->v_fd, "%2x ",
+			io_putf(&vm->v, "%2x ",
 				vm->mem[(process->offset + i) % MEM_SIZE]);
 			i++;
 		}
-		ft_putf_fd(vm->v_fd, "\n");
+		io_putf(&vm->v, "\n");
 	}
 }
 
@@ -37,7 +37,7 @@ void	hook_process_jump(t_vm *vm, t_process *process, uint32_t param,
 	(void)offset;
 	if (vm->flags.verbose)
 	{
-		ft_putf_fd(vm->v_fd, "P %4d | zjmp %d %s\n",
+		io_putf(&vm->v, "P %4d | zjmp %d %s\n",
 			process - vm->vec->processes + 1,
 			param, process->carry == true ? "OK" : "FAILED");
 	}
@@ -58,7 +58,7 @@ bool	hook_cycle_end(t_vm *vm)
 		return (true);
 	}
 	if (vm->flags.verbose)
-		ft_putf_fd(vm->v_fd, "It is now cycle %d\n", vm->cycle);
+		io_putf(&vm->v, "It is now cycle %d\n", vm->cycle);
 	return (false);
 }
 

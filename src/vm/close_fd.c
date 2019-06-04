@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:33:38 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/22 23:12:54 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:00:15 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,5 @@ void		close_fd(t_vm *vm)
 		i++;
 	}
 	if (vm->flags.verbose)
-		close(vm->v_fd);
+		close(vm->v.fd);
 }
