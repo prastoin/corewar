@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/29 04:50:13 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 09:02:29 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef struct	s_vec
 typedef struct	s_champ
 {
 # ifndef __wasm__
+
 	char	name[PROG_NAME_LENGTH];
 	char	comment[COMMENT_LENGTH];
 	char	prog[CHAMP_MAX_SIZE];
@@ -87,10 +88,8 @@ typedef struct	s_vm
 	size_t		check;
 	t_vec		*vec;
 	size_t		c_pc;
-//#ifndef __wasm__ TODO
 	size_t		v_fd;
 	t_flags		flags;
-//#endif
 	uint8_t		mem[MEM_SIZE];
 }				t_vm;
 

@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/02 14:20:14 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/03 18:32:48 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 09:02:58 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ t_process	*add_process(t_vec **list)
 	if ((*list)->len == (*list)->capacity)
 	{
 		if (((*list)->capacity * sizeof(t_vec)) / WASM_PAGE_SIZE)
-			__builtin_wasm_memory_grow(0, ((*list)->capacity 
+			__builtin_wasm_memory_grow(0, ((*list)->capacity
 					* sizeof(t_vec)) / WASM_PAGE_SIZE);
 		else
 			__builtin_wasm_memory_grow(0, 1);

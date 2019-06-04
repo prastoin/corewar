@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/29 04:35:39 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 09:08:33 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,20 +89,35 @@ t_vm		init_vm(void)
 	});
 }
 
+static t_arg	*create_args(char *players[MAX_PLAYERS], t_vm *vm)
+{
+	static t_arg args[4];
+
+	args[0] = (t_arg) {
+		Arg_Players, 'n', "number", &players, FLAG_N_MSG
+	};
+	args[1] = (t_arg) {
+		Arg_Int, 'd', "dump", &vm->flags.dump_c, FLAG_D_MSG
+	};
+	args[2] = (t_arg) {
+		Arg_Boolean, 'v', "verbose", &vm->flags.verbose, FLAG_V_MSG
+	};
+	args[3] = (t_arg) {
+		.type = Arg_End
+	};
+	return (args);
+}
+
 int			main(int argc, char *argv[])
 {
 	t_vm		vm;
 	ssize_t		ret;
 	char		*players[MAX_PLAYERS];
-	const t_arg args[] = {
-		{Arg_Players, 'n', "number", &players, FLAG_N_MSG},
-		{Arg_Int, 'd', "dump", &vm.flags.dump_c, FLAG_D_MSG},
-		{Arg_Boolean, 'v', "verbose", &vm.flags.verbose, FLAG_V_MSG},
-		{Arg_End, 0, 0, 0, 0}
-	};
+	t_arg		*args;
 
 	vm = init_vm();
 	ft_memset(players, 0, sizeof(players));
+	args = create_args(players, &vm);
 	if ((ret = parse_args(args, argc, argv)) < 0
 		|| (is_empty(players) && argc == ret))
 		return (args_usage(args, argv[0], "source_file", "Launch corewar vm"));
