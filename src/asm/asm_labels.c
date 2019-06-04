@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 14:19:25 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 12:26:22 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 12:39:35 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ bool asm_swap_off(t_instruction *inst, t_write *out, size_t i,
 
 	if ((entry = hashtable_get((*table), inst->params[i].offset.label)))
 	{
-		if (entry->positions)
-			inst->params[i].offset.offset -= (ssize_t)out->nbr_write;
+		if (!entry->positions)
+			inst->params[i].offset.offset = entry->offset - (ssize_t)out->nbr_write;
 		else
 		{
 			if (!(pos = add_position(&entry->positions)))
