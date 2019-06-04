@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 09:02:29 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/06/04 09:22:54 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ typedef struct	s_vm
 	uint8_t		mem[MEM_SIZE];
 }				t_vm;
 
+t_vm			init_vm(void);
 bool			ft_check_ocp(uint8_t ocp, uint8_t opcode);
 bool			ft_get_value(ssize_t nbr, uint8_t type, t_process *processes,
 		t_vm *vm);

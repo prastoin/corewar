@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 09:08:33 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/06/04 09:24:25 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <fcntl.h>
 #include <limits.h>
 
-bool		insert_player(t_vm *vm, char *name, int n, bool flag)
+bool			insert_player(t_vm *vm, char *name, int n, bool flag)
 {
 	int			fd;
 	static bool	player[MAX_PLAYERS];
@@ -41,7 +41,7 @@ bool		insert_player(t_vm *vm, char *name, int n, bool flag)
 	return (true);
 }
 
-static bool	is_empty(char *players[MAX_PLAYERS + 1])
+static bool		is_empty(char *players[MAX_PLAYERS + 1])
 {
 	size_t	i;
 
@@ -55,8 +55,8 @@ static bool	is_empty(char *players[MAX_PLAYERS + 1])
 	return (true);
 }
 
-int			main_split(char *players[MAX_PLAYERS + 1], char *argv[], int argc,
-		t_vm vm)
+int				main_split(char *players[MAX_PLAYERS + 1], char *argv[],
+		int argc, t_vm vm)
 {
 	size_t i;
 
@@ -79,16 +79,6 @@ int			main_split(char *players[MAX_PLAYERS + 1], char *argv[], int argc,
 	return (0);
 }
 
-t_vm		init_vm(void)
-{
-	return ((t_vm) {
-		.cycle_to_die = CYCLE_TO_DIE,
-		.flags = {
-			.dump_c = -1
-		}
-	});
-}
-
 static t_arg	*create_args(char *players[MAX_PLAYERS], t_vm *vm)
 {
 	static t_arg args[4];
@@ -108,7 +98,7 @@ static t_arg	*create_args(char *players[MAX_PLAYERS], t_vm *vm)
 	return (args);
 }
 
-int			main(int argc, char *argv[])
+int				main(int argc, char *argv[])
 {
 	t_vm		vm;
 	ssize_t		ret;

@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/14 11:34:39 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/23 11:41:33 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/06/04 09:19:46 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <errno.h>
 #include <string.h>
 
-char	*change_ext(char *name)
+char			*change_ext(char *name)
 {
 	static char	file[PATH_MAX - 1];
 	char		*dot;
@@ -33,7 +33,7 @@ char	*change_ext(char *name)
 	return (file);
 }
 
-int		read_fixed(t_read *in, char *name)
+int				read_fixed(t_read *in, char *name)
 {
 	uint8_t		buffer[CHAMP_MAX_SIZE + HEADER_SIZE];
 	t_write		out;
@@ -61,7 +61,7 @@ int		read_fixed(t_read *in, char *name)
 		return (1);
 }
 
-int		read_streaming(t_read *in, char *name)
+int				read_streaming(t_read *in, char *name)
 {
 	uint8_t		buffer[BUFFER_SIZE];
 	t_write		out;
@@ -83,19 +83,33 @@ int		read_streaming(t_read *in, char *name)
 		return (print_small_error(in, Err, "Cannot open output file", name));
 }
 
-int		main(int argc, char *argv[])
+static t_arg	*create_args(t_flag *flag, t_read *in)
+{
+	static t_arg args[4];
+
+	args[0] = (t_arg) {
+		Arg_Boolean, 's', "streaming", &flag->streaming, FLAG_S_MSG
+	};
+	args[1] = (t_arg) {
+		Arg_Boolean, 'e', "Werror", &in->werror, "Warnings become errors"
+	};
+	args[2] = (t_arg) {
+		Arg_End, 0, 0, 0, 0
+	};
+	return (args);
+}
+
+int				main(int argc, char *argv[])
 {
 	t_flag		flag;
 	char		*files[2];
 	int			i;
 	t_read		in;
-	const t_arg	args[] = {
-		{Arg_Boolean, 's', "streaming", &flag.streaming, FLAG_S_MSG},
-		{Arg_Boolean, 'e', "Werror", &in.werror, "Warnings become errors"},
-		{Arg_End, 0, 0, 0, 0}};
+	t_arg		*args;
 
 	flag = (t_flag) {0, 0};
 	in.werror = false;
+	args = create_args(&flag, &in);
 	if ((i = parse_args(args, argc, argv)) < 0 || argc != i + 1)
 		return (args_usage(args, argv[0], "source_file", ARGS_MSG));
 	files[IN] = argv[i];
