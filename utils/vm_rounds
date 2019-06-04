@@ -1,8 +1,12 @@
 #!/usr/bin/env node
-const { promises: fs } = require("fs");
+const { promisify } = require('util')
+const { promises: fs, open, close } = require("fs");
 const child_process = require('child_process')
 const { resolve, join } = require('path')
 const tmp = require("tmp-promise");
+const openAsync = promisify(open)
+const closeAsync = promisify(close)
+const chalk = require('chalk')
 
 const [dir] = process.argv.slice(2);
 
@@ -11,8 +15,12 @@ const OUR_COREWAR_PATH = join(__dirname, "..", "corewar");
 
 function diff(path1, path2) {
 	return new Promise((resolve, reject) => {
-		child_process.exec(`diff -q ${path1} ${path2}`, (err) => {
-			if (err) reject(err)
+		child_process.exec(`diff ${path1} ${path2}`, (err, stdout, stderr) => {
+			const split = stdout.split('\n', 5);
+			if (err) {
+				console.log(chalk.red(split[1]) + chalk.white(" || ") + chalk.red(split[3]));
+				reject(err)
+			}
 			else resolve();
 		})
 	})
@@ -29,19 +37,25 @@ function runOurVM(cwd, champions) {
 	})
 }
 
-function runZazVM(cwd, champions) {
-	return new Promise((resolve) => {
-		const process = child_process.spawn(ZAZ_COREWAR_PATH, ['-v', '30'].concat(champions), {
-			stdio: 'ignore',
-			cwd
-		});
-		process.once('close', resolve)
-	})
+async function runZazVM(cwd, champions) {
+	const fd = await openAsync(join(cwd, "verbose_zaz"), "w")
+	try {
+		await new Promise((resolve) => {
+			const process = child_process.spawn(ZAZ_COREWAR_PATH, ['-v', '30'].concat(champions), {
+				stdio: ['ignore', fd, 'ignore'],
+				cwd
+			});
+			process.once('close', resolve)
+		})
+	} finally {
+		await closeAsync(fd);
+	}
 }
 
 (async () => {
 	const champions = await fs.readdir(dir)
 	const promises = [];
+	let runs = 0;
 	big: for (const [i, first] of champions.slice(0, -1).entries()) {
 		for (const second of champions.slice(i + 1)) {
 			promises.push((async () => {
@@ -53,19 +67,25 @@ function runZazVM(cwd, champions) {
 					]
 					await Promise.all([
 						runOurVM(directory.path, champions),
-						runZazVm(directory.path, champions)
+						runZazVM(directory.path, champions)
 					])
 					try {
 						await diff(join(directory.path, "verbose"), join(directory.path, "verbose_zaz"))
-						console.log(first, "vs", secomd, "no diff !");
+						console.log(chalk.green(`${first} vs ${second} no diff !`));
 					} catch {
-						console.log(first, "vs", second, "diff !");
+						console.log(chalk.red(`${first} vs ${second} diff !`));
 					}
 				} finally {
 					directory.cleanup()
 				} 
 			})())
-			break big;
+			runs++;
+			if (runs === 50) {
+				const i = await Promise.race(promises.map((p, i) => p.then(() => i)));
+				promises.splice(i, 1);
+				runs--;
+			}
+			//break big;
 		}
 	 }
 	 await Promise.all(promises);
