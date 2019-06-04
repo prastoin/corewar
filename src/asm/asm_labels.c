@@ -6,48 +6,83 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 14:19:25 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/03 11:51:56 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/06/04 12:26:22 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "asm.h"
 #include <stdlib.h>
 
-t_entry	*asm_swap_off(t_instruction *inst, t_write *out, size_t i,
+size_t	size_until_param(t_instruction *inst, size_t pos)
+{
+	size_t	i;
+	size_t	size;
+
+	i = 0;
+	size = 0;
+	while (i < pos)
+	{
+		if (inst->params[i].type == Param_Direct)
+			size += g_ops[inst->opcode].params[i] & Param_Index ? 2 : 4;
+		else if (inst->params[i].type == Param_Indirect)
+			size += 2;
+		else if (inst->params[i].type == Param_Register)
+			size += 1;
+		i++;
+	}
+	return (1 + g_ops[inst->opcode].ocp + size);
+}
+
+bool asm_swap_off(t_instruction *inst, t_write *out, size_t i,
 		t_hashtable **table)
 {
 	t_entry *entry;
+	t_pos	*pos;
 
 	if ((entry = hashtable_get((*table), inst->params[i].offset.label)))
 	{
-		inst->params[i].offset.offset = entry->offset;
-		if (!entry->resolve)
-			entry->offset = out->nbr_write;
-		else
+		if (entry->positions)
 			inst->params[i].offset.offset -= (ssize_t)out->nbr_write;
+		else
+		{
+			if (!(pos = add_position(&entry->positions)))
+				return (false);
+			pos->param = out->nbr_write + size_until_param(inst, i);
+			pos->offset = out->nbr_write;
+			if (inst->params[i].type == Param_Direct)
+				pos->size = g_ops[inst->opcode].params[i] & Param_Index ? 2 : 4;
+			else
+				pos->size = 2;
+		}
 		free(inst->params[i].offset.label);
 	}
 	else if ((entry = insert_hashtable(table,
 					create_entry(inst->params[i].offset.label))))
 	{
-		entry->resolve = false;
-		entry->offset = out->nbr_write;
-		inst->params[i].offset.offset = 0;
+		entry->positions = create_pos_vec(8);
+		if (!(pos = add_position(&entry->positions)))
+			return (false);
+		pos->param = out->nbr_write + size_until_param(inst, i);
+		pos->offset = out->nbr_write;
+		if (inst->params[i].type == Param_Direct)
+			pos->size = g_ops[inst->opcode].params[i] & Param_Index ? 2 : 4;
+		else
+			pos->size = 2;
 	}
 	else
+	{
 		free(inst->params[i].offset.label);
-	return (entry);
+		return (false);
+	}
+	return (true);
 }
 
-ssize_t	asm_resolve_label(t_hashtable **table, t_instruction *inst,
+bool	asm_resolve_label(t_hashtable **table, t_instruction *inst,
 		t_write *out, t_read *in)
 {
 	size_t	i;
-	size_t	last_label;
-	t_entry	*entry;
 
 	i = 0;
-	last_label = 0;
 	while (g_ops[inst->opcode].params[i])
 	{
 		mark_span(in);
@@ -55,17 +90,15 @@ ssize_t	asm_resolve_label(t_hashtable **table, t_instruction *inst,
 				|| inst->params[i].type == Param_Indirect)
 			&& inst->params[i].offset.label)
 		{
-			if (!(entry = asm_swap_off(inst, out, i, table)))
+			if (!asm_swap_off(inst, out, i, table))
 			{
 				print_small_error(in, Err, "Malloc failed\n", 0);
-				return (-1);
+				return (false);
 			}
-			if (!entry->resolve)
-				last_label = last_label == 1 ? 3 : i;
 		}
 		i++;
 	}
-	return (last_label);
+	return (true);
 }
 
 bool	asm_store_label(t_hashtable **table, char *label, t_write *out,
@@ -76,18 +109,18 @@ bool	asm_store_label(t_hashtable **table, char *label, t_write *out,
 	if ((entry = insert_hashtable(table, create_entry(label))))
 	{
 		entry->offset = out->nbr_write;
-		entry->resolve = true;
+		entry->positions = NULL;
 	}
 	else if ((entry = hashtable_get((*table), label)))
 	{
-		if (entry->resolve)
-			print_error(in, Warn, "Label already exists: ", NULL);
-		else
+		if (entry->positions)
 		{
-			bin_resolve_label(out, entry->offset);
-			entry->resolve = true;
+			bin_resolve_positions(out, entry->positions);
+			entry->positions = NULL;
 			entry->offset = out->nbr_write;
 		}
+		else
+			print_error(in, Warn, "Label already exists: ", NULL);
 		free(label);
 	}
 	else
@@ -107,10 +140,11 @@ void	asm_check_labels(t_hashtable *table, t_read *in)
 	{
 		if (table->bucket[i].key)
 		{
-			if (!table->bucket[i].resolve)
+			if (table->bucket[i].positions)
 			{
 				print_small_error(in, Err, "Undeclared label",
 					table->bucket[i].key);
+				free(table->bucket[i].positions);
 			}
 			free(table->bucket[i].key);
 		}

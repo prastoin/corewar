@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 12:46:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 22:20:42 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 11:51:07 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ bool		asm_transform(t_write *out, t_read *in)
 {
 	t_instruction	inst;
 	t_hashtable		*table;
-	ssize_t			idx;
 
 	if (!(table = create_hashtable(8)))
 		return (!print_small_error(in, Err, "Table creation failed", 0));
@@ -42,9 +41,9 @@ bool		asm_transform(t_write *out, t_read *in)
 			return (asm_transform_end(out, in, table, false));
 		if (!inst.label && inst.opcode != -1)
 		{
-			if ((idx = asm_resolve_label(&table, &inst, out, in)) < 0)
+			if (!asm_resolve_label(&table, &inst, out, in))
 				return (asm_transform_end(out, in, table, false));
-			bin_write_inst(out, &inst, idx);
+			bin_write_inst(out, &inst);
 		}
 		if (!inst.label && inst.opcode == -1 && io_skip_until(in, " \t\n#") | 1)
 			print_error(in, Err, "Unknown Instructions", NULL);

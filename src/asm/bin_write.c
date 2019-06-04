@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 22:36:24 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 11:45:02 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,13 @@ void	bin_write_params(t_write *out, t_instruction *inst)
 	}
 }
 
-void	bin_write_inst(t_write *out, t_instruction *inst, uint8_t lst_label)
+
+void	bin_write_inst(t_write *out, t_instruction *inst)
 {
 	size_t			i;
 	uint8_t			ocp;
 
-	ocp = lst_label & 0b11;
+	ocp = 0;
 	i = 0;
 	io_write_int(out, inst->opcode, 1);
 	while (g_ops[inst->opcode].params[i])

@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 22:23:11 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 12:25:07 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,26 @@ typedef struct	s_instruction
 	t_param	params[MAX_PARAM];
 }				t_instruction;
 
+typedef struct	s_pos
+{
+	size_t	param;
+	size_t	offset;
+	uint8_t	size;
+}				t_pos;
+
+typedef struct	s_pos_vec
+{
+	size_t	len;
+	size_t	capacity;
+	t_pos	inner[];
+}				t_pos_vec;
+
 typedef struct	s_entry
 {
 	char		*key;
 	uint64_t	hash;
 	uint64_t	offset;
-	bool		resolve;
+	t_pos_vec	*positions;
 }				t_entry;
 
 typedef struct	s_hashtable
@@ -129,10 +143,9 @@ void			ft_itoa_hexa(char *str, uintmax_t nb, size_t len);
 /*
 ** bin
 */
-void			bin_write_inst(t_write *out, t_instruction *inst,
-		uint8_t last_label);
+void			bin_write_inst(t_write *out, t_instruction *inst);
 void			bin_write_end(t_write *out);
-void			bin_resolve_label(t_write *out, size_t offset);
+void			bin_resolve_positions(t_write *out, t_pos_vec *positions);
 bool			bin_write_header(t_header head, t_write *out);
 void			bin_padding_ocp(uint8_t ocp, t_write *out, int8_t *size,
 		uint8_t opcode);
@@ -177,12 +190,18 @@ bool			io_skip_until(t_read *rd, char *chars);
 void			io_seek(t_write *out, ssize_t offset, bool set_cur);
 void			io_write_read(t_write *out, uint8_t *tmp, size_t size);
 /*
-** Hashtable.c
+** hashtable.c
 */
 t_entry			create_entry(char *key);
 t_hashtable		*create_hashtable(size_t size);
 t_entry			*insert_hashtable(t_hashtable **table, t_entry entry);
 t_entry			*hashtable_get(t_hashtable *table, char *name);
+
+/*
+** vec.c
+*/
+t_pos_vec		*create_pos_vec(size_t capacity);
+t_pos			*add_position(t_pos_vec **vec);
 
 /*
 ** asm_utils.c
@@ -216,7 +235,7 @@ bool			asm_read_inst(t_read *in, t_instruction *inst);
 bool			asm_transform(t_write *out, t_read *in);
 bool			asm_store_label(t_hashtable **table, char *label, t_write *out,
 		t_read *in);
-ssize_t			asm_resolve_label(t_hashtable **table, t_instruction *inst,
+bool			asm_resolve_label(t_hashtable **table, t_instruction *inst,
 		t_write *out, t_read *in);
 void			asm_check_labels(t_hashtable *table, t_read *in);
 

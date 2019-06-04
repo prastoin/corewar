@@ -17,6 +17,7 @@ SRCS += src/asm/io_read.c
 SRCS += src/asm/io_utils.c
 SRCS += src/asm/io_write.c
 SRCS += src/asm/utils.c
+SRCS += src/asm/vec.c
 SRCS += src/common/args_error.c
 SRCS += src/common/argv_management.c
 SRCS += src/common/ft_putf.c
