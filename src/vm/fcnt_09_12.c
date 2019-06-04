@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:27:13 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/23 16:22:34 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 17:15:55 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ bool		sti(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	if (!ft_get_value_mod(param[1], (ocp >> 4 & 0b11), process, vm))
 		return (invalid(vm, process, ocp, 11));
 	ft_memcpy(op1, process->tampon, REG_SIZE);
-	if (!ft_get_value(param[2], (ocp >> 2 & 0b11), process, vm))
+	if (!ft_get_value_mod(param[2], (ocp >> 2 & 0b11), process, vm))
 		return (invalid(vm, process, ocp, 11));
 	affsti(vm, op1, process, param);
 	return (valid(vm, process, ocp, 11));
@@ -77,14 +77,12 @@ bool		ft_fork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	process = vm->vec->processes + index;
 	*new_process = (t_process) {
 		.offset = (process->offset + param[0]) % MEM_SIZE,
-		.is_alive = true,
-		.cycle_to_do = 1
+		.is_alive = true
 	};
 	copy_process(new_process, process);
 	hook_process_spawn(new_process, process, new_process->offset);
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "P %4d | fork %d (%d)\n", vm->c_pc, save,
 			(save % IDX_MOD) + process->offset);
-	read_opcode(vm, new_process);
 	return (valid(vm, process, 0b11000000, 12));
 }

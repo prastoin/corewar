@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 23:15:00 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 17:16:18 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,9 @@ bool		lfork(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	*new_process = (t_process) {
 		.offset = (process->offset + param[0]) % MEM_SIZE,
 		.is_alive = true,
-		.cycle_to_do = 1
 	};
 	copy_process(new_process, process);
 	hook_process_spawn(new_process, process, new_process->offset);
-	read_opcode(vm, new_process);
 	if (vm->flags.verbose)
 		ft_putf_fd(vm->v_fd, "P %4d | lfork %d (%d)\n", vm->c_pc, save,
 			save + process->offset);
