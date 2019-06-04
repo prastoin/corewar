@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 14:19:25 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 12:39:35 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 13:27:54 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,38 +42,24 @@ bool asm_swap_off(t_instruction *inst, t_write *out, size_t i,
 	if ((entry = hashtable_get((*table), inst->params[i].offset.label)))
 	{
 		if (!entry->positions)
-			inst->params[i].offset.offset = entry->offset - (ssize_t)out->nbr_write;
+			fix_new_offset(entry, inst, i, out);
 		else
 		{
 			if (!(pos = add_position(&entry->positions)))
 				return (false);
-			pos->param = out->nbr_write + size_until_param(inst, i);
-			pos->offset = out->nbr_write;
-			if (inst->params[i].type == Param_Direct)
-				pos->size = g_ops[inst->opcode].params[i] & Param_Index ? 2 : 4;
-			else
-				pos->size = 2;
+			fill_pos(pos, out, inst, i);
 		}
 		free(inst->params[i].offset.label);
 	}
 	else if ((entry = insert_hashtable(table,
 					create_entry(inst->params[i].offset.label))))
 	{
-		entry->positions = create_pos_vec(8);
-		if (!(pos = add_position(&entry->positions)))
+		if (!check_entry_position(&entry, &pos))
 			return (false);
-		pos->param = out->nbr_write + size_until_param(inst, i);
-		pos->offset = out->nbr_write;
-		if (inst->params[i].type == Param_Direct)
-			pos->size = g_ops[inst->opcode].params[i] & Param_Index ? 2 : 4;
-		else
-			pos->size = 2;
+		fill_pos(pos, out, inst, i);
 	}
 	else
-	{
-		free(inst->params[i].offset.label);
-		return (false);
-	}
+		return (free_inst_label(inst, i));
 	return (true);
 }
 

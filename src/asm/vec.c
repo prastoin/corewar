@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   vec.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/06/04 12:48:27 by prastoin          #+#    #+#             */
+/*   Updated: 2019/06/04 12:49:06 by prastoin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "asm.h"
 #include <stdlib.h>
 
@@ -14,10 +26,10 @@ t_pos_vec	*create_pos_vec(size_t capacity)
 	return (vec);
 }
 
-t_pos	*add_position(t_pos_vec **list)
+t_pos		*add_position(t_pos_vec **list)
 {
 	size_t			new_capacity;
-	t_pos_vec*	tmp;
+	t_pos_vec		*tmp;
 
 	tmp = *list;
 	if (tmp->len == tmp->capacity)

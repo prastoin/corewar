@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 12:25:07 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 13:27:53 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,17 @@ t_entry			*hashtable_get(t_hashtable *table, char *name);
 */
 t_pos_vec		*create_pos_vec(size_t capacity);
 t_pos			*add_position(t_pos_vec **vec);
+
+/*
+** asm_labels2.c
+*/
+void		fill_pos(t_pos *pos, t_write *out, t_instruction *inst, size_t i);
+bool	free_inst_label(t_instruction *inst, size_t i);
+bool	check_entry_position(t_entry **entry, t_pos **pos);
+void	fix_new_offset(t_entry *entry, t_instruction *inst,
+		size_t i, t_write *out);
+size_t	size_until_param(t_instruction *inst, size_t pos);
+
 
 /*
 ** asm_utils.c

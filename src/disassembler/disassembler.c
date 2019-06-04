@@ -6,15 +6,11 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 11:13:26 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/06/04 09:55:37 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 12:45:41 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_string.h"
-#include "asm.h"
-#include "stdlib.h"
-#include "fcntl.h"
-#include "limits.h"
+#include <fcntl.h>
 #include "disassembler.h"
 
 intmax_t		conv_bin(uint8_t *mem, size_t len)
@@ -71,7 +67,7 @@ bool			begin_diss(t_diss diss)
 
 	prog.offset = 0;
 	if (!bin_parse_header(diss.fd_in, &header))
-		error_message("Parse header");
+		return (error_message("Parse header"));
 	ft_putf_fd(diss.fd_out, ".name      \"%s\"\n", header.name);
 	ft_putf_fd(diss.fd_out, ".comment   \"%s\"\n\n", header.comment);
 	while (prog.offset < header.size)
