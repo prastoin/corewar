@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 11:46:37 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/22 23:24:10 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 09:42:04 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct	s_read_prog
 	uint32_t	ocp;
 }				t_read_prog;
 
+bool		error_message(const char *err);
 size_t			diss_get_decale(uint8_t ocp, int opcode);
 void			diss_get_params_ocp(const uint8_t mem[CHAMP_MAX_SIZE],
 		t_read_prog *prog, t_diss diss);

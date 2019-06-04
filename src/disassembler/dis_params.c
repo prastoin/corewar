@@ -6,11 +6,17 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/22 22:52:32 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/22 23:00:11 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/06/04 09:47:53 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "disassembler.h"
+
+bool		error_message(const char *err)
+{
+	ft_putf_fd(2, "%serror : %s%s.\n", CSI_RED, err, CSI_RESET);
+	return (false);
+}
 
 size_t		diss_get_decale(uint8_t ocp, int opcode)
 {

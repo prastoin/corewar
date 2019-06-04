@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 11:13:26 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/05/22 22:37:44 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/04 09:55:37 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include "limits.h"
 #include "disassembler.h"
 
-intmax_t	conv_bin(uint8_t *mem, size_t len)
+intmax_t		conv_bin(uint8_t *mem, size_t len)
 {
 	uintmax_t	num;
 	size_t		i;
@@ -41,13 +41,7 @@ intmax_t	conv_bin(uint8_t *mem, size_t len)
 	return (num);
 }
 
-bool		error_message(const char *err)
-{
-	ft_putf_fd(2, "%s%s%s\n", CSI_RED, err, CSI_RESET);
-	return (false);
-}
-
-bool		bin_parse_header(size_t fd, t_head *header)
+bool			bin_parse_header(size_t fd, t_head *header)
 {
 	uint8_t	magic_len[4];
 
@@ -66,43 +60,52 @@ bool		bin_parse_header(size_t fd, t_head *header)
 		return (false);
 	lseek(fd, 4 - sizeof(header->comment) % 4, SEEK_CUR);
 	if (read(fd, header->prog, header->size + 1) != (ssize_t)header->size)
-	{
-		ft_putf_fd(2, "Declared prog size is false.\n");
-		return (false);
-	}
+		return (error_message("Declared prog size is false"));
 	return (true);
 }
 
-bool		begin_diss(t_diss diss)
+bool			begin_diss(t_diss diss)
 {
 	t_head			header;
 	t_read_prog		prog;
 
 	prog.offset = 0;
 	if (!bin_parse_header(diss.fd_in, &header))
-		printf("error\n");
+		error_message("Parse header");
 	ft_putf_fd(diss.fd_out, ".name      \"%s\"\n", header.name);
 	ft_putf_fd(diss.fd_out, ".comment   \"%s\"\n\n", header.comment);
 	while (prog.offset < header.size)
 	{
 		if (!(diss_read_opcode(header.prog, &prog)))
-			return (false);
+			return (error_message("Invalid opcode"));
 		if (!diss_pass(header.prog, &prog, diss))
-			return (false);
+			return (error_message("Invalid ocp"));
 	}
 	return (true);
 }
 
-int			main(int argc, char *argv[])
+static t_arg	*create_args(char *name)
 {
-	t_diss			diss;
-	char			*name;
-	int				ret;
-	const t_arg		args[] = {
-		{Arg_Str, 'o', "output", &name, "Output file name"}
+	static t_arg args[2];
+
+	args[0] = (t_arg){
+		Arg_Str, 'o', "output", &name, "Output file name."
 	};
+	args[1] = (t_arg){
+		Arg_End, 0, 0, 0, 0
+	};
+	return (args);
+}
+
+int				main(int argc, char *argv[])
+{
+	t_diss		diss;
+	char		*name;
+	int			ret;
+	t_arg		*args;
 
 	name = NULL;
+	args = create_args(name);
 	if ((ret = parse_args(args, argc, argv)) < 0 || argc != ret + 1)
 		return (args_usage(args, argv[0], "cor_file", ""));
 	if ((diss.fd_in = open(argv[ret], O_RDONLY)) <= 0)
