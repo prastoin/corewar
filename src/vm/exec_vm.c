@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 01:40:50 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/06/04 15:42:26 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 08:37:31 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ bool		kill_process(t_vm *vm, size_t dead)
 	i = vm->vec->len - 1;
 	while (i >= 0)
 	{
-		if (vm->vec->processes[i].said_live || vm->cycle_to_die <= 0)
+		if (vm->vec->processes[i].said_live && vm->cycle_to_die > 0)
 			vm->vec->processes[i].said_live = false;
 		else if (vm->vec->processes[i].is_alive)
 		{
