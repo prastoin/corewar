@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 15:39:21 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/05 08:54:46 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:40:31 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	ft_putf_fd(int fd, char *fmt, ...)
 	va_list	args;
 	size_t	padd;
 	t_write	write;
-	uint8_t	buffer[4096];
+	uint8_t	buffer[BUFFER_SIZE];
 
 	write = (t_write) {
 		.buffer = buffer,

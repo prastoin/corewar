@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/04 14:58:16 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/23 11:41:50 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:40:03 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	print_first(t_write *error, t_span *begin)
 	io_write(error, CSI_RESET, (sizeof(CSI_RESET) - 1));
 }
 
-void	print_second(t_write *error, t_error pack, char buffer[4096],
+void	print_second(t_write *error, t_error pack, char buffer[BUFFER_SIZE],
 		size_t len)
 {
 	char	*last;
@@ -91,7 +91,7 @@ void	error_contxt_print(t_write *error, t_error pack, size_t i)
 	int16_t			columns;
 	int				fd;
 	size_t			len;
-	char			buffer[4096];
+	char			buffer[BUFFER_SIZE];
 	struct stat		stats;
 
 	i = 0;

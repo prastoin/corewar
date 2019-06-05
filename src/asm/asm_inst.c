@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/30 13:50:49 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 22:17:43 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:34:49 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ bool		asm_read_inst(t_read *in, t_instruction *inst)
 	if (!(tmp = asm_get_inst(in)))
 		return (print_small_error(in, Err, "Malloc failed\n", 0) && false);
 	c = io_peek(in);
-	if (c == ':')
+	if (c == LABEL_CHAR)
 	{
 		inst->label = tmp;
 		io_next(in);

@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/05 10:21:23 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:38:15 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 # define OUT 1
 # define ARGS_MSG "Convert asm to corewar bytecode"
 # define FLAG_S_MSG "Turn on streaming reading mode"
-# define BUFFER_SIZE  4096
 # define HEADER_SIZE (16 + PROG_NAME_LENGTH + COMMENT_LENGTH)
 # define EXT ".cor"
 

@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/05 10:00:52 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:41:14 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int				main(int argc, char *argv[])
 	ssize_t		ret;
 	char		*players[MAX_PLAYERS];
 	t_arg		*args;
-	uint8_t		buffer[4096];
+	uint8_t		buffer[BUFFER_SIZE];
 
 	vm = init_vm();
 	ft_memset(players, 0, sizeof(players));

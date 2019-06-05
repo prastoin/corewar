@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/30 13:46:44 by prastoin          #+#    #+#             */
-/*   Updated: 2019/05/22 22:17:29 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:48:13 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	asm_read_comment(t_read *rd, t_header *header)
 {
 	if (io_expect(rd, "."))
 	{
-		if (!io_expect(rd, "comment"))
+		if (!io_expect(rd, COMMENT_CMD_STRING))
 		{
 			io_skip_until(rd, " #\t\n\"");
 			print_error(rd, Err, "Expected \".comment\"",
@@ -38,7 +38,7 @@ static void	asm_read_name(t_read *rd, t_header *header)
 {
 	if (io_expect(rd, "."))
 	{
-		if (!io_expect(rd, "name"))
+		if (!io_expect(rd, NAME_CMD_STRING))
 		{
 			io_skip_until(rd, " #\t\n\"");
 			print_error(rd, Err, "Expected \".name\"", "Replace by .name");

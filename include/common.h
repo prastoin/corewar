@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 11:30:59 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/05 10:20:19 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:47:09 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,12 @@
 # define IDX_MOD (MEM_SIZE / 8)
 # define CHAMP_MAX_SIZE (MEM_SIZE / 6)
 
-# define COMMENT_CHAR '#'
 # define LABEL_CHAR ':'
 # define DIRECT_CHAR '%'
 # define SEPARATOR_CHAR ","
 # define LABEL_CHARS "abcdefghijklmnopqrstuvwxyz_0123456789"
-# define NAME_CMD_STRING ".name"
-# define COMMENT_CMD_STRING ".comment"
+# define NAME_CMD_STRING "name"
+# define COMMENT_CMD_STRING "comment"
 
 # define REG_NUMBER 16
 # define REG_SIZE 4
@@ -51,6 +50,8 @@
 # define OCP_DIR 0b10
 # define OCP_REG 0b01
 # define OCP_IND 0b11
+
+# define BUFFER_SIZE  4096
 
 typedef enum	e_core_param {
 	Param_None = 0b0,

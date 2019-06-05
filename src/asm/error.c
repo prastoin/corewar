@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 17:54:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 18:09:58 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:39:25 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int		print_small_error(t_read *in, t_severity severity, char *error_str
 		, char *expected)
 {
 	t_write	error;
-	uint8_t	buffer[4096];
+	uint8_t	buffer[BUFFER_SIZE];
 
 	error = init_write_error(buffer, sizeof(buffer));
 	if (severity == Err || in->werror)
@@ -57,7 +57,7 @@ void	print_error(t_read *in, t_severity severity, char *erro, char *expected)
 {
 	size_t	i;
 	t_write	error;
-	uint8_t	buffer[4096];
+	uint8_t	buffer[BUFFER_SIZE];
 
 	error = init_write_error(buffer, sizeof(buffer));
 	i = 0;

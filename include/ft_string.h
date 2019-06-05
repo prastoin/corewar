@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/13 10:07:00 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 18:07:53 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:37:58 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # include <unistd.h>
 # include <stdarg.h>
 
-# define BUFF_SIZE 4096
 # define CSI "\033["
 # define CSI_GREEN CSI "32;01m"
 # define CSI_WHITE CSI "37;01m"
