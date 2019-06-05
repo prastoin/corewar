@@ -6,11 +6,10 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 00:15:15 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 18:07:25 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/06/05 11:27:49 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "common.h"
 #include "ft_string.h"
 
 void			putnbr_hexa_fd(t_write *out, uintmax_t nb, size_t padd)
