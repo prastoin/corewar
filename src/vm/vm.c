@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:01:43 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/05 10:41:14 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 12:23:36 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ static t_arg	*create_args(char *players[MAX_PLAYERS], t_vm *vm)
 	static t_arg args[4];
 
 	args[0] = (t_arg) {
-		Arg_Players, 'n', "number", &players, FLAG_N_MSG
+		Arg_Players, 'n', "number", players, FLAG_N_MSG
 	};
 	args[1] = (t_arg) {
 		Arg_Int, 'd', "dump", &vm->flags.dump_c, FLAG_D_MSG

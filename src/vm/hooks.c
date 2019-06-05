@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 15:37:18 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/05 10:00:15 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/06/05 12:10:27 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	hook_process_live(t_vm *vm, t_process *process, size_t player)
 	(void)process;
 	if (player >= 1 && player <= MAX_PLAYERS)
 	{
-		if (vm->champ[player].fd)
+		if (vm->champ[player - 1].fd)
 		{
 			if (!vm->flags.verbose)
 				ft_putf_fd(STDOUT_FILENO,
