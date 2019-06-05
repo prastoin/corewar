@@ -6,14 +6,14 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/04 13:23:46 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 13:27:20 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:24:57 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "asm.h"
 #include <stdlib.h>
 
-void		fill_pos(t_pos *pos, t_write *out, t_instruction *inst, size_t i)
+void	fill_pos(t_pos *pos, t_write *out, t_instruction *inst, size_t i)
 {
 	pos->param = out->nbr_write + size_until_param(inst, i);
 	pos->offset = out->nbr_write;
@@ -32,7 +32,7 @@ bool	free_inst_label(t_instruction *inst, size_t i)
 bool	check_entry_position(t_entry **entry, t_pos **pos)
 {
 	if (!((*entry)->positions = create_pos_vec(8))
-			|| (!((*pos) = add_position(&((*entry)->positions)))))
+		|| (!((*pos) = add_position(&((*entry)->positions)))))
 		return (false);
 	return (true);
 }

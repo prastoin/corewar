@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 11:24:17 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 11:45:02 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:14:18 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ void	bin_write_params(t_write *out, t_instruction *inst)
 		i++;
 	}
 }
-
 
 void	bin_write_inst(t_write *out, t_instruction *inst)
 {

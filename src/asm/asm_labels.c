@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 14:19:25 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 13:27:54 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:13:53 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ size_t	size_until_param(t_instruction *inst, size_t pos)
 	return (1 + g_ops[inst->opcode].ocp + size);
 }
 
-bool asm_swap_off(t_instruction *inst, t_write *out, size_t i,
+bool	asm_swap_off(t_instruction *inst, t_write *out, size_t i,
 		t_hashtable **table)
 {
 	t_entry *entry;

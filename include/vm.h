@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/28 09:48:27 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/05 10:01:18 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:21:07 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,16 +90,16 @@ typedef struct	s_vm
 t_vm			init_vm(void);
 bool			ft_check_ocp(uint8_t ocp, uint8_t opcode);
 bool			ft_get_value(ssize_t nbr, uint8_t type, t_process *processes,
-		t_vm *vm);
+	t_vm *vm);
 bool			ft_get_value_mod(ssize_t nbr, uint8_t type, t_process *process,
-		t_vm *vm);
+	t_vm *vm);
 void			mem_write(uint8_t mem[MEM_SIZE], const uint8_t *value,
-		ssize_t offset, size_t size);
+	ssize_t offset, size_t size);
 void			mem_read(const uint8_t mem[MEM_SIZE], uint8_t str[],
-		ssize_t offset, size_t size);
+	ssize_t offset, size_t size);
 void			mem_write_one(uint8_t mem[MEM_SIZE], uint8_t c, ssize_t offset);
 void			mem_write_int(uint8_t mem[MEM_SIZE], size_t nb, size_t len,
-		ssize_t offset);
+	ssize_t offset);
 bool			ft_play(t_vm *vm);
 t_vec			*create_process(size_t capacity);
 t_process		*add_process(t_vec **list);
@@ -116,15 +116,15 @@ bool			read_opcode(t_vm *vm, t_process *process);
 ** bin_operand
 */
 bool			bin_add(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE],
-		uint8_t res[REG_SIZE]);
+	uint8_t res[REG_SIZE]);
 bool			bin_sub(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE],
-		uint8_t res[REG_SIZE]);
+	uint8_t res[REG_SIZE]);
 void			bin_and(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE],
-		uint8_t res[REG_SIZE]);
+	uint8_t res[REG_SIZE]);
 void			bin_or(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE],
-		uint8_t res[REG_SIZE]);
+	uint8_t res[REG_SIZE]);
 void			bin_xor(uint8_t op1[REG_SIZE], uint8_t op2[REG_SIZE],
-		uint8_t res[REG_SIZE]);
+	uint8_t res[REG_SIZE]);
 intmax_t		conv_bin_num(uint8_t *mem, size_t len);
 void			conv_int_to_bin(size_t nbr, uint8_t op[REG_SIZE]);
 void			copy_process(t_process *dest, t_process *src);
@@ -157,13 +157,13 @@ bool			aff(t_vm *vm, t_process *prc, int32_t param[4], uint8_t ocp);
 */
 
 void			print_a(t_vm *vm, uint8_t op1[REG_SIZE],
-		uint8_t tampon[REG_SIZE], int32_t param);
+	uint8_t tampon[REG_SIZE], int32_t param);
 void			print_b(t_vm *vm, t_process *process, uint8_t adr[REG_SIZE],
-		int64_t adress);
+	int64_t adress);
 void			affsti(t_vm *vm, uint8_t op1[REG_SIZE], t_process *process,
-		int32_t param[4]);
+	int32_t param[4]);
 void			affldi(t_vm *vm, uint8_t op1[REG_SIZE], t_process *process,
-		int32_t param[4]);
+	int32_t param[4]);
 
 /*
 ** exec_vm.c
@@ -197,15 +197,15 @@ void			ft_dump_mem(t_vm vm, bool ex);
 */
 void			hook_process_adv(t_vm *vm, t_process *process, size_t diff);
 void			hook_process_jump(t_vm *vm, t_process *process, uint32_t param,
-		size_t offset);
+	size_t offset);
 void			hook_process_spawn(t_process *process, t_process *parent,
-		size_t offset);
+	size_t offset);
 void			hook_process_live(t_vm *vm, t_process *process, size_t player);
 void			hook_process_die(t_vm *vm, t_process *process);
 bool			hook_cycle_end(t_vm *vm);
 void			hook_process_read_opcode(t_process *process, uint8_t opcode);
 void			hook_process_memory_write(t_process *process, size_t offset,
-		size_t size);
+	size_t size);
 void			hook_cycle_to_die(t_vm *vm, size_t value);
 void			hook_win(t_vm *vm, size_t player);
 #endif

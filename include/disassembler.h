@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 11:46:37 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/06/04 09:42:04 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:20:31 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,16 @@ typedef struct	s_read_prog
 	uint32_t	ocp;
 }				t_read_prog;
 
-bool		error_message(const char *err);
+bool			error_message(const char *err);
 size_t			diss_get_decale(uint8_t ocp, int opcode);
 void			diss_get_params_ocp(const uint8_t mem[CHAMP_MAX_SIZE],
-		t_read_prog *prog, t_diss diss);
+	t_read_prog *prog, t_diss diss);
 void			diss_mem_read(const uint8_t mem[CHAMP_MAX_SIZE], uint8_t *dst,
-		ssize_t offset, size_t n);
+	ssize_t offset, size_t n);
 intmax_t		conv_bin(uint8_t *mem, size_t len);
 bool			diss_read_opcode(const uint8_t mem[CHAMP_MAX_SIZE],
-		t_read_prog *prog);
+	t_read_prog *prog);
 bool			diss_pass(const uint8_t mem[CHAMP_MAX_SIZE], t_read_prog *prog,
-		t_diss diss);
+	t_diss diss);
 
 #endif

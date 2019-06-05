@@ -6,12 +6,11 @@
 /*   By: dde-jesu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/08 15:31:33 by dde-jesu          #+#    #+#             */
-/*   Updated: 2019/06/04 18:26:20 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:14:48 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_string.h"
-
 
 void			char_fd(t_write *out, uint8_t c, size_t padd)
 {

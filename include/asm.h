@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 18:09:47 by fbecerri         ###   ########.fr       */
+/*   Updated: 2019/06/05 10:21:23 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ typedef struct	s_label
 	uint8_t *name;
 	size_t	offset;
 }				t_label;
-
 
 typedef union	u_param
 {
@@ -126,7 +125,7 @@ typedef struct	s_read
 t_write			init_write(void);
 t_read			init_read(int fd, char *argv, bool werror);
 void			ft_itoa_base(uintmax_t nb, char *str, uint8_t b,
-		const char *base);
+	const char *base);
 void			asm_header(t_write *out, t_read *in);
 char			*from_int_to_type(size_t type);
 void			ft_itoa_hexa(char *str, uintmax_t nb, size_t len);
@@ -139,7 +138,7 @@ void			bin_write_end(t_write *out);
 void			bin_resolve_positions(t_write *out, t_pos_vec *positions);
 bool			bin_write_header(t_header head, t_write *out);
 void			bin_padding_ocp(uint8_t ocp, t_write *out, int8_t *size,
-		uint8_t opcode);
+	uint8_t opcode);
 
 /*
 ** error
@@ -152,9 +151,9 @@ typedef struct	s_error
 }				t_error;
 
 void			print_error(t_read *in, t_severity severity, char *error,
-		char *expected);
+	char *expected);
 int				print_small_error(t_read *in, t_severity severity, char *error,
-		char *expected);
+	char *expected);
 void			mark_span(t_read *in);
 void			error_msg(t_write *err, char *error);
 void			error_severity(t_write *err, t_severity severity);
@@ -197,13 +196,13 @@ t_pos			*add_position(t_pos_vec **vec);
 /*
 ** asm_labels2.c
 */
-void		fill_pos(t_pos *pos, t_write *out, t_instruction *inst, size_t i);
-bool	free_inst_label(t_instruction *inst, size_t i);
-bool	check_entry_position(t_entry **entry, t_pos **pos);
-void	fix_new_offset(t_entry *entry, t_instruction *inst,
-		size_t i, t_write *out);
-size_t	size_until_param(t_instruction *inst, size_t pos);
-
+void			fill_pos(t_pos *pos, t_write *out, t_instruction *inst,
+	size_t i);
+bool			free_inst_label(t_instruction *inst, size_t i);
+bool			check_entry_position(t_entry **entry, t_pos **pos);
+void			fix_new_offset(t_entry *entry, t_instruction *inst,
+	size_t i, t_write *out);
+size_t			size_until_param(t_instruction *inst, size_t pos);
 
 /*
 ** asm_utils.c
@@ -221,24 +220,15 @@ char			*asm_get_inst(t_read *in);
 bool			asm_read_params(t_read *in, t_instruction *inst);
 
 /*
-** argv_management.c
-*/
-bool			parse_long(const t_arg opt[], char **arg, char *argv[],
-		size_t *i);
-bool			parse_short(const t_arg opt[], char **arg, char *argv[],
-		size_t *i);
-ssize_t			parse_args(const t_arg args[], int argc, char *argv[]);
-
-/*
-** argv_management.c
+** asm_inst.c
 */
 
 bool			asm_read_inst(t_read *in, t_instruction *inst);
 bool			asm_transform(t_write *out, t_read *in);
 bool			asm_store_label(t_hashtable **table, char *label, t_write *out,
-		t_read *in);
+	t_read *in);
 bool			asm_resolve_label(t_hashtable **table, t_instruction *inst,
-		t_write *out, t_read *in);
+	t_write *out, t_read *in);
 void			asm_check_labels(t_hashtable *table, t_read *in);
 
 /*
