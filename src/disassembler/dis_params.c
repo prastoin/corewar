@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/22 22:52:32 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/06/04 09:47:53 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/05 11:32:07 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,7 @@ void		diss_mem_read(const uint8_t mem[CHAMP_MAX_SIZE], uint8_t *dst,
 	i = n - 1;
 	while (i >= 0)
 	{
-		offset = offset % CHAMP_MAX_SIZE;
-		(dst)[i] = mem[offset + i];
+		dst[i] = mem[(offset + i) % CHAMP_MAX_SIZE];
 		i--;
 	}
 }
