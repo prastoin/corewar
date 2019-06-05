@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "asm.h"
-#include "ft_string.h"
 
 void	io_write_number(t_write *w, uintmax_t n)
 {

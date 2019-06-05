@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "asm.h"
 #include "ft_string.h"
 
 void		io_seek(t_write *out, ssize_t offset, bool set_cur)

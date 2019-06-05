@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "common.h"
 #include "ft_string.h"
 
 static int	args_players(const t_arg *opt, char *value, char *argv[], int i[2])

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "ft_string.h"
-#include "common.h"
 
 int	show_err(int err, char *name, char *option, size_t len)
 {

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "asm.h"
-#include "ft_string.h"
 
 void	bin_write_params(t_write *out, t_instruction *inst)
 {
