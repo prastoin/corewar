@@ -31,8 +31,6 @@ typedef struct	s_flags
 {
 	t_datan	*num;
 	int		dump_c;
-	int		run_c;
-	bool	bin_o;
 	bool	verbose;
 }				t_flags;
 
