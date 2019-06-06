@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/12 14:44:32 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/05 10:38:15 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/06 13:12:10 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,6 +233,6 @@ void			asm_check_labels(t_hashtable *table, t_read *in);
 /*
 ** others
 */
-bool			escape(t_read *rd, int16_t c);
+bool			escape(t_read *rd, int16_t *c);
 
 #endif
