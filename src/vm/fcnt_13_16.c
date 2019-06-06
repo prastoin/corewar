@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 13:31:01 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/05 10:00:15 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/06/06 12:24:55 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,7 @@ bool		aff(t_vm *vm, t_process *process, int32_t param[4], uint8_t ocp)
 	while (i < REG_SIZE)
 	{
 		c = (process->registre[param[0] - 1][i] % 256);
-		if (vm->flags.bin_o)
-			write(1, &c, 1);
+		write(1, &c, 1);
 		i++;
 	}
 	return (valid(vm, process, ocp, 16));

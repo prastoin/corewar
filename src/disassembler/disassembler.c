@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 11:13:26 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/06/04 12:45:41 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/06 12:31:52 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,12 +80,12 @@ bool			begin_diss(t_diss diss)
 	return (true);
 }
 
-static t_arg	*create_args(char *name)
+static t_arg	*create_args(char **name)
 {
 	static t_arg args[2];
 
 	args[0] = (t_arg){
-		Arg_Str, 'o', "output", &name, "Output file name."
+		Arg_Str, 'o', "output", &(*name), "Output file name."
 	};
 	args[1] = (t_arg){
 		Arg_End, 0, 0, 0, 0
@@ -101,7 +101,7 @@ int				main(int argc, char *argv[])
 	t_arg		*args;
 
 	name = NULL;
-	args = create_args(name);
+	args = create_args(&name);
 	if ((ret = parse_args(args, argc, argv)) < 0 || argc != ret + 1)
 		return (args_usage(args, argv[0], "cor_file", ""));
 	if ((diss.fd_in = open(argv[ret], O_RDONLY)) <= 0)
