@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/02 14:20:14 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/05 10:00:15 by dde-jesu         ###   ########.fr       */
+/*   Updated: 2019/06/12 10:35:23 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,10 @@ t_process	*add_process(t_vec **list)
 		new_capacity = tmp->capacity * 2;
 		if (!(tmp = realloc(tmp, sizeof(t_vec)
 				+ new_capacity * sizeof(t_process))))
+		{
+			free(*list);
 			return (NULL);
+		}
 		tmp->capacity = new_capacity;
 		*list = tmp;
 	}

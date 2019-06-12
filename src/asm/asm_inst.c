@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/30 13:50:49 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/05 10:34:49 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/12 10:25:45 by prastoin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ char		*asm_get_inst(t_read *in)
 	size_t		len;
 	int16_t		c;
 	char		*str;
+	char		*tmp;
 
 	len = 0;
 	if (!(str = (char*)malloc(sizeof(char) * 1)))
@@ -46,9 +47,10 @@ char		*asm_get_inst(t_read *in)
 		str[len] = c;
 		io_next(in);
 		len++;
+		tmp = str;
 		if (!(str = realloc(str, sizeof(char) * (len + 1))))
 		{
-			free(str);
+			free(tmp);
 			return (NULL);
 		}
 	}
