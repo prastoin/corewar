@@ -6,7 +6,7 @@
 /*   By: prastoin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 12:46:07 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/04 11:51:07 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/13 10:19:16 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,8 @@
 static bool	asm_transform_end(t_write *out, t_read *in, t_hashtable *table,
 		bool ret)
 {
-	if (ret)
-	{
-		bin_write_end(out);
-		asm_check_labels(table, in);
-	}
+	asm_check_labels(table, in);
+	bin_write_end(out);
 	free(table);
 	return (ret);
 }
