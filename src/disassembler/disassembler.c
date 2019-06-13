@@ -6,7 +6,7 @@
 /*   By: fbecerri <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 11:13:26 by fbecerri          #+#    #+#             */
-/*   Updated: 2019/06/06 12:31:52 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/13 11:57:38 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ static t_arg	*create_args(char **name)
 	static t_arg args[2];
 
 	args[0] = (t_arg){
-		Arg_Str, 'o', "output", &(*name), "Output file name."
+		Arg_Str, 'o', "output", name, "Output file name."
 	};
 	args[1] = (t_arg){
 		Arg_End, 0, 0, 0, 0
