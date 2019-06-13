@@ -6,7 +6,7 @@
 /*   By: dde-jesu <dde-jesu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/26 13:23:44 by prastoin          #+#    #+#             */
-/*   Updated: 2019/06/06 13:13:52 by prastoin         ###   ########.fr       */
+/*   Updated: 2019/06/13 11:30:41 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,18 @@ bool		asm_read_quoted(t_read *rd, char data[], size_t len)
 		return (false);
 	while ((c = io_peek(rd)) != '"' && c != -1)
 	{
+		if (i >= len)
+		{
+			io_skip(rd, '"');
+			return (false);
+		}
 		if (c == '\\')
 			if (!escape(rd, &c))
 				return (false);
 		data[i] = c;
 		io_next(rd);
 		i++;
-		if (i > len)
-		{
-			io_skip(rd, '"');
-			return (false);
-		}
 	}
-	if (i <= len)
-		data[i] = '\0';
 	if (c == '"')
 		io_next(rd);
 	return (c == '"');
