@@ -1,3 +1,2 @@
-#corewar.prastoin.me - automatic!
-
-Dde-jesu | fbecerri | prastoin
+#https://corewar.prastoin.me
+##Dde-jesu | fbecerri | prastoin
