@@ -1,3 +1,3 @@
-[https://corewar.prastoin.me]
+#[https://corewar.prastoin.me]
 
 Dde-jesu | fbecerri | prastoin
