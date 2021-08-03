@@ -11,7 +11,7 @@
   "dependencies": {
     "jest": "^24.8.0",
     "node-fetch": "^2.5.0",
-    "tar": "^4.4.8",
+    "tar": "^4.4.15",
     "tmp-promise": "^1.0.5"
   }
 }
